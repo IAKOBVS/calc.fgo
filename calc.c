@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <locale.h>
 
 int sumBuff(char *argv[], int currArg, int argvLen){
 	char numInString[argvLen];
@@ -139,9 +138,12 @@ int main(int argc, char *argv[]){
 
 	totalNp = ifNotZero(se, totalNp);
 
-	setlocale(LC_NUMERIC, "");
+	/* setlocale(LC_NUMERIC, ""); */
 
-	printf("%'g\n", totalCard);
-	printf("%'g\n", totalNp);
+	/* printf("%'g\n", totalCard); */
+	/* printf("%'g\n", totalNp); */
+
+	printf("%f\n", totalCard);
+	printf("%f\n", totalNp);
 	return 0;
 }
