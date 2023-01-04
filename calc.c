@@ -41,16 +41,6 @@ int main(int argc, char *argv[]){
 	int BUSTER = 0;
 	int QUICK = 0;
 
-	const char *buffs[8];
-	buffs[0] = "am";
-	buffs[1] = "bm";
-	buffs[2] = "qm";
-	buffs[3] = "at";
-	buffs[4] = "pm";
-	buffs[5] = "np";
-	buffs[6] = "se";
-	buffs[7] = "st";
-
 	int at = 0;
 	int am = 0;
 	int bm = 0;
@@ -59,61 +49,80 @@ int main(int argc, char *argv[]){
 	float st = 0;
 	int pm = 0;
 	int np = 0;
+	int cd = 0;
 
 	for (int currArgv=1; currArgv<argc; ++currArgv){
 
 		int argvLen = strlen(argv[currArgv]);
-		for (int i=0; i<=7; ++i){
 
-			if (strInStr(2, buffs[i], argv, currArgv)){
+			if (strInStr(2, "at", argv, currArgv)){
+				at = at + sumBuff(argv, currArgv, argvLen);
 
-				if (strcmp(buffs[i], "at") == 0){
-					at = at + sumBuff(argv, currArgv, argvLen);
+			} else if (strInStr(2, "bm", argv, currArgv)){
+				bm = bm + sumBuff(argv, currArgv, argvLen);
 
-				} else if (strcmp(buffs[i], "bm") == 0){
-					bm = bm + sumBuff(argv, currArgv, argvLen);
+			} else if (strInStr(2, "qm", argv, currArgv)){
+				qm = qm + sumBuff(argv, currArgv, argvLen);
 
-				} else if (strcmp(buffs[i], "qm") == 0){
-					qm = qm + sumBuff(argv, currArgv, argvLen);
+			} else if (strInStr(2, "am", argv, currArgv)){
+				am = am + sumBuff(argv, currArgv, argvLen);
 
-				} else if (strcmp(buffs[i], "am") == 0){
-					am = am + sumBuff(argv, currArgv, argvLen);
+			} else if (strInStr(2, "pm", argv, currArgv)){
+				pm = pm + sumBuff(argv, currArgv, argvLen);
 
-				} else if (strcmp(buffs[i], "pm") == 0){
-					pm = pm + sumBuff(argv, currArgv, argvLen);
+			} else if (strInStr(2, "np", argv, currArgv)){
+				np = np + sumBuff(argv, currArgv, argvLen);
 
-				} else if (strcmp(buffs[i], "np") == 0){
-					np = np + sumBuff(argv, currArgv, argvLen);
+			} else if (strInStr(2, "cd", argv, currArgv)){
+				cd = cd + sumBuff(argv, currArgv, argvLen);
 
-				} else if (strcmp(buffs[i], "se") == 0){
-					se = sumBuff(argv, currArgv, argvLen) / 100.0;
+			} else if (strInStr(2, "se", argv, currArgv)){
+				se = sumBuff(argv, currArgv, argvLen) / 100.0;
 
-				} else if (strcmp(buffs[i], "st") == 0){
-					st = 1.33333333333;
+			} else if (strInStr(2, "st", argv, currArgv)){
+				st = 1.33333333333;
 
+			} else if (strInStr(2, "aa", argv, currArgv)){
+				ARTS = 1;
+
+			} else if (strInStr(2, "bb", argv, currArgv)){
+				BUSTER = 1;
+
+			} else if (strInStr(2, "qq", argv, currArgv)){
+				QUICK = 1;
+
+			/* aliases */
+			} else if (strInStr(2, "vi", argv, currArgv)){
+				bm = bm + 100;
+				cd = cd + 100;
+
+			} else if (strInStr(2, "ss", argv, currArgv)){
+				at = at + 40;
+				bm = bm + 30;
+				qm = qm + 130;
+				if (BUSTER != 0){
+					cd = cd + 200;
 				}
-			} else{
-				if (strInStr(2, "aa", argv, currArgv)){
-					ARTS = 1;
 
-				} else if (strInStr(2, "bb", argv, currArgv)){
-					BUSTER = 1;
+			} else if (strInStr(2, "sk", argv, currArgv)){
+				at = at + 60;
+				qm = qm + 100;
+				cd = cd + cd + 200;
 
-				} else if (strInStr(2, "qq", argv, currArgv)){
-					QUICK = 1;
-				}
+			} else if (strInStr(2, "ca", argv, currArgv)){
+				am = am + 100;
+				at = at + 40;
 			}
-		}
 	}
 	float total = 1;
 
-	if (ARTS){
+	if (ARTS != 0){
 		total = ifNotZero(am, total);
 
-	} else if (BUSTER){
+	} else if (BUSTER != 0){
 		total = ifNotZero(bm, total);
 
-	} else if (QUICK){
+	} else if (QUICK != 0){
 		total = ifNotZero(qm, total);
 	}
 
@@ -123,6 +132,7 @@ int main(int argc, char *argv[]){
 	total = ifNotZero(se, total);
 	total = ifNotZero(st, total);
 
+	setvbuf(stdout, NULL, _IONBF, 0);
 	printf("%f\n", total);
 	return 0;
 }
