@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 int sumBuff(char *argv[], int currArg, int argvLen){
 	char numInString[argvLen];
@@ -45,7 +46,7 @@ int main(int argc, char *argv[]){
 	int am = 0;
 	int bm = 0;
 	int qm = 0;
-	int se = 0;
+	float se = 0;
 	float st = 0;
 	int pm = 0;
 	int np = 0;
@@ -77,7 +78,7 @@ int main(int argc, char *argv[]){
 				cd = cd + sumBuff(argv, currArgv, argvLen);
 
 			} else if (strInStr(2, "se", argv, currArgv)){
-				se = sumBuff(argv, currArgv, argvLen) / 100.0;
+				se = (float)sumBuff(argv, currArgv, argvLen) / 100.0;
 
 			} else if (strInStr(2, "st", argv, currArgv)){
 				st = 1.33333333333;
@@ -128,10 +129,19 @@ int main(int argc, char *argv[]){
 
 	total = ifNotZero(at, total);
 	total = ifNotZero(pm, total);
-	total = ifNotZero(np, total);
-	total = ifNotZero(se, total);
 	total = ifNotZero(st, total);
 
-	printf("%f\n", total);
+	float totalCard;
+	float totalNp;
+
+	totalCard = ifNotZero(cd, total);
+	totalNp = ifNotZero(np, total);
+
+	totalNp = ifNotZero(se, totalNp);
+
+	setlocale(LC_NUMERIC, "");
+
+	printf("%'g\n", totalCard);
+	printf("%'g\n", totalNp);
 	return 0;
 }
