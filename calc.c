@@ -132,7 +132,6 @@ int main(int argc, char *argv[]){
 	total = ifNotZero(se, total);
 	total = ifNotZero(st, total);
 
-	setvbuf(stdout, NULL, _IONBF, 0);
 	printf("%f\n", total);
 	return 0;
 }
