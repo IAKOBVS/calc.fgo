@@ -4,7 +4,8 @@ A simple FGO calculator. Use only for comparisons.
 ```
 gcc calc.c -o /path/to/bins
 ```
-Usage: calc.c arguments
+## Usage:
+calc.c arguments
 ## Arguments:
 	at = atk up
 	am = arts up
