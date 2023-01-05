@@ -3,6 +3,9 @@
 #include <string.h>
 
 float toPercent(int var){
+	if (!var){
+		return 1;
+	}
 	return var * 0.01;
 }
 
@@ -16,18 +19,11 @@ int sumBuff(char *argv[], int currArg, int argvLen){
 	return strtol(numInString, NULL, 10);
 }
 
-int ifNotZero(int var){
-	if (var){
-		return var;
-	}
-	return 1; 
-}
-
 float ifNotZeroFl(float var){
-	if (var){
-		return var;
+	if (!var){
+		return 1;
 	}
-	return 1; 
+	return var;
 }
 
 int strInStr(int substrLen, const char substr[substrLen], char *argv[], int currArgv){
@@ -143,25 +139,25 @@ int main(int argc, char *argv[]){
 	int total = 1;
 
 	if (ARTS){
-		total = toPercent(ifNotZero(am));
+		total = toPercent(am);
 
 	} else if (BUSTER){
-		total = toPercent(ifNotZero(bm));
+		total = toPercent(bm);
 
 	} else if (QUICK){
-		total = toPercent(ifNotZero(qm));
+		total = toPercent(qm);
 	}
 
 	const float constMult = 0.23;
 
-	total = total * toPercent(ifNotZero(au-ad)) * constMult * attackStat;
+	total = total * toPercent(au-ad) * constMult * attackStat;
 
 	float totalCard = 1;
 	float totalNp = 1;
 
-	totalCard = total * toPercent(ifNotZero(cd + pm));
+	totalCard = total * toPercent(cd + pm);
 
-	totalNp = total * toPercent(ifNotZero(nm + pm)) * ifNotZeroFl(se) * ifNotZeroFl(st);
+	totalNp = total * toPercent(nm + pm) * ifNotZeroFl(se) * ifNotZeroFl(st);
 
 	/* setlocale(LC_NUMERIC, ""); */
 
