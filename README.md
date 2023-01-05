@@ -1,5 +1,5 @@
 # calc.c
-A simple FGO calculator. Use only for comparisons.
+A simple FGO damage calculator.
 ## Installation
 ```
 gcc calc.c -o /path/to/bins
