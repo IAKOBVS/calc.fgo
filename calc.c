@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h> /* thousand separator */
 
 float toPercent(int var){
 	if (!var){
@@ -111,10 +112,10 @@ int main(int argc, char *argv[]){
 
 				/* st or aeo */
 			} else if (strInStr(2, "st", argv, currArgv)){
-				AOE = 1;
+				ST = 1;
 
 			} else if (strInStr(2, "ao", argv, currArgv)){
-				ST = 1;
+				AOE = 1;
 
 				/* strengthening */
 			} else if (strInStr(2, "sr", argv, currArgv)){
@@ -160,38 +161,51 @@ int main(int argc, char *argv[]){
 
 	float total = 1;
 
+	float totalNp = 1;
+	float totalCard = 1;
+
 	if (ARTS){
 		total = toPercent(am);
-		if(AOE){
-			total = total * 7.5;
+
+		if (AOE){
+			totalNp = totalNp * 7.5;
+
 		} else if (ST){
-			total = total * 15;
+			totalNp = totalNp * 15;
+
 		}
 
 	} else if (BUSTER){
 		total = toPercent(bm) * 1.5;
+
 		if (AOE){
-			total = total * 5; 
+			totalNp = total * 5; 
+
 		} else if (ST){
-			total = total * 10;
+			totalNp = total * 10;
 		}
 
 	} else if (QUICK){
 		total = toPercent(qm) * 0.8;
+
 		if (AOE){
-			total = 10;
+			totalNp = 10;
+
 		} else if (ST){
-			total = total * 20;
+			totalNp = totalNp * 20;
 		}
+
 	} else{
 		printf("%s\n", "Card type not specified!");
-		if (!AOE && !ST){
-			printf("%s\n", "NP type not specified!");
-		}
+	}
+
+	if (!AOE && !ST){
+		printf("%s\n", "NP type not specified!");
 	}
 
 	if (ATTACK_STAT){
 		total = total * ATTACK_STAT;
+
 	} else{
 		printf("%s\n", "Attack stat not specified!");
 	}
@@ -200,21 +214,19 @@ int main(int argc, char *argv[]){
 
 	total = total * toPercent((au-ad)) * CONST_MULT;
 
-	float totalCard = 1;
-	float totalNp = 1;
+	totalCard = totalCard * total * toPercent((cd + pm));
 
-	totalCard = total * toPercent((cd + pm));
-
-	totalNp = total * toPercent((nm + pm)) * ifNotZeroFl(se) * ifNotZeroFl(sr);
+	totalNp = totalNp * total * toPercent((nm + pm)) * ifNotZeroFl(se);
+	/* totalNp = totalNp * total * toPercent((nm + pm)) * ifNotZeroFl(se) * ifNotZeroFl(sr); */
 
 	/* thousand separator */
 
-	/* setlocale(LC_NUMERIC, ""); */
+	setlocale(LC_NUMERIC, "");
 
-	/* printf("%'g\n", totalCard); */
-	/* printf("%'g\n", totalNp); */
+	printf("%'g\n", totalCard);
+	printf("%'g\n", totalNp);
 
-	printf("%f\n", totalCard);
-	printf("%f\n", totalNp);
+	/* printf("%f\n", totalCard); */
+	/* printf("%f\n", totalNp); */
 	return 0;
 }
