@@ -79,6 +79,10 @@ int main(int argc, char *argv[]){
 	int au = 0;
 	int ad = 0;
 
+	int du = 0;
+	int dd = 0;
+	int DEFENSE_IGNORE = 0;
+
 	int am = 0;
 	int bm = 0;
 	int qm = 0;
@@ -99,6 +103,16 @@ int main(int argc, char *argv[]){
 
 			} else if (inStr(2, "ad", argv, currArgv, argvLen)){
 				ad = ad - getBuff(argv, currArgv, argvLen);
+
+			} else if (inStr(2, "dd", argv, currArgv, argvLen)){
+				dd = dd + getBuff(argv, currArgv, argvLen);
+
+			} else if (inStr(2, "du", argv, currArgv, argvLen)){
+				du = du + getBuff(argv, currArgv, argvLen);
+
+
+			} else if (inStr(2, "di", argv, currArgv, argvLen)){
+				DEFENSE_IGNORE = 1;
 
 			} else if (inStr(2, "bm", argv, currArgv, argvLen)){
 				bm = bm + getBuff(argv, currArgv, argvLen);
@@ -126,7 +140,7 @@ int main(int argc, char *argv[]){
 			} else if (inStr(2, "sa", argv, currArgv, argvLen)){
 				ATTACK_STAT = getBuff(argv, currArgv, argvLen);
 
-			} else if (inStr(2, "NP", argv, currArgv, argvLen)){
+			} else if (inStr(2, "np", argv, currArgv, argvLen)){
 				NP = getBuff(argv, currArgv, argvLen);
 
 				/* st or aeo */
@@ -273,7 +287,16 @@ int main(int argc, char *argv[]){
 
 	const float CONST_MULT= 0.23;
 
-	total = total * toPercent((au-ad)) * CONST_MULT;
+	if (dd < 100){
+		dd = 100;
+		printf("%s\n", "Def down exceeds 100, defaults to 100!");
+	}
+
+	if (DEFENSE_IGNORE){
+		du = du - 100;
+	}
+
+	total = total * toPercent((au + dd - ad - du)) * CONST_MULT;
 
 	totalCard = totalCard * total * toPercent((cd + pm)) * cardMod;
 
