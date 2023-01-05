@@ -4,7 +4,7 @@
 
 float toPercent(int var){
 	if (!var){
-		return 1.0;
+		return 1;
 	}
 	return (1.0 + (float)var * 0.01);
 }
@@ -21,7 +21,7 @@ int getBuff(char *argv[], int currArg, int argvLen){
 
 float ifNotZeroFl(float var){
 	if (!var){
-		return 1.0;
+		return 1;
 	}
 	return var;
 }
@@ -51,7 +51,10 @@ int strInStr(int substrLen, const char substr[substrLen], char *argv[], int curr
 
 int main(int argc, char *argv[]){
 
-	int attackStat = 0;
+	int ATTACK_STAT = 0;
+
+	int AOE = 0;
+	int ST = 0;
 
 	int ARTS = 0;
 	int BUSTER = 0;
@@ -65,7 +68,7 @@ int main(int argc, char *argv[]){
 	int qm = 0;
 
 	float se = 0;
-	float st = 0;
+	float sr = 0;
 
 	int pm = 0;
 	int nm = 0;
@@ -102,14 +105,22 @@ int main(int argc, char *argv[]){
 			} else if (strInStr(2, "se", argv, currArgv)){
 				se = getBuff(argv, currArgv, argvLen) / 100.0;
 
-			/* base stat */
+				/* attack stat */
 			} else if (strInStr(2, "sa", argv, currArgv)){
-				attackStat = getBuff(argv, currArgv, argvLen);
-			/* */
+				ATTACK_STAT = getBuff(argv, currArgv, argvLen);
 
+				/* st or aeo */
 			} else if (strInStr(2, "st", argv, currArgv)){
-				st = 1.33333333333;
+				AOE = 1;
 
+			} else if (strInStr(2, "ao", argv, currArgv)){
+				ST = 1;
+
+				/* strengthening */
+			} else if (strInStr(2, "sr", argv, currArgv)){
+				sr = 1.33333333333;
+
+				/* card type */
 			} else if (strInStr(2, "aa", argv, currArgv)){
 				ARTS = 1;
 
@@ -119,10 +130,12 @@ int main(int argc, char *argv[]){
 			} else if (strInStr(2, "qq", argv, currArgv)){
 				QUICK = 1;
 
-			/* aliases */
+				/* aliases */
 			} else if (strInStr(2, "vi", argv, currArgv)){
 				bm = bm + 100;
-				cd = cd + 100;
+				if (BUSTER){
+					cd = cd + 100;
+				}
 
 			} else if (strInStr(2, "ss", argv, currArgv)){
 				au = au + 40;
@@ -135,7 +148,9 @@ int main(int argc, char *argv[]){
 			} else if (strInStr(2, "sk", argv, currArgv)){
 				au = au + 60;
 				qm = qm + 100;
-				cd = cd + cd + 200;
+				if (QUICK){
+					cd = cd + cd + 200;
+				}
 
 			} else if (strInStr(2, "ca", argv, currArgv)){
 				am = am + 100;
@@ -147,26 +162,52 @@ int main(int argc, char *argv[]){
 
 	if (ARTS){
 		total = toPercent(am);
+		if(AOE){
+			total = total * 7.5;
+		} else if (ST){
+			total = total * 15;
+		}
 
 	} else if (BUSTER){
-		total = toPercent(bm);
+		total = toPercent(bm) * 1.5;
+		if (AOE){
+			total = total * 5; 
+		} else if (ST){
+			total = total * 10;
+		}
 
 	} else if (QUICK){
-		total = toPercent(qm);
+		total = toPercent(qm) * 0.8;
+		if (AOE){
+			total = 10;
+		} else if (ST){
+			total = total * 20;
+		}
+	} else{
+		printf("%s\n", "Card type not specified!");
+		if (!AOE && !ST){
+			printf("%s\n", "NP type not specified!");
+		}
 	}
 
-	const float constMult = 0.23;
+	if (ATTACK_STAT){
+		total = total * ATTACK_STAT;
+	} else{
+		printf("%s\n", "Attack stat not specified!");
+	}
 
-	total = total * toPercent((au-ad)) * constMult * ifNotZero(attackStat);
+	const float CONST_MULT= 0.23;
+
+	total = total * toPercent((au-ad)) * CONST_MULT;
 
 	float totalCard = 1;
 	float totalNp = 1;
 
-	cd = cd + pm;
-	totalCard = total * toPercent(cd);
+	totalCard = total * toPercent((cd + pm));
 
-	nm = nm + pm;
-	totalNp = total * toPercent(nm) * ifNotZeroFl(se) * ifNotZeroFl(st);
+	totalNp = total * toPercent((nm + pm)) * ifNotZeroFl(se) * ifNotZeroFl(sr);
+
+	/* thousand separator */
 
 	/* setlocale(LC_NUMERIC, ""); */
 
@@ -175,7 +216,5 @@ int main(int argc, char *argv[]){
 
 	printf("%f\n", totalCard);
 	printf("%f\n", totalNp);
-
-	printf("%d\n", attackStat);
 	return 0;
 }
