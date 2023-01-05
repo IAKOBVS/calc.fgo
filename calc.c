@@ -114,6 +114,7 @@ int main(int argc, char *argv[]){
 				at = at + 40;
 			}
 	}
+
 	float total = 1;
 
 	if (ARTS != 0){
@@ -133,10 +134,12 @@ int main(int argc, char *argv[]){
 	float totalCard;
 	float totalNp;
 
-	totalCard = ifNotZero(cd, total);
-	totalNp = ifNotZero(np, total);
+	const float constMult = 0.23;
 
-	totalNp = ifNotZero(se, totalNp);
+	totalCard = constMult * ifNotZero(cd, total);
+
+	totalNp = ifNotZero(np, total);
+	totalNp = constMult * ifNotZero(se, totalNp);
 
 	/* setlocale(LC_NUMERIC, ""); */
 
