@@ -4,24 +4,24 @@
 
 float toPercent(int var){
 	if (!var){
-		return 1;
+		return 1.0;
 	}
-	return var * 0.01;
+	return (1.0 + (float)var * 0.01);
 }
 
-int sumBuff(char *argv[], int currArg, int argvLen){
+int getBuff(char *argv[], int currArg, int argvLen){
 	char numInString[argvLen];
 	int j=0;
 	for (int i=2; i<argvLen; ++i){
 		numInString[j] = argv[currArg][i];
 		j++;
 	}
-	return strtol(numInString, NULL, 10);
+	return (strtol(numInString, NULL, 10));
 }
 
 float ifNotZeroFl(float var){
 	if (!var){
-		return 1;
+		return 1.0;
 	}
 	return var;
 }
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]){
 	int bm = 0;
 	int qm = 0;
 
-	int se = 0;
+	float se = 0;
 	float st = 0;
 
 	int pm = 0;
@@ -69,31 +69,36 @@ int main(int argc, char *argv[]){
 		int argvLen = strlen(argv[currArgv]);
 
 			if (strInStr(2, "au", argv, currArgv)){
-				au = au + sumBuff(argv, currArgv, argvLen);
+				au = au + getBuff(argv, currArgv, argvLen);
 
 			if (strInStr(2, "ad", argv, currArgv)){
-				ad = ad - sumBuff(argv, currArgv, argvLen);
+				ad = ad - getBuff(argv, currArgv, argvLen);
 
 			} else if (strInStr(2, "bm", argv, currArgv)){
-				bm = bm + sumBuff(argv, currArgv, argvLen);
+				bm = bm + getBuff(argv, currArgv, argvLen);
 
 			} else if (strInStr(2, "qm", argv, currArgv)){
-				qm = qm + sumBuff(argv, currArgv, argvLen);
+				qm = qm + getBuff(argv, currArgv, argvLen);
 
 			} else if (strInStr(2, "am", argv, currArgv)){
-				am = am + sumBuff(argv, currArgv, argvLen);
+				am = am + getBuff(argv, currArgv, argvLen);
 
 			} else if (strInStr(2, "pm", argv, currArgv)){
-				pm = pm + sumBuff(argv, currArgv, argvLen);
+				pm = pm + getBuff(argv, currArgv, argvLen);
 
 			} else if (strInStr(2, "nm", argv, currArgv)){
-				nm = nm + sumBuff(argv, currArgv, argvLen);
+				nm = nm + getBuff(argv, currArgv, argvLen);
 
 			} else if (strInStr(2, "cd", argv, currArgv)){
-				cd = cd + sumBuff(argv, currArgv, argvLen);
+				cd = cd + getBuff(argv, currArgv, argvLen);
 
 			} else if (strInStr(2, "se", argv, currArgv)){
-				se = sumBuff(argv, currArgv, argvLen) / 100.0;
+				se = getBuff(argv, currArgv, argvLen) / 100.0;
+
+			/* base stat */
+			} else if (strInStr(2, "sa", argv, currArgv)){
+				attackStat = getBuff(argv, currArgv, argvLen);
+			/* */
 
 			} else if (strInStr(2, "st", argv, currArgv)){
 				st = 1.33333333333;
@@ -106,10 +111,6 @@ int main(int argc, char *argv[]){
 
 			} else if (strInStr(2, "qq", argv, currArgv)){
 				QUICK = 1;
-			
-			/* base stat */
-			} else if (strInStr(2, "sa", argv, currArgv)){
-				attackStat = sumBuff(argv, currArgv, argvLen);
 
 			/* aliases */
 			} else if (strInStr(2, "vi", argv, currArgv)){
@@ -135,8 +136,9 @@ int main(int argc, char *argv[]){
 			}
 		}
 	}
+	au = au - ad;
 
-	int total = 1;
+	float total = 1;
 
 	if (ARTS){
 		total = toPercent(am);
@@ -148,16 +150,22 @@ int main(int argc, char *argv[]){
 		total = toPercent(qm);
 	}
 
+	if (attackStat){
+		total = total * (float)attackStat;
+	}
+	
 	const float constMult = 0.23;
 
-	total = total * toPercent(au-ad) * constMult * attackStat;
+	total = total * toPercent(au) * constMult;
 
 	float totalCard = 1;
 	float totalNp = 1;
 
-	totalCard = total * toPercent(cd + pm);
+	cd = cd + pm;
+	totalCard = total * toPercent(cd);
 
-	totalNp = total * toPercent(nm + pm) * ifNotZeroFl(se) * ifNotZeroFl(st);
+	nm = nm + pm;
+	totalNp = total * toPercent(nm) * ifNotZeroFl(se) * ifNotZeroFl(st);
 
 	/* setlocale(LC_NUMERIC, ""); */
 
@@ -166,5 +174,7 @@ int main(int argc, char *argv[]){
 
 	printf("%f\n", totalCard);
 	printf("%f\n", totalNp);
+
+	printf("%d\n", attackStat);
 	return 0;
 }
