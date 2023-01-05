@@ -64,6 +64,29 @@ int inStr(int substrLen, const char substr[], char *argv[], int currArgv, int ar
 }
 
 int main(int argc, char *argv[]){
+	if (!argv[1]){
+		printf("%s\n\n", "Usage: calc arguments");
+		printf("%s\n", "arguments:");
+		printf("%s\n", "bb = buster servant");
+		printf("%s\n", "aa = arts servant");
+		printf("%s\n\n", "qq = quick servant");
+		printf("%s\n", "st = single target np");
+		printf("%s\n\n", "aoe = aoe np");
+		printf("%s\n", "sa = attack stat");
+		printf("%s\n", "au = attack up");
+		printf("%s\n\n", "ad = attack down");
+		printf("%s\n", "du = defense up");
+		printf("%s\n", "dd = defense down");
+		printf("%s\n\n", "di = defense ignore");
+		printf("%s\n", "am = arts up");
+		printf("%s\n", "bm = buster up");
+		printf("%s\n\n", "qm = quick up");
+		printf("%s\n", "se = special attack; e.g., gilgamesh, se150");
+		printf("%s\n", "sr = np strengthening");
+		printf("%s\n", "pm = powermod; e.g., arjuna alter, pm50");
+		printf("%s\n", "cd = crit up");
+		exit(0);
+	}
 
 	int ATTACK_STAT = 0;
 
@@ -204,6 +227,10 @@ int main(int argc, char *argv[]){
 	float NPMod = 1;
 	float cardMod = 1;
 
+	if (!ATTACK_STAT){
+		printf("%s\n", "attack stat not specified!");
+	}
+
 	if (ARTS){
 		total = total * toPercent(am);
 
@@ -271,25 +298,25 @@ int main(int argc, char *argv[]){
 			}
 		}
 	} else{
-		printf("%s\n", "Card type not specified!");
+		printf("%s\n", "card type not specified!");
 	}
 
 	if (!AOE && !ST){
-		printf("%s\n", "NP type not specified!");
+		printf("%s\n", "np type not specified!");
 	}
 
 	if (ATTACK_STAT){
 		total = total * ATTACK_STAT;
 
 	} else{
-		printf("%s\n", "Attack stat not specified!");
+		printf("%s\n", "attack stat not specified!");
 	}
 
 	const float CONST_MULT= 0.23;
 
-	if (dd < 100){
+	if (dd > 100){
 		dd = 100;
-		printf("%s\n", "Def down exceeds 100, defaults to 100!");
+		printf("%s\n", "def down exceeds 100, defaults to 100!");
 	}
 
 	if (DEFENSE_IGNORE){
