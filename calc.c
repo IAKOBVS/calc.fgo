@@ -3,6 +3,21 @@
 #include <string.h>
 #include <locale.h> /* thousand separator */
 
+float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault){
+	switch (np){
+		case 1:
+			return caseOne;
+		case 2:
+			return caseTwo;
+		case 3:
+			return caseThree;
+		case 4:
+			return caseFour;
+		default:
+			return caseDefault;
+	}
+}
+
 float toPercent(int var){
 	if (!var){
 		return 1;
@@ -57,6 +72,8 @@ int main(int argc, char *argv[]){
 	int AOE = 0;
 	int ST = 0;
 
+	int np;
+
 	int ARTS = 0;
 	int BUSTER = 0;
 	int QUICK = 0;
@@ -68,7 +85,7 @@ int main(int argc, char *argv[]){
 	int bm = 0;
 	int qm = 0;
 
-	float se = 0;
+	float se = 1;
 	float sr = 0;
 
 	int pm = 0;
@@ -119,7 +136,8 @@ int main(int argc, char *argv[]){
 
 				/* strengthening */
 			} else if (strInStr(2, "sr", argv, currArgv)){
-				sr = 1.33333333333;
+				/* sr = 1.33333333333; */
+				sr = 1.2;
 
 				/* card type */
 			} else if (strInStr(2, "aa", argv, currArgv)){
@@ -164,37 +182,75 @@ int main(int argc, char *argv[]){
 	float totalNp = 1;
 	float totalCard = 1;
 
+	float npMod = 1;
+	float cardMod = 1;
+
 	if (ARTS){
 		total = toPercent(am);
 
 		if (AOE){
-			totalNp = totalNp * 7.5;
+			if (sr){
+				npMod = whichNpMod(np, 5, 7.5, 8.25, 8.625, 9);
 
+			} else {
+				npMod = whichNpMod(np, 4.5, 6, 6.75, 7.125, 7.5);
+
+			}
 		} else if (ST){
-			totalNp = totalNp * 15;
 
+			if (sr){
+				npMod = whichNpMod(np, 12, 15, 16.5, 17.25, 18);
+
+			} else {
+				npMod = whichNpMod(np, 9, 12, 13.5, 14.25, 15);
+
+			}
 		}
 
 	} else if (BUSTER){
-		total = toPercent(bm) * 1.5;
+		total = toPercent(bm);
+		cardMod = 1.5;
 
 		if (AOE){
-			totalNp = total * 5; 
+			if (sr){
+				npMod = whichNpMod(np, 4, 5, 5.5, 5.75, 6);
+
+			} else {
+				npMod = whichNpMod(np, 3, 4, 4.5, 4.75, 5);
+
+			}
 
 		} else if (ST){
-			totalNp = total * 10;
-		}
+			if (sr){
+				npMod = whichNpMod(np, 8, 10, 11, 11.5, 12);
 
+			} else {
+				npMod = whichNpMod(np, 6, 8, 9, 9.5, 10);
+
+			}
+		}
 	} else if (QUICK){
-		total = toPercent(qm) * 0.8;
+		total = toPercent(qm);
+		cardMod = 0.8;
 
 		if (AOE){
-			totalNp = 10;
+			if (sr){
+				npMod = whichNpMod(np, 8, 10, 11, 11.5, 12);
+
+			} else {
+				npMod = whichNpMod(np, 6, 8, 9, 9.5, 10);
+
+			}
 
 		} else if (ST){
-			totalNp = totalNp * 20;
-		}
+			if (sr){
+				npMod = whichNpMod(np, 16, 20, 22, 23, 24);
 
+			} else {
+				npMod = whichNpMod(np, 12, 16, 18, 19, 20);
+
+			}
+		}
 	} else{
 		printf("%s\n", "Card type not specified!");
 	}
@@ -214,10 +270,9 @@ int main(int argc, char *argv[]){
 
 	total = total * toPercent((au-ad)) * CONST_MULT;
 
-	totalCard = totalCard * total * toPercent((cd + pm));
+	totalCard = totalCard * total * toPercent((cd + pm)) * cardMod;
 
-	totalNp = totalNp * total * toPercent((nm + pm)) * ifNotZeroFl(se);
-	/* totalNp = totalNp * total * toPercent((nm + pm)) * ifNotZeroFl(se) * ifNotZeroFl(sr); */
+	totalNp = totalNp * total * toPercent((nm + pm)) * se * npMod * cardMod;
 
 	/* thousand separator */
 
