@@ -136,7 +136,6 @@ int main(int argc, char *argv[]){
 			}
 		}
 	}
-	au = au - ad;
 
 	float total = 1;
 
@@ -156,7 +155,7 @@ int main(int argc, char *argv[]){
 	
 	const float constMult = 0.23;
 
-	total = total * toPercent(au) * constMult;
+	total = total * toPercent((au-ad)) * constMult;
 
 	float totalCard = 1;
 	float totalNp = 1;
