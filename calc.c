@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+float toPercent(int var){
+	return var * 0.01;
+}
+
 int sumBuff(char *argv[], int currArg, int argvLen){
 	char numInString[argvLen];
 	int j=0;
@@ -12,11 +16,18 @@ int sumBuff(char *argv[], int currArg, int argvLen){
 	return strtol(numInString, NULL, 10);
 }
 
-float ifNotZero(float var, float total){
-	if (var != 0){
-		return total * var;
+int ifNotZero(int var){
+	if (var){
+		return var;
 	}
-	return total;
+	return 1; 
+}
+
+float ifNotZeroFl(float var){
+	if (var){
+		return var;
+	}
+	return 1; 
 }
 
 int strInStr(int substrLen, const char substr[substrLen], char *argv[], int currArgv){
@@ -37,26 +48,35 @@ int strInStr(int substrLen, const char substr[substrLen], char *argv[], int curr
 
 int main(int argc, char *argv[]){
 
+	int attackStat = 0;
+
 	int ARTS = 0;
 	int BUSTER = 0;
 	int QUICK = 0;
 
-	int at = 0;
+	int au = 0;
+	int ad = 0;
+
 	int am = 0;
 	int bm = 0;
 	int qm = 0;
-	float se = 0;
+
+	int se = 0;
 	float st = 0;
+
 	int pm = 0;
-	int np = 0;
+	int nm = 0;
 	int cd = 0;
 
 	for (int currArgv=1; currArgv<argc; ++currArgv){
 
 		int argvLen = strlen(argv[currArgv]);
 
-			if (strInStr(2, "at", argv, currArgv)){
-				at = at + sumBuff(argv, currArgv, argvLen);
+			if (strInStr(2, "au", argv, currArgv)){
+				au = au + sumBuff(argv, currArgv, argvLen);
+
+			if (strInStr(2, "ad", argv, currArgv)){
+				ad = ad - sumBuff(argv, currArgv, argvLen);
 
 			} else if (strInStr(2, "bm", argv, currArgv)){
 				bm = bm + sumBuff(argv, currArgv, argvLen);
@@ -70,14 +90,14 @@ int main(int argc, char *argv[]){
 			} else if (strInStr(2, "pm", argv, currArgv)){
 				pm = pm + sumBuff(argv, currArgv, argvLen);
 
-			} else if (strInStr(2, "np", argv, currArgv)){
-				np = np + sumBuff(argv, currArgv, argvLen);
+			} else if (strInStr(2, "nm", argv, currArgv)){
+				nm = nm + sumBuff(argv, currArgv, argvLen);
 
 			} else if (strInStr(2, "cd", argv, currArgv)){
 				cd = cd + sumBuff(argv, currArgv, argvLen);
 
 			} else if (strInStr(2, "se", argv, currArgv)){
-				se = (float)sumBuff(argv, currArgv, argvLen) / 100.0;
+				se = sumBuff(argv, currArgv, argvLen) / 100.0;
 
 			} else if (strInStr(2, "st", argv, currArgv)){
 				st = 1.33333333333;
@@ -90,6 +110,10 @@ int main(int argc, char *argv[]){
 
 			} else if (strInStr(2, "qq", argv, currArgv)){
 				QUICK = 1;
+			
+			/* base stat */
+			} else if (strInStr(2, "sa", argv, currArgv)){
+				attackStat = sumBuff(argv, currArgv, argvLen);
 
 			/* aliases */
 			} else if (strInStr(2, "vi", argv, currArgv)){
@@ -97,49 +121,47 @@ int main(int argc, char *argv[]){
 				cd = cd + 100;
 
 			} else if (strInStr(2, "ss", argv, currArgv)){
-				at = at + 40;
+				au = au + 40;
 				bm = bm + 30;
 				qm = qm + 130;
-				if (BUSTER != 0){
+				if (BUSTER){
 					cd = cd + 200;
 				}
 
 			} else if (strInStr(2, "sk", argv, currArgv)){
-				at = at + 60;
+				au = au + 60;
 				qm = qm + 100;
 				cd = cd + cd + 200;
 
 			} else if (strInStr(2, "ca", argv, currArgv)){
 				am = am + 100;
-				at = at + 40;
+				au = au + 40;
 			}
+		}
 	}
 
-	float total = 1;
+	int total = 1;
 
-	if (ARTS != 0){
-		total = ifNotZero(am, total);
+	if (ARTS){
+		total = toPercent(ifNotZero(am));
 
-	} else if (BUSTER != 0){
-		total = ifNotZero(bm, total);
+	} else if (BUSTER){
+		total = toPercent(ifNotZero(bm));
 
-	} else if (QUICK != 0){
-		total = ifNotZero(qm, total);
+	} else if (QUICK){
+		total = toPercent(ifNotZero(qm));
 	}
-
-	total = ifNotZero(at, total);
-	total = ifNotZero(pm, total);
-	total = ifNotZero(st, total);
-
-	float totalCard;
-	float totalNp;
 
 	const float constMult = 0.23;
 
-	totalCard = constMult * ifNotZero(cd, total);
+	total = total * toPercent(ifNotZero(au-ad)) * constMult * attackStat;
 
-	totalNp = ifNotZero(np, total);
-	totalNp = constMult * ifNotZero(se, totalNp);
+	float totalCard = 1;
+	float totalNp = 1;
+
+	totalCard = total * toPercent(ifNotZero(cd + pm));
+
+	totalNp = total * toPercent(ifNotZero(nm + pm)) * ifNotZeroFl(se) * ifNotZeroFl(st);
 
 	/* setlocale(LC_NUMERIC, ""); */
 
