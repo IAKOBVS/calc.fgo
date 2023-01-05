@@ -3,8 +3,8 @@
 #include <string.h>
 #include <locale.h> /* thousand separator */
 
-float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault){
-	switch (np){
+float whichNpMod(int NP, float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault){
+	switch (NP){
 		case 1:
 			return caseOne;
 		case 2:
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
 	int AOE = 0;
 	int ST = 0;
 
-	int np = 5;
+	int NP = 5;
 
 	int ARTS = 0;
 	int BUSTER = 0;
@@ -121,9 +121,13 @@ int main(int argc, char *argv[]){
 			} else if (inStr(2, "se", argv, currArgv, argvLen)){
 				se = getBuff(argv, currArgv, argvLen) / 100.0;
 
+
 				/* attack stat */
 			} else if (inStr(2, "sa", argv, currArgv, argvLen)){
 				ATTACK_STAT = getBuff(argv, currArgv, argvLen);
+
+			} else if (inStr(2, "NP", argv, currArgv, argvLen)){
+				NP = getBuff(argv, currArgv, argvLen);
 
 				/* st or aeo */
 			} else if (inStr(2, "st", argv, currArgv, argvLen)){
@@ -132,10 +136,12 @@ int main(int argc, char *argv[]){
 			} else if (inStr(2, "ao", argv, currArgv, argvLen)){
 				AOE = 1;
 
+
 				/* strengthening */
 			} else if (inStr(2, "sr", argv, currArgv, argvLen)){
 				/* sr = 1.33333333333; */
 				sr = 1.2;
+
 
 				/* card type */
 			} else if (inStr(2, "aa", argv, currArgv, argvLen)){
@@ -146,6 +152,7 @@ int main(int argc, char *argv[]){
 
 			} else if (inStr(2, "qq", argv, currArgv, argvLen)){
 				QUICK = 1;
+
 
 				/* aliases */
 			} else if (inStr(2, "vi", argv, currArgv, argvLen)){
@@ -180,72 +187,72 @@ int main(int argc, char *argv[]){
 	float totalNp = 1;
 	float totalCard = 1;
 
-	float npMod = 1;
+	float NPMod = 1;
 	float cardMod = 1;
 
 	if (ARTS){
-		total = toPercent(am);
+		total = total * toPercent(am);
 
 		if (AOE){
 			if (sr){
-				npMod = whichNpMod(np, 5, 7.5, 8.25, 8.625, 9);
+				NPMod = whichNpMod(NP, 5, 7.5, 8.25, 8.625, 9);
 
 			} else {
-				npMod = whichNpMod(np, 4.5, 6, 6.75, 7.125, 7.5);
+				NPMod = whichNpMod(NP, 4.5, 6, 6.75, 7.125, 7.5);
 
 			}
 		} else if (ST){
 
 			if (sr){
-				npMod = whichNpMod(np, 12, 15, 16.5, 17.25, 18);
+				NPMod = whichNpMod(NP, 12, 15, 16.5, 17.25, 18);
 
 			} else {
-				npMod = whichNpMod(np, 9, 12, 13.5, 14.25, 15);
+				NPMod = whichNpMod(NP, 9, 12, 13.5, 14.25, 15);
 
 			}
 		}
 
 	} else if (BUSTER){
-		total = toPercent(bm);
+		total = total * toPercent(bm);
 		cardMod = 1.5;
 
 		if (AOE){
 			if (sr){
-				npMod = whichNpMod(np, 4, 5, 5.5, 5.75, 6);
+				NPMod = whichNpMod(NP, 4, 5, 5.5, 5.75, 6);
 
 			} else {
-				npMod = whichNpMod(np, 3, 4, 4.5, 4.75, 5);
+				NPMod = whichNpMod(NP, 3, 4, 4.5, 4.75, 5);
 
 			}
 
 		} else if (ST){
 			if (sr){
-				npMod = whichNpMod(np, 8, 10, 11, 11.5, 12);
+				NPMod = whichNpMod(NP, 8, 10, 11, 11.5, 12);
 
 			} else {
-				npMod = whichNpMod(np, 6, 8, 9, 9.5, 10);
+				NPMod = whichNpMod(NP, 6, 8, 9, 9.5, 10);
 
 			}
 		}
 	} else if (QUICK){
-		total = toPercent(qm);
+		total = total * toPercent(qm);
 		cardMod = 0.8;
 
 		if (AOE){
 			if (sr){
-				npMod = whichNpMod(np, 8, 10, 11, 11.5, 12);
+				NPMod = whichNpMod(NP, 8, 10, 11, 11.5, 12);
 
 			} else {
-				npMod = whichNpMod(np, 6, 8, 9, 9.5, 10);
+				NPMod = whichNpMod(NP, 6, 8, 9, 9.5, 10);
 
 			}
 
 		} else if (ST){
 			if (sr){
-				npMod = whichNpMod(np, 16, 20, 22, 23, 24);
+				NPMod = whichNpMod(NP, 16, 20, 22, 23, 24);
 
 			} else {
-				npMod = whichNpMod(np, 12, 16, 18, 19, 20);
+				NPMod = whichNpMod(NP, 12, 16, 18, 19, 20);
 
 			}
 		}
@@ -270,7 +277,7 @@ int main(int argc, char *argv[]){
 
 	totalCard = totalCard * total * toPercent((cd + pm)) * cardMod;
 
-	totalNp = totalNp * total * toPercent((nm + pm)) * se * npMod * cardMod;
+	totalNp = totalNp * total * toPercent((nm + pm)) * se * NPMod * cardMod;
 
 	/* thousand separator */
 
