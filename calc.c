@@ -49,18 +49,16 @@ int ifNotZero(float var){
 	return var;
 }
 
-int strInStr(int substrLen, const char substr[substrLen], char *argv[], int currArgv){
+int inStr(int substrLen, const char substr[], char *argv[], int currArgv, int argvLen){
 	if (argv[currArgv][0] != substr[0]){
 		return 0;
 	}
-	int i=0;
-	while (argv[currArgv][i] != 0){
+	for (int i=0; i<argvLen; ++i){
 		if (argv[currArgv][i] == substr[i]){
 			if (i == 1){
 				return 1;
 			}
 		}
-		++i;
 	}
 	return 0;
 }
@@ -72,7 +70,7 @@ int main(int argc, char *argv[]){
 	int AOE = 0;
 	int ST = 0;
 
-	int np;
+	int np = 5;
 
 	int ARTS = 0;
 	int BUSTER = 0;
@@ -96,67 +94,67 @@ int main(int argc, char *argv[]){
 
 		int argvLen = strlen(argv[currArgv]);
 
-			if (strInStr(2, "au", argv, currArgv)){
+			if (inStr(2, "au", argv, currArgv, argvLen)){
 				au = au + getBuff(argv, currArgv, argvLen);
 
-			} else if (strInStr(2, "ad", argv, currArgv)){
+			} else if (inStr(2, "ad", argv, currArgv, argvLen)){
 				ad = ad - getBuff(argv, currArgv, argvLen);
 
-			} else if (strInStr(2, "bm", argv, currArgv)){
+			} else if (inStr(2, "bm", argv, currArgv, argvLen)){
 				bm = bm + getBuff(argv, currArgv, argvLen);
 
-			} else if (strInStr(2, "qm", argv, currArgv)){
+			} else if (inStr(2, "qm", argv, currArgv, argvLen)){
 				qm = qm + getBuff(argv, currArgv, argvLen);
 
-			} else if (strInStr(2, "am", argv, currArgv)){
+			} else if (inStr(2, "am", argv, currArgv, argvLen)){
 				am = am + getBuff(argv, currArgv, argvLen);
 
-			} else if (strInStr(2, "pm", argv, currArgv)){
+			} else if (inStr(2, "pm", argv, currArgv, argvLen)){
 				pm = pm + getBuff(argv, currArgv, argvLen);
 
-			} else if (strInStr(2, "nm", argv, currArgv)){
+			} else if (inStr(2, "nm", argv, currArgv, argvLen)){
 				nm = nm + getBuff(argv, currArgv, argvLen);
 
-			} else if (strInStr(2, "cd", argv, currArgv)){
+			} else if (inStr(2, "cd", argv, currArgv, argvLen)){
 				cd = cd + getBuff(argv, currArgv, argvLen);
 
-			} else if (strInStr(2, "se", argv, currArgv)){
+			} else if (inStr(2, "se", argv, currArgv, argvLen)){
 				se = getBuff(argv, currArgv, argvLen) / 100.0;
 
 				/* attack stat */
-			} else if (strInStr(2, "sa", argv, currArgv)){
+			} else if (inStr(2, "sa", argv, currArgv, argvLen)){
 				ATTACK_STAT = getBuff(argv, currArgv, argvLen);
 
 				/* st or aeo */
-			} else if (strInStr(2, "st", argv, currArgv)){
+			} else if (inStr(2, "st", argv, currArgv, argvLen)){
 				ST = 1;
 
-			} else if (strInStr(2, "ao", argv, currArgv)){
+			} else if (inStr(2, "ao", argv, currArgv, argvLen)){
 				AOE = 1;
 
 				/* strengthening */
-			} else if (strInStr(2, "sr", argv, currArgv)){
+			} else if (inStr(2, "sr", argv, currArgv, argvLen)){
 				/* sr = 1.33333333333; */
 				sr = 1.2;
 
 				/* card type */
-			} else if (strInStr(2, "aa", argv, currArgv)){
+			} else if (inStr(2, "aa", argv, currArgv, argvLen)){
 				ARTS = 1;
 
-			} else if (strInStr(2, "bb", argv, currArgv)){
+			} else if (inStr(2, "bb", argv, currArgv, argvLen)){
 				BUSTER = 1;
 
-			} else if (strInStr(2, "qq", argv, currArgv)){
+			} else if (inStr(2, "qq", argv, currArgv, argvLen)){
 				QUICK = 1;
 
 				/* aliases */
-			} else if (strInStr(2, "vi", argv, currArgv)){
+			} else if (inStr(2, "vi", argv, currArgv, argvLen)){
 				bm = bm + 100;
 				if (BUSTER){
 					cd = cd + 100;
 				}
 
-			} else if (strInStr(2, "ss", argv, currArgv)){
+			} else if (inStr(2, "ss", argv, currArgv, argvLen)){
 				au = au + 40;
 				bm = bm + 30;
 				qm = qm + 130;
@@ -164,14 +162,14 @@ int main(int argc, char *argv[]){
 					cd = cd + 200;
 				}
 
-			} else if (strInStr(2, "sk", argv, currArgv)){
+			} else if (inStr(2, "sk", argv, currArgv, argvLen)){
 				au = au + 60;
 				qm = qm + 100;
 				if (QUICK){
 					cd = cd + cd + 200;
 				}
 
-			} else if (strInStr(2, "ca", argv, currArgv)){
+			} else if (inStr(2, "ca", argv, currArgv, argvLen)){
 				am = am + 100;
 				au = au + 40;
 		}
