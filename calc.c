@@ -26,6 +26,13 @@ float ifNotZeroFl(float var){
 	return var;
 }
 
+int ifNotZero(float var){
+	if (!var){
+		return 1;
+	}
+	return var;
+}
+
 int strInStr(int substrLen, const char substr[substrLen], char *argv[], int currArgv){
 	if (argv[currArgv][0] != substr[0]){
 		return 0;
@@ -71,7 +78,7 @@ int main(int argc, char *argv[]){
 			if (strInStr(2, "au", argv, currArgv)){
 				au = au + getBuff(argv, currArgv, argvLen);
 
-			if (strInStr(2, "ad", argv, currArgv)){
+			} else if (strInStr(2, "ad", argv, currArgv)){
 				ad = ad - getBuff(argv, currArgv, argvLen);
 
 			} else if (strInStr(2, "bm", argv, currArgv)){
@@ -133,7 +140,6 @@ int main(int argc, char *argv[]){
 			} else if (strInStr(2, "ca", argv, currArgv)){
 				am = am + 100;
 				au = au + 40;
-			}
 		}
 	}
 
@@ -149,13 +155,9 @@ int main(int argc, char *argv[]){
 		total = toPercent(qm);
 	}
 
-	if (attackStat){
-		total = total * (float)attackStat;
-	}
-	
 	const float constMult = 0.23;
 
-	total = total * toPercent((au-ad)) * constMult;
+	total = total * toPercent((au-ad)) * constMult * ifNotZero(attackStat);
 
 	float totalCard = 1;
 	float totalNp = 1;
