@@ -49,7 +49,7 @@ int ifNotZero(float var){
 	return var;
 }
 
-int inStr(int substrLen, char substr[substrLen], char *argv[], int currArgv, int argvLen){
+int inStr(int substrLen, char substr[], char *argv[], int currArgv, int argvLen){
 	if (argv[currArgv][0] != substr[0]){
 		return 0;
 	}
@@ -57,6 +57,23 @@ int inStr(int substrLen, char substr[substrLen], char *argv[], int currArgv, int
 	int substrEnd = substrLen - 1;
 
 	for (int i=0; i<argvLen ; ++i){
+		if (argv[currArgv][i] == substr[i]){
+			if (i == substrEnd){
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+int inLastOfStr(int substrLen, char substr[], char *argv[], int currArgv, int argvLen){
+	if (argv[currArgv][0] != substr[0]){
+		return 0;
+	}
+
+	int substrEnd = substrLen + 2;
+
+	for (int i=2; i<argvLen ; ++i){
 		if (argv[currArgv][i] == substr[i]){
 			if (i == substrEnd){
 				return 1;
@@ -233,104 +250,103 @@ int main(int argc, char *argv[]){
 
 			/* class */
 		} else if (inStr(2, "cl", argv, currArgv, argvLen)){
-			++currArgv;
 
-			if (inStr(3, "sab", argv, currArgv, argvLen)){
-				int saber = 1;
+			if (inLastOfStr(3, "sab", argv, currArgv, argvLen)){
+				saber = 1;
 				/* classType = 1; */
 
-			} else if (inStr(3, "arc", argv, currArgv, argvLen)){
-				int archer = 1;
+			} else if (inLastOfStr(3, "arc", argv, currArgv, argvLen)){
+				archer = 1;
 				/* classType = 1; */
 
-			} else if (inStr(3, "lan", argv, currArgv, argvLen)){
-				int lancer = 1;
+			} else if (inLastOfStr(3, "lan", argv, currArgv, argvLen)){
+				lancer = 1;
 				/* classType = 1; */
 
-			} else if (inStr(3, "rid", argv, currArgv, argvLen)){
-				int rider = 1;
+			} else if (inLastOfStr(3, "rid", argv, currArgv, argvLen)){
+				rider = 1;
 				/* classType = 3; */
 
-			} else if (inStr(3, "ass", argv, currArgv, argvLen)){
-				int assassin = 1;
+			} else if (inLastOfStr(3, "ass", argv, currArgv, argvLen)){
+				assassin = 1;
 				/* classType = 3; */
 
-			} else if (inStr(3, "cas", argv, currArgv, argvLen)){
-				int caster = 1;
+			} else if (inLastOfStr(3, "cas", argv, currArgv, argvLen)){
+				caster = 1;
 				/* classType = 3; */
 
-			} else if (inStr(3, "zer", argv, currArgv, argvLen)){
-				int berserker = 1;
+			} else if (inLastOfStr(3, "zer", argv, currArgv, argvLen)){
+				berserker = 1;
 
-			} else if (inStr(3, "rul", argv, currArgv, argvLen)){
-				int ruler = 1;
+			} else if (inLastOfStr(3, "rul", argv, currArgv, argvLen)){
+				ruler = 1;
 
-			} else if (inStr(3, "ave", argv, currArgv, argvLen)){
-				int avenger = 1;
+			} else if (inLastOfStr(3, "ave", argv, currArgv, argvLen)){
+				avenger = 1;
 
-			} else if (inStr(3, "alt", argv, currArgv, argvLen)){
-				int alterEgo = 1;
+			} else if (inLastOfStr(3, "alt", argv, currArgv, argvLen)){
+				alterEgo = 1;
 
-			} else if (inStr(3, "moo", argv, currArgv, argvLen)){
-				int moonCancer = 1;
+			} else if (inLastOfStr(3, "moo", argv, currArgv, argvLen)){
+				moonCancer = 1;
 
-			} else if (inStr(3, "for", argv, currArgv, argvLen)){
-				int foreigner = 1;
+			} else if (inLastOfStr(3, "for", argv, currArgv, argvLen)){
+				foreigner = 1;
 
-			} else if (inStr(3, "pre", argv, currArgv, argvLen)){
-				int pretender = 1;
+			} else if (inLastOfStr(3, "pre", argv, currArgv, argvLen)){
+				pretender = 1;
 
 			}
 
 		} else if (inStr(2, "en", argv, currArgv, argvLen)){
-			++currArgv;
 
-			if (inStr(3, "sab", argv, currArgv, argvLen)){
-				int saberEnemy = 1;
+			if (inLastOfStr(3, "sab", argv, currArgv, argvLen)){
+				saberEnemy = 1;
 				classTypeEnemy = 1;
 
-			} else if (inStr(3, "arc", argv, currArgv, argvLen)){
-				int archerEnemy = 1;
+			} else if (inLastOfStr(3, "arc", argv, currArgv, argvLen)){
+				archerEnemy = 1;
 				classTypeEnemy = 1;
 
-			} else if (inStr(3, "lan", argv, currArgv, argvLen)){
-				int lancerEnemy = 1;
+			} else if (inLastOfStr(3, "lan", argv, currArgv, argvLen)){
+				lancerEnemy = 1;
 				classTypeEnemy = 1;
 
-			} else if (inStr(3, "rid", argv, currArgv, argvLen)){
-				int riderEnemy = 1;
+			} else if (inLastOfStr(3, "rid", argv, currArgv, argvLen)){
+				riderEnemy = 1;
 				classTypeEnemy = 3;
 
-			} else if (inStr(3, "ass", argv, currArgv, argvLen)){
-				int assassinEnemy = 1;
+			} else if (inLastOfStr(3, "ass", argv, currArgv, argvLen)){
+				assassinEnemy = 1;
 				classTypeEnemy = 3;
 
-			} else if (inStr(3, "cas", argv, currArgv, argvLen)){
-				int casterEnemy = 1;
+			} else if (inLastOfStr(3, "cas", argv, currArgv, argvLen)){
+				casterEnemy = 1;
 				classTypeEnemy = 3;
 
-			} else if (inStr(3, "zer", argv, currArgv, argvLen)){
-				int berserkerEnemy = 1;
+			} else if (inLastOfStr(3, "zer", argv, currArgv, argvLen)){
+				berserkerEnemy = 1;
 
-			} else if (inStr(3, "rul", argv, currArgv, argvLen)){
-				int rulerEnemy = 1;
+			} else if (inLastOfStr(3, "rul", argv, currArgv, argvLen)){
+				rulerEnemy = 1;
 
-			} else if (inStr(3, "ave", argv, currArgv, argvLen)){
-				int avengerEnemy = 1;
+			} else if (inLastOfStr(3, "ave", argv, currArgv, argvLen)){
+				avengerEnemy = 1;
 
-			} else if (inStr(3, "alt", argv, currArgv, argvLen)){
-				int alterEgoEnemy = 1;
+			} else if (inLastOfStr(3, "alt", argv, currArgv, argvLen)){
+				alterEgoEnemy = 1;
 
-			} else if (inStr(3, "moo", argv, currArgv, argvLen)){
-				int moonCancerEnemy = 1;
+			} else if (inLastOfStr(3, "moo", argv, currArgv, argvLen)){
+				moonCancerEnemy = 1;
 
-			} else if (inStr(3, "for", argv, currArgv, argvLen)){
-				int foreignerEnemy = 1;
+			} else if (inLastOfStr(3, "for", argv, currArgv, argvLen)){
+				foreignerEnemy = 1;
 
-			} else if (inStr(3, "pre", argv, currArgv, argvLen)){
-				int pretenderEnemy = 1;
+			} else if (inLastOfStr(3, "pre", argv, currArgv, argvLen)){
+				pretenderEnemy = 1;
 
 			}
+
 			/* aliases */
 		} else if (inStr(2, "vi", argv, currArgv, argvLen)){
 			bm = bm + 100;
@@ -432,6 +448,7 @@ int main(int argc, char *argv[]){
 
 		} else if (rulerEnemy){
 			classAdv= 0.5;
+
 		}
 
 	} else if (berserker){
@@ -466,6 +483,8 @@ int main(int argc, char *argv[]){
 			default:
 				if (foreignerEnemy){
 					classAdv = 2;
+				} else if (pretenderEnemy){
+					classAdv = 0.5;
 				}
 		}
 
@@ -509,6 +528,10 @@ int main(int argc, char *argv[]){
 			default:
 				if (alterEgoEnemy){
 					classAdv = 2;
+
+				} else if (pretenderEnemy){
+					classAdv = 0.5;
+
 				}
 		}
 
@@ -519,8 +542,8 @@ int main(int argc, char *argv[]){
 			classAdv= 0.5;
 		}
 
-	} else if (berserker){
-		printf("%s\n","Class not specified, defaults to no class advantage!");
+	} else{
+		printf("%s\n","class not specified, defaults to no class advantage!");
 	}
 
 	if (berserkerEnemy){
@@ -640,6 +663,8 @@ int main(int argc, char *argv[]){
 
 	printf("%'g\n", totalCard);
 	printf("%'g\n", totalNp);
+
+	printf("%d\n", saber);
 
 	/* printf("%f\n", totalCard); */
 	/* printf("%f\n", totalNp); */
