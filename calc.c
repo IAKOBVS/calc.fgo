@@ -298,49 +298,49 @@ int main(int argc, char *argv[]){
 
 		/* } else if (inStr(2, "en", argv, currArgv, argvLen)){ */
 
-		} else if (inStr(3, "sab", argv, currArgv, argvLen)){
+		} else if (inStr(4, "esab", argv, currArgv, argvLen)){
 			saberEnemy = 1;
 			classTypeEnemy = 1;
 
-		} else if (inStr(3, "arc", argv, currArgv, argvLen)){
+		} else if (inStr(4, "earc", argv, currArgv, argvLen)){
 			archerEnemy = 1;
 			classTypeEnemy = 1;
 
-		} else if (inStr(3, "lan", argv, currArgv, argvLen)){
+		} else if (inStr(4, "elan", argv, currArgv, argvLen)){
 			lancerEnemy = 1;
 			classTypeEnemy = 1;
 
-		} else if (inStr(3, "rid", argv, currArgv, argvLen)){
+		} else if (inStr(4, "erid", argv, currArgv, argvLen)){
 			riderEnemy = 1;
-			classTypeEnemy = 3;
+			classTypeEnemy = 4;
 
-		} else if (inStr(3, "ass", argv, currArgv, argvLen)){
+		} else if (inStr(4, "eass", argv, currArgv, argvLen)){
 			assassinEnemy = 1;
-			classTypeEnemy = 3;
+			classTypeEnemy = 4;
 
-		} else if (inStr(3, "cas", argv, currArgv, argvLen)){
+		} else if (inStr(4, "ecas", argv, currArgv, argvLen)){
 			casterEnemy = 1;
-			classTypeEnemy = 3;
+			classTypeEnemy = 4;
 
-		} else if (inStr(3, "zer", argv, currArgv, argvLen)){
+		} else if (inStr(4, "ezer", argv, currArgv, argvLen)){
 			berserkerEnemy = 1;
 
-		} else if (inStr(3, "rul", argv, currArgv, argvLen)){
+		} else if (inStr(4, "erul", argv, currArgv, argvLen)){
 			rulerEnemy = 1;
 
-		} else if (inStr(3, "ave", argv, currArgv, argvLen)){
+		} else if (inStr(4, "eave", argv, currArgv, argvLen)){
 			avengerEnemy = 1;
 
-		} else if (inStr(3, "alt", argv, currArgv, argvLen)){
+		} else if (inStr(4, "ealt", argv, currArgv, argvLen)){
 			alterEgoEnemy = 1;
 
-		} else if (inStr(3, "moo", argv, currArgv, argvLen)){
+		} else if (inStr(4, "emoo", argv, currArgv, argvLen)){
 			moonCancerEnemy = 1;
 
-		} else if (inStr(3, "for", argv, currArgv, argvLen)){
+		} else if (inStr(4, "efor", argv, currArgv, argvLen)){
 			foreignerEnemy = 1;
 
-		} else if (inStr(3, "pre", argv, currArgv, argvLen)){
+		} else if (inStr(4, "epre", argv, currArgv, argvLen)){
 			pretenderEnemy = 1;
 
 			/* aliases */
