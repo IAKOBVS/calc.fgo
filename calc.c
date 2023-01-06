@@ -3,8 +3,8 @@
 #include <string.h>
 #include <locale.h> /* thousand separator */
 
-float whichNpMod(int NP, float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault){
-	switch (NP){
+float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault){
+	switch (np){
 		case 1:
 			return caseOne;
 		case 2:
@@ -49,13 +49,15 @@ int ifNotZero(float var){
 	return var;
 }
 
-int inStr(int substrLen, const char substr[], char *argv[], int currArgv, int argvLen){
+int inStr(const char substr[], char *argv[], int currArgv){
 	if (argv[currArgv][0] != substr[0]){
 		return 0;
 	}
-	for (int i=0; i<argvLen; ++i){
+	int substrLen = strlen(substr);
+	int substrEnd = substrLen - 1;
+	for (int i=0; i<substrLen; ++i){
 		if (argv[currArgv][i] == substr[i]){
-			if (i == 1){
+			if (i == (substrEnd)){
 				return 1;
 			}
 		}
@@ -88,23 +90,35 @@ int main(int argc, char *argv[]){
 		exit(0);
 	}
 
-	int ATTACK_STAT = 0;
+	int attackStat = 0;
 
-	int AOE = 0;
-	int ST = 0;
+	/* enemy */
+	const char *class;
+	const char *classEnemy;
 
-	int NP = 5;
+	/* knight, cavalry, extra, berserker */
+	/* 1, 2, 3, 9 */
+	int classType = 0;
+	int classTypeEnemy = 0;
 
-	int ARTS = 0;
-	int BUSTER = 0;
-	int QUICK = 0;
+	float classMod = 1;
+	float classAdv = 1;
+
+	int aoe = 0;
+	int st = 0;
+
+	int np = 5;
+
+	int arts = 0;
+	int buster = 0;
+	int quick = 0;
 
 	int au = 0;
 	int ad = 0;
 
 	int du = 0;
 	int dd = 0;
-	int DEFENSE_IGNORE = 0;
+	int defenseIgnore = 0;
 
 	int am = 0;
 	int bm = 0;
@@ -121,102 +135,370 @@ int main(int argc, char *argv[]){
 
 		int argvLen = strlen(argv[currArgv]);
 
-			if (inStr(2, "au", argv, currArgv, argvLen)){
-				au = au + getBuff(argv, currArgv, argvLen);
+		if (inStr("au", argv, currArgv)){
+			au = au + getBuff(argv, currArgv, argvLen);
 
-			} else if (inStr(2, "ad", argv, currArgv, argvLen)){
-				ad = ad - getBuff(argv, currArgv, argvLen);
+		} else if (inStr("ad", argv, currArgv)){
+			ad = ad - getBuff(argv, currArgv, argvLen);
 
-			} else if (inStr(2, "dd", argv, currArgv, argvLen)){
-				dd = dd + getBuff(argv, currArgv, argvLen);
+		} else if (inStr("dd", argv, currArgv)){
+			dd = dd + getBuff(argv, currArgv, argvLen);
 
-			} else if (inStr(2, "du", argv, currArgv, argvLen)){
-				du = du + getBuff(argv, currArgv, argvLen);
-
-
-			} else if (inStr(2, "di", argv, currArgv, argvLen)){
-				DEFENSE_IGNORE = 1;
-
-			} else if (inStr(2, "bm", argv, currArgv, argvLen)){
-				bm = bm + getBuff(argv, currArgv, argvLen);
-
-			} else if (inStr(2, "qm", argv, currArgv, argvLen)){
-				qm = qm + getBuff(argv, currArgv, argvLen);
-
-			} else if (inStr(2, "am", argv, currArgv, argvLen)){
-				am = am + getBuff(argv, currArgv, argvLen);
-
-			} else if (inStr(2, "pm", argv, currArgv, argvLen)){
-				pm = pm + getBuff(argv, currArgv, argvLen);
-
-			} else if (inStr(2, "nm", argv, currArgv, argvLen)){
-				nm = nm + getBuff(argv, currArgv, argvLen);
-
-			} else if (inStr(2, "cd", argv, currArgv, argvLen)){
-				cd = cd + getBuff(argv, currArgv, argvLen);
-
-			} else if (inStr(2, "se", argv, currArgv, argvLen)){
-				se = getBuff(argv, currArgv, argvLen) / 100.0;
+		} else if (inStr("du", argv, currArgv)){
+			du = du + getBuff(argv, currArgv, argvLen);
 
 
-				/* attack stat */
-			} else if (inStr(2, "sa", argv, currArgv, argvLen)){
-				ATTACK_STAT = getBuff(argv, currArgv, argvLen);
+		} else if (inStr("di", argv, currArgv)){
+			defenseIgnore = 1;
 
-			} else if (inStr(2, "np", argv, currArgv, argvLen)){
-				NP = getBuff(argv, currArgv, argvLen);
+		} else if (inStr("bm", argv, currArgv)){
+			bm = bm + getBuff(argv, currArgv, argvLen);
 
-				/* st or aeo */
-			} else if (inStr(2, "st", argv, currArgv, argvLen)){
-				ST = 1;
+		} else if (inStr("qm", argv, currArgv)){
+			qm = qm + getBuff(argv, currArgv, argvLen);
 
-			} else if (inStr(2, "ao", argv, currArgv, argvLen)){
-				AOE = 1;
+		} else if (inStr("am", argv, currArgv)){
+			am = am + getBuff(argv, currArgv, argvLen);
 
+		} else if (inStr("pm", argv, currArgv)){
+			pm = pm + getBuff(argv, currArgv, argvLen);
 
-				/* strengthening */
-			} else if (inStr(2, "sr", argv, currArgv, argvLen)){
-				/* sr = 1.33333333333; */
-				sr = 1.2;
+		} else if (inStr("nm", argv, currArgv)){
+			nm = nm + getBuff(argv, currArgv, argvLen);
 
+		} else if (inStr("cd", argv, currArgv)){
+			cd = cd + getBuff(argv, currArgv, argvLen);
 
-				/* card type */
-			} else if (inStr(2, "aa", argv, currArgv, argvLen)){
-				ARTS = 1;
-
-			} else if (inStr(2, "bb", argv, currArgv, argvLen)){
-				BUSTER = 1;
-
-			} else if (inStr(2, "qq", argv, currArgv, argvLen)){
-				QUICK = 1;
+		} else if (inStr("se", argv, currArgv)){
+			se = getBuff(argv, currArgv, argvLen) / 100.0;
 
 
-				/* aliases */
-			} else if (inStr(2, "vi", argv, currArgv, argvLen)){
-				bm = bm + 100;
-				if (BUSTER){
-					cd = cd + 100;
-				}
+			/* attack stat */
+		} else if (inStr("at", argv, currArgv)){
+			attackStat = getBuff(argv, currArgv, argvLen);
 
-			} else if (inStr(2, "ss", argv, currArgv, argvLen)){
-				au = au + 40;
-				bm = bm + 30;
-				qm = qm + 130;
-				if (BUSTER){
-					cd = cd + 200;
-				}
+		} else if (inStr("np", argv, currArgv)){
+			np = getBuff(argv, currArgv, argvLen);
 
-			} else if (inStr(2, "sk", argv, currArgv, argvLen)){
-				au = au + 60;
-				qm = qm + 100;
-				if (QUICK){
-					cd = cd + cd + 200;
-				}
+			/* st or aeo */
+		} else if (inStr("st", argv, currArgv)){
+			st = 1;
 
-			} else if (inStr(2, "ca", argv, currArgv, argvLen)){
-				am = am + 100;
-				au = au + 40;
+		} else if (inStr("ao", argv, currArgv)){
+			aoe = 1;
+
+			/* strengthening */
+		} else if (inStr("sr", argv, currArgv)){
+			sr = 1;
+
+
+			/* card type */
+		} else if (inStr("aa", argv, currArgv)){
+			arts = 1;
+
+		} else if (inStr("bb", argv, currArgv)){
+			buster = 1;
+
+		} else if (inStr("qq", argv, currArgv)){
+			quick = 1;
+
+
+			/* class */
+		} else if (inStr("cl", argv, currArgv)){
+			++currArgv;
+
+			if (inStr("saber", argv, currArgv)){
+				class = "saber";
+				classType = 1;
+
+			} else if (inStr("archer", argv, currArgv)){
+				class = "archer";
+				classType = 1;
+
+			} else if (inStr("lancer", argv, currArgv)){
+				class = "lancer";
+				classType = 1;
+
+			} else if (inStr("rider", argv, currArgv)){
+				class = "rider";
+				classType = 2;
+
+			} else if (inStr("assassin", argv, currArgv)){
+				class = "assassin";
+				classType = 2;
+
+			} else if (inStr("caster", argv, currArgv)){
+				class = "caster";
+				classType = 2;
+
+			} else if (inStr("berserker", argv, currArgv)){
+				class = "berserker";
+
+			} else if (inStr("ruler", argv, currArgv)){
+				class = "ruler";
+
+			} else if (inStr("avenger", argv, currArgv)){
+				class = "avenger";
+
+			} else if (inStr("alterego", argv, currArgv)){
+				class = "alterEgo";
+
+			} else if (inStr("mooncancer", argv, currArgv)){
+				class = "moonCancer";
+
+			} else if (inStr("foreigner", argv, currArgv)){
+				class = "foreigner";
+
+
+			} else if (inStr("pretender", argv, currArgv)){
+				class = "pretender";
+
+			}
+
+		} else if (inStr("en", argv, currArgv)){
+
+			if (inStr("saber", argv, currArgv)){
+				classEnemy = "saber";
+				classTypeEnemy = 1;
+
+			} else if (inStr("archer", argv, currArgv)){
+				classEnemy = "archer";
+				classTypeEnemy = 1;
+
+			} else if (inStr("lancer", argv, currArgv)){
+				classEnemy = "lancer";
+				classTypeEnemy = 1;
+
+			} else if (inStr("rider", argv, currArgv)){
+				classEnemy = "rider";
+				classTypeEnemy = 2;
+
+			} else if (inStr("assassin", argv, currArgv)){
+				classEnemy = "assassin";
+				classTypeEnemy = 2;
+
+			} else if (inStr("caster", argv, currArgv)){
+				classEnemy = "caster";
+				classTypeEnemy = 2;
+
+			} else if (inStr("berserker", argv, currArgv)){
+				classEnemy = "berserker";
+
+			} else if (inStr("ruler", argv, currArgv)){
+				classEnemy = "ruler";
+
+			} else if (inStr("avenger", argv, currArgv)){
+				classEnemy = "avenger";
+
+			} else if (inStr("alterego", argv, currArgv)){
+				classEnemy = "alterEgo";
+
+			} else if (inStr("mooncancer", argv, currArgv)){
+				classEnemy = "moonCancer";
+
+			} else if (inStr("foreigner", argv, currArgv)){
+				classEnemy = "foreigner";
+
+
+			} else if (inStr("pretender", argv, currArgv)){
+				classEnemy = "pretender";
+
+			}
+			/* aliases */
+		} else if (inStr("vi", argv, currArgv)){
+			bm = bm + 100;
+			if (buster){
+				cd = cd + 100;
+			}
+
+		} else if (inStr("ss", argv, currArgv)){
+			au = au + 40;
+			bm = bm + 30;
+			qm = qm + 130;
+			if (buster){
+				cd = cd + 200;
+			}
+
+		} else if (inStr("sk", argv, currArgv)){
+			au = au + 60;
+			qm = qm + 100;
+			if (quick){
+				cd = cd + cd + 200;
+			}
+
+		} else if (inStr("ca", argv, currArgv)){
+			am = am + 100;
+			au = au + 40;
 		}
+	}
+
+	
+	if (!strcmp(class, "saber")){
+		if (!strcmp(classEnemy, "lancer")){
+			classAdv = 2;
+
+		} else if (!strcmp(classEnemy, "archer")){
+			classAdv= 0.5;
+
+		} else if (!strcmp(classEnemy, "ruler")){
+			classAdv= 0.5;
+		}
+
+	} else if (!strcmp(class, "archer")){
+		classMod = 0.95;
+
+		if (!strcmp(classEnemy, "saber")){
+			classAdv = 2;
+
+		} else if (!strcmp(classEnemy, "lancer")){
+			classAdv= 0.5;
+
+		} else if (!strcmp(classEnemy, "ruler")){
+			classAdv= 0.5;
+		}
+
+	} else if (!strcmp(class, "lancer")){
+		classMod = 1.05;
+
+		if (!strcmp(classEnemy, "archer")){
+			classAdv = 2;
+
+		} else if (!strcmp(classEnemy, "saber")){
+			classAdv= 0.5;
+
+		} else if (!strcmp(classEnemy, "ruler")){
+			classAdv= 0.5;
+		}
+
+	} else if (!strcmp(class, "assassin")){
+		classMod = 0.9;
+
+		if (!strcmp(classEnemy, "rider")){
+			classAdv = 2;
+
+		} else if (!strcmp(classEnemy, "caster")){
+			classAdv= 0.5;
+
+		} else if (!strcmp(classEnemy, "ruler")){
+			classAdv= 0.5;
+		}
+
+	} else if (!strcmp(class, "caster")){
+		classMod = 0.9;
+
+		if (!strcmp(classEnemy, "assassin")){
+			classAdv = 2;
+
+		} else if (!strcmp(classEnemy, "rider")){
+			classAdv= 0.5;
+
+		} else if (!strcmp(classEnemy, "ruler")){
+			classAdv= 0.5;
+		}
+
+	} else if (!strcmp(class, "rider")){
+
+		if (!strcmp(classEnemy, "caster")){
+			classAdv = 2;
+
+		} else if (!strcmp(classEnemy, "assassin")){
+			classAdv= 0.5;
+
+		} else if (!strcmp(classEnemy, "ruler")){
+			classAdv= 0.5;
+		}
+
+	} else if (!strcmp(class, "berserker")){
+		classMod = 1.1; 
+
+		if (!strcmp(classEnemy, "foreigner")){
+			classAdv= 0.5;
+
+		} else{
+			classAdv = 1.5;
+		}
+
+	} else if (!strcmp(class, "ruler")){
+		classMod = 1.1;
+
+		if (!strcmp(classEnemy, "moonCancer")){
+			classAdv = 2;
+
+		} else if (!strcmp(classEnemy, "avenger")){
+			classAdv= 0.5;
+		}
+
+	} else if (!strcmp(class, "alterEgo")){
+
+		switch (classTypeEnemy){
+			case 1:
+				classAdv = 0.5;
+				break;
+			case 2:
+				classAdv = 1.5;
+				break;
+			default:
+				if (!strcmp(class, "foreigner")){
+					classAdv = 2;
+				}
+		}
+
+	} else if (!strcmp(class, "avenger")){
+		classMod = 1.1;
+
+		if (!strcmp(classEnemy, "ruler")){
+			classAdv = 2;
+
+		} else if (!strcmp(classEnemy, "moonCancer")){
+			classAdv= 0.5;
+
+	} else if (!strcmp(class, "moonCancer")){
+
+		if (!strcmp(classEnemy, "avenger")){
+			classAdv = 2;
+
+		} else if (!strcmp(classEnemy, "ruler")){
+			classAdv= 0.5;
+		}
+
+	} else if (!strcmp(class, "foreigner")){
+
+		if (!strcmp(classEnemy, "foreigner")){
+			classAdv = 2;
+
+		} else if (!strcmp(classEnemy, "alterEgo")){
+			classAdv= 0.5;
+		}
+
+	} else if (!strcmp(class, "pretender")){
+		classMod = 0.9;
+
+		switch (classTypeEnemy){
+			case 1:
+				classAdv = 1.5;
+				break;
+			case 2:
+				classAdv = 0.5;
+				break;
+			default:
+				if (!strcmp(class, "alterEgo")){
+					classAdv = 2;
+				}
+		}
+
+		} else if (!strcmp(classEnemy, "caster")){
+			classAdv= 0.5;
+
+		} else if (!strcmp(classEnemy, "ruler")){
+			classAdv= 0.5;
+		}
+
+	} else if (strcmp(classEnemy, "berserker")){
+		printf("%s\n","Class not specified, defaults to no class advantage!");
+	}
+
+	if (strcmp(classEnemy, "berserker") && strcmp(class, "berserker")){
+		classAdv = 2;
 	}
 
 	float total = 1;
@@ -227,103 +509,100 @@ int main(int argc, char *argv[]){
 	float NPMod = 1;
 	float cardMod = 1;
 
-	if (!ATTACK_STAT){
+	if (attackStat){
+		total = total * attackStat;
+
+	} else{
 		printf("%s\n", "attack stat not specified!");
 	}
 
-	if (ARTS){
+	if (arts){
 		total = total * toPercent(am);
 
-		if (AOE){
+		if (aoe){
 			if (sr){
-				NPMod = whichNpMod(NP, 5, 7.5, 8.25, 8.625, 9);
+				NPMod = whichNpMod(np, 5, 7.5, 8.25, 8.625, 9);
 
 			} else {
-				NPMod = whichNpMod(NP, 4.5, 6, 6.75, 7.125, 7.5);
+				NPMod = whichNpMod(np, 4.5, 6, 6.75, 7.125, 7.5);
 
 			}
-		} else if (ST){
+		} else if (st){
 
 			if (sr){
-				NPMod = whichNpMod(NP, 12, 15, 16.5, 17.25, 18);
+				NPMod = whichNpMod(np, 12, 15, 16.5, 17.25, 18);
 
 			} else {
-				NPMod = whichNpMod(NP, 9, 12, 13.5, 14.25, 15);
+				NPMod = whichNpMod(np, 9, 12, 13.5, 14.25, 15);
 
 			}
 		}
 
-	} else if (BUSTER){
+	} else if (buster){
 		total = total * toPercent(bm);
 		cardMod = 1.5;
 
-		if (AOE){
+		if (aoe){
 			if (sr){
-				NPMod = whichNpMod(NP, 4, 5, 5.5, 5.75, 6);
+				NPMod = whichNpMod(np, 4, 5, 5.5, 5.75, 6);
 
 			} else {
-				NPMod = whichNpMod(NP, 3, 4, 4.5, 4.75, 5);
+				NPMod = whichNpMod(np, 3, 4, 4.5, 4.75, 5);
 
 			}
 
-		} else if (ST){
+		} else if (st){
 			if (sr){
-				NPMod = whichNpMod(NP, 8, 10, 11, 11.5, 12);
+				NPMod = whichNpMod(np, 8, 10, 11, 11.5, 12);
 
 			} else {
-				NPMod = whichNpMod(NP, 6, 8, 9, 9.5, 10);
+				NPMod = whichNpMod(np, 6, 8, 9, 9.5, 10);
 
 			}
 		}
-	} else if (QUICK){
+	} else if (quick){
 		total = total * toPercent(qm);
 		cardMod = 0.8;
 
-		if (AOE){
+		if (aoe){
 			if (sr){
-				NPMod = whichNpMod(NP, 8, 10, 11, 11.5, 12);
+				NPMod = whichNpMod(np, 8, 10, 11, 11.5, 12);
 
 			} else {
-				NPMod = whichNpMod(NP, 6, 8, 9, 9.5, 10);
+				NPMod = whichNpMod(np, 6, 8, 9, 9.5, 10);
 
 			}
 
-		} else if (ST){
+		} else if (st){
 			if (sr){
-				NPMod = whichNpMod(NP, 16, 20, 22, 23, 24);
+				NPMod = whichNpMod(np, 16, 20, 22, 23, 24);
 
 			} else {
-				NPMod = whichNpMod(NP, 12, 16, 18, 19, 20);
+				NPMod = whichNpMod(np, 12, 16, 18, 19, 20);
 
 			}
 		}
+
 	} else{
 		printf("%s\n", "card type not specified!");
 	}
 
-	if (!AOE && !ST){
+	if (!aoe && !st){
 		printf("%s\n", "np type not specified!");
 	}
-
-	if (ATTACK_STAT){
-		total = total * ATTACK_STAT;
-
-	} else{
-		printf("%s\n", "attack stat not specified!");
-	}
-
-	const float CONST_MULT= 0.23;
 
 	if (dd > 100){
 		dd = 100;
 		printf("%s\n", "def down exceeds 100, defaults to 100!");
 	}
 
-	if (DEFENSE_IGNORE){
+	if (defenseIgnore){
 		du = du - 100;
 	}
 
-	total = total * toPercent((au + dd - ad - du)) * CONST_MULT;
+	const float CONST_MULT= 0.23;
+
+	total = total * toPercent((au + dd - ad - du)) * CONST_MULT * classAdv * classMod;
 
 	totalCard = totalCard * total * toPercent((cd + pm)) * cardMod;
 
