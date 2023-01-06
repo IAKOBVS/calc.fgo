@@ -49,15 +49,16 @@ int ifNotZero(float var){
 	return var;
 }
 
-int inStr(const char substr[], char *argv[], int currArgv){
+int inStr(int substrLen, char substr[substrLen], char *argv[], int currArgv, int argvLen){
 	if (argv[currArgv][0] != substr[0]){
 		return 0;
 	}
-	int substrLen = strlen(substr);
+
 	int substrEnd = substrLen - 1;
-	for (int i=0; i<substrLen; ++i){
+
+	for (int i=0; i<argvLen ; ++i){
 		if (argv[currArgv][i] == substr[i]){
-			if (i == (substrEnd)){
+			if (i == substrEnd){
 				return 1;
 			}
 		}
@@ -92,14 +93,41 @@ int main(int argc, char *argv[]){
 
 	int attackStat = 0;
 
-	/* enemy */
-	const char *class;
-	const char *classEnemy;
-
-	/* knight, cavalry, extra, berserker */
-	/* 1, 2, 3, 9 */
-	int classType = 0;
+	/* knight, cavalry, extra */
+	/* 1, 2, 3 */
 	int classTypeEnemy = 0;
+
+	int saber = 0;
+	int archer = 0;
+	int lancer = 0;
+	
+	int rider = 0;
+	int caster = 0;
+	int assassin = 0;
+	int berserker = 0;
+	
+	int avenger = 0;
+	int ruler = 0;
+	int alterEgo = 0;
+	int moonCancer = 0;
+	int pretender = 0;
+	int foreigner = 0;
+
+	int saberEnemy = 0;
+	int archerEnemy = 0;
+	int lancerEnemy = 0;
+	
+	int riderEnemy = 0;
+	int casterEnemy = 0;
+	int assassinEnemy = 0;
+	int berserkerEnemy = 0;
+	
+	int avengerEnemy = 0;
+	int rulerEnemy = 0;
+	int alterEgoEnemy = 0;
+	int moonCancerEnemy = 0;
+	int pretenderEnemy = 0;
+	int foreignerEnemy = 0;
 
 	float classMod = 1;
 	float classAdv = 1;
@@ -135,183 +163,182 @@ int main(int argc, char *argv[]){
 
 		int argvLen = strlen(argv[currArgv]);
 
-		if (inStr("au", argv, currArgv)){
+		if (inStr(2, "au", argv, currArgv, argvLen)){
 			au = au + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr("ad", argv, currArgv)){
+		} else if (inStr(2, "ad", argv, currArgv, argvLen)){
 			ad = ad - getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr("dd", argv, currArgv)){
+		} else if (inStr(2, "dd", argv, currArgv, argvLen)){
 			dd = dd + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr("du", argv, currArgv)){
+		} else if (inStr(2, "du", argv, currArgv, argvLen)){
 			du = du + getBuff(argv, currArgv, argvLen);
 
 
-		} else if (inStr("di", argv, currArgv)){
+		} else if (inStr(2, "di", argv, currArgv, argvLen)){
 			defenseIgnore = 1;
 
-		} else if (inStr("bm", argv, currArgv)){
+		} else if (inStr(2, "bm", argv, currArgv, argvLen)){
 			bm = bm + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr("qm", argv, currArgv)){
+		} else if (inStr(2, "qm", argv, currArgv, argvLen)){
 			qm = qm + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr("am", argv, currArgv)){
+		} else if (inStr(2, "am", argv, currArgv, argvLen)){
 			am = am + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr("pm", argv, currArgv)){
+		} else if (inStr(2, "pm", argv, currArgv, argvLen)){
 			pm = pm + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr("nm", argv, currArgv)){
+		} else if (inStr(2, "nm", argv, currArgv, argvLen)){
 			nm = nm + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr("cd", argv, currArgv)){
+		} else if (inStr(2, "cd", argv, currArgv, argvLen)){
 			cd = cd + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr("se", argv, currArgv)){
+		} else if (inStr(2, "se", argv, currArgv, argvLen)){
 			se = getBuff(argv, currArgv, argvLen) / 100.0;
 
 
 			/* attack stat */
-		} else if (inStr("at", argv, currArgv)){
-			attackStat = getBuff(argv, currArgv, argvLen);
+		} else if (inStr(2, "at", argv, currArgv, argvLen)){
+			attackStat = getBuff(argv, currArgv, argvLen) + 1000;
 
-		} else if (inStr("np", argv, currArgv)){
+		} else if (inStr(2, "np", argv, currArgv, argvLen)){
 			np = getBuff(argv, currArgv, argvLen);
 
 			/* st or aeo */
-		} else if (inStr("st", argv, currArgv)){
+		} else if (inStr(2, "st", argv, currArgv, argvLen)){
 			st = 1;
 
-		} else if (inStr("ao", argv, currArgv)){
+		} else if (inStr(2, "ao", argv, currArgv, argvLen)){
 			aoe = 1;
 
 			/* strengthening */
-		} else if (inStr("sr", argv, currArgv)){
+		} else if (inStr(2, "sr", argv, currArgv, argvLen)){
 			sr = 1;
 
 
 			/* card type */
-		} else if (inStr("aa", argv, currArgv)){
+		} else if (inStr(2, "aa", argv, currArgv, argvLen)){
 			arts = 1;
 
-		} else if (inStr("bb", argv, currArgv)){
+		} else if (inStr(2, "bb", argv, currArgv, argvLen)){
 			buster = 1;
 
-		} else if (inStr("qq", argv, currArgv)){
+		} else if (inStr(2, "qq", argv, currArgv, argvLen)){
 			quick = 1;
 
 
 			/* class */
-		} else if (inStr("cl", argv, currArgv)){
+		} else if (inStr(2, "cl", argv, currArgv, argvLen)){
 			++currArgv;
 
-			if (inStr("saber", argv, currArgv)){
-				class = "saber";
-				classType = 1;
+			if (inStr(3, "sab", argv, currArgv, argvLen)){
+				int saber = 1;
+				/* classType = 1; */
 
-			} else if (inStr("archer", argv, currArgv)){
-				class = "archer";
-				classType = 1;
+			} else if (inStr(3, "arc", argv, currArgv, argvLen)){
+				int archer = 1;
+				/* classType = 1; */
 
-			} else if (inStr("lancer", argv, currArgv)){
-				class = "lancer";
-				classType = 1;
+			} else if (inStr(3, "lan", argv, currArgv, argvLen)){
+				int lancer = 1;
+				/* classType = 1; */
 
-			} else if (inStr("rider", argv, currArgv)){
-				class = "rider";
-				classType = 2;
+			} else if (inStr(3, "rid", argv, currArgv, argvLen)){
+				int rider = 1;
+				/* classType = 3; */
 
-			} else if (inStr("assassin", argv, currArgv)){
-				class = "assassin";
-				classType = 2;
+			} else if (inStr(3, "ass", argv, currArgv, argvLen)){
+				int assassin = 1;
+				/* classType = 3; */
 
-			} else if (inStr("caster", argv, currArgv)){
-				class = "caster";
-				classType = 2;
+			} else if (inStr(3, "cas", argv, currArgv, argvLen)){
+				int caster = 1;
+				/* classType = 3; */
 
-			} else if (inStr("berserker", argv, currArgv)){
-				class = "berserker";
+			} else if (inStr(3, "zer", argv, currArgv, argvLen)){
+				int berserker = 1;
 
-			} else if (inStr("ruler", argv, currArgv)){
-				class = "ruler";
+			} else if (inStr(3, "rul", argv, currArgv, argvLen)){
+				int ruler = 1;
 
-			} else if (inStr("avenger", argv, currArgv)){
-				class = "avenger";
+			} else if (inStr(3, "ave", argv, currArgv, argvLen)){
+				int avenger = 1;
 
-			} else if (inStr("alterego", argv, currArgv)){
-				class = "alterEgo";
+			} else if (inStr(3, "alt", argv, currArgv, argvLen)){
+				int alterEgo = 1;
 
-			} else if (inStr("mooncancer", argv, currArgv)){
-				class = "moonCancer";
+			} else if (inStr(3, "moo", argv, currArgv, argvLen)){
+				int moonCancer = 1;
 
-			} else if (inStr("foreigner", argv, currArgv)){
-				class = "foreigner";
+			} else if (inStr(3, "for", argv, currArgv, argvLen)){
+				int foreigner = 1;
 
-
-			} else if (inStr("pretender", argv, currArgv)){
-				class = "pretender";
+			} else if (inStr(3, "pre", argv, currArgv, argvLen)){
+				int pretender = 1;
 
 			}
 
-		} else if (inStr("en", argv, currArgv)){
+		} else if (inStr(2, "en", argv, currArgv, argvLen)){
+			++currArgv;
 
-			if (inStr("saber", argv, currArgv)){
-				classEnemy = "saber";
+			if (inStr(3, "sab", argv, currArgv, argvLen)){
+				int saberEnemy = 1;
 				classTypeEnemy = 1;
 
-			} else if (inStr("archer", argv, currArgv)){
-				classEnemy = "archer";
+			} else if (inStr(3, "arc", argv, currArgv, argvLen)){
+				int archerEnemy = 1;
 				classTypeEnemy = 1;
 
-			} else if (inStr("lancer", argv, currArgv)){
-				classEnemy = "lancer";
+			} else if (inStr(3, "lan", argv, currArgv, argvLen)){
+				int lancerEnemy = 1;
 				classTypeEnemy = 1;
 
-			} else if (inStr("rider", argv, currArgv)){
-				classEnemy = "rider";
-				classTypeEnemy = 2;
+			} else if (inStr(3, "rid", argv, currArgv, argvLen)){
+				int riderEnemy = 1;
+				classTypeEnemy = 3;
 
-			} else if (inStr("assassin", argv, currArgv)){
-				classEnemy = "assassin";
-				classTypeEnemy = 2;
+			} else if (inStr(3, "ass", argv, currArgv, argvLen)){
+				int assassinEnemy = 1;
+				classTypeEnemy = 3;
 
-			} else if (inStr("caster", argv, currArgv)){
-				classEnemy = "caster";
-				classTypeEnemy = 2;
+			} else if (inStr(3, "cas", argv, currArgv, argvLen)){
+				int casterEnemy = 1;
+				classTypeEnemy = 3;
 
-			} else if (inStr("berserker", argv, currArgv)){
-				classEnemy = "berserker";
+			} else if (inStr(3, "zer", argv, currArgv, argvLen)){
+				int berserkerEnemy = 1;
 
-			} else if (inStr("ruler", argv, currArgv)){
-				classEnemy = "ruler";
+			} else if (inStr(3, "rul", argv, currArgv, argvLen)){
+				int rulerEnemy = 1;
 
-			} else if (inStr("avenger", argv, currArgv)){
-				classEnemy = "avenger";
+			} else if (inStr(3, "ave", argv, currArgv, argvLen)){
+				int avengerEnemy = 1;
 
-			} else if (inStr("alterego", argv, currArgv)){
-				classEnemy = "alterEgo";
+			} else if (inStr(3, "alt", argv, currArgv, argvLen)){
+				int alterEgoEnemy = 1;
 
-			} else if (inStr("mooncancer", argv, currArgv)){
-				classEnemy = "moonCancer";
+			} else if (inStr(3, "moo", argv, currArgv, argvLen)){
+				int moonCancerEnemy = 1;
 
-			} else if (inStr("foreigner", argv, currArgv)){
-				classEnemy = "foreigner";
+			} else if (inStr(3, "for", argv, currArgv, argvLen)){
+				int foreignerEnemy = 1;
 
-
-			} else if (inStr("pretender", argv, currArgv)){
-				classEnemy = "pretender";
+			} else if (inStr(3, "pre", argv, currArgv, argvLen)){
+				int pretenderEnemy = 1;
 
 			}
 			/* aliases */
-		} else if (inStr("vi", argv, currArgv)){
+		} else if (inStr(2, "vi", argv, currArgv, argvLen)){
 			bm = bm + 100;
 			if (buster){
 				cd = cd + 100;
 			}
 
-		} else if (inStr("ss", argv, currArgv)){
+		} else if (inStr(2, "ss", argv, currArgv, argvLen)){
 			au = au + 40;
 			bm = bm + 30;
 			qm = qm + 130;
@@ -319,116 +346,115 @@ int main(int argc, char *argv[]){
 				cd = cd + 200;
 			}
 
-		} else if (inStr("sk", argv, currArgv)){
+		} else if (inStr(2, "sk", argv, currArgv, argvLen)){
 			au = au + 60;
 			qm = qm + 100;
 			if (quick){
 				cd = cd + cd + 200;
 			}
 
-		} else if (inStr("ca", argv, currArgv)){
+		} else if (inStr(2, "ca", argv, currArgv, argvLen)){
 			am = am + 100;
 			au = au + 40;
 		}
 	}
 
-	
-	if (!strcmp(class, "saber")){
-		if (!strcmp(classEnemy, "lancer")){
+	if (saber){
+		if (lancerEnemy){
 			classAdv = 2;
 
-		} else if (!strcmp(classEnemy, "archer")){
+		} else if (archerEnemy){
 			classAdv= 0.5;
 
-		} else if (!strcmp(classEnemy, "ruler")){
+		} else if (rulerEnemy){
 			classAdv= 0.5;
 		}
 
-	} else if (!strcmp(class, "archer")){
+	} else if (archer){
 		classMod = 0.95;
 
-		if (!strcmp(classEnemy, "saber")){
+		if (saberEnemy){
 			classAdv = 2;
 
-		} else if (!strcmp(classEnemy, "lancer")){
+		} else if (lancerEnemy){
 			classAdv= 0.5;
 
-		} else if (!strcmp(classEnemy, "ruler")){
+		} else if (rulerEnemy){
 			classAdv= 0.5;
 		}
 
-	} else if (!strcmp(class, "lancer")){
+	} else if (lancer){
 		classMod = 1.05;
 
-		if (!strcmp(classEnemy, "archer")){
+		if (archerEnemy){
 			classAdv = 2;
 
-		} else if (!strcmp(classEnemy, "saber")){
+		} else if (saberEnemy){
 			classAdv= 0.5;
 
-		} else if (!strcmp(classEnemy, "ruler")){
+		} else if (rulerEnemy){
 			classAdv= 0.5;
 		}
 
-	} else if (!strcmp(class, "assassin")){
+	} else if (assassin){
 		classMod = 0.9;
 
-		if (!strcmp(classEnemy, "rider")){
+		if (riderEnemy){
 			classAdv = 2;
 
-		} else if (!strcmp(classEnemy, "caster")){
+		} else if (casterEnemy){
 			classAdv= 0.5;
 
-		} else if (!strcmp(classEnemy, "ruler")){
+		} else if (rulerEnemy){
 			classAdv= 0.5;
 		}
 
-	} else if (!strcmp(class, "caster")){
+	} else if (caster){
 		classMod = 0.9;
 
-		if (!strcmp(classEnemy, "assassin")){
+		if (assassinEnemy){
 			classAdv = 2;
 
-		} else if (!strcmp(classEnemy, "rider")){
+		} else if (riderEnemy){
 			classAdv= 0.5;
 
-		} else if (!strcmp(classEnemy, "ruler")){
+		} else if (rulerEnemy){
 			classAdv= 0.5;
 		}
 
-	} else if (!strcmp(class, "rider")){
+	} else if (rider){
 
-		if (!strcmp(classEnemy, "caster")){
+		if (casterEnemy){
 			classAdv = 2;
 
-		} else if (!strcmp(classEnemy, "assassin")){
+		} else if (assassinEnemy){
 			classAdv= 0.5;
 
-		} else if (!strcmp(classEnemy, "ruler")){
+		} else if (rulerEnemy){
 			classAdv= 0.5;
 		}
 
-	} else if (!strcmp(class, "berserker")){
+	} else if (berserker){
 		classMod = 1.1; 
 
-		if (!strcmp(classEnemy, "foreigner")){
+		if (foreignerEnemy){
 			classAdv= 0.5;
 
 		} else{
 			classAdv = 1.5;
 		}
 
-	} else if (!strcmp(class, "ruler")){
+	} else if (ruler){
 		classMod = 1.1;
 
-		if (!strcmp(classEnemy, "moonCancer")){
+		if (moonCancerEnemy){
 			classAdv = 2;
 
-		} else if (!strcmp(classEnemy, "avenger")){
+		} else if (avengerEnemy){
 			classAdv= 0.5;
 		}
 
-	} else if (!strcmp(class, "alterEgo")){
+	} else if (alterEgo){
 
 		switch (classTypeEnemy){
 			case 1:
@@ -438,39 +464,39 @@ int main(int argc, char *argv[]){
 				classAdv = 1.5;
 				break;
 			default:
-				if (!strcmp(class, "foreigner")){
+				if (foreignerEnemy){
 					classAdv = 2;
 				}
 		}
 
-	} else if (!strcmp(class, "avenger")){
+	} else if (avenger){
 		classMod = 1.1;
 
-		if (!strcmp(classEnemy, "ruler")){
+		if (rulerEnemy){
 			classAdv = 2;
 
-		} else if (!strcmp(classEnemy, "moonCancer")){
+		} else if (moonCancerEnemy){
 			classAdv= 0.5;
 
-	} else if (!strcmp(class, "moonCancer")){
+	} else if (moonCancer){
 
-		if (!strcmp(classEnemy, "avenger")){
+		if (avengerEnemy){
 			classAdv = 2;
 
-		} else if (!strcmp(classEnemy, "ruler")){
-			classAdv= 0.5;
-		}
-
-	} else if (!strcmp(class, "foreigner")){
-
-		if (!strcmp(classEnemy, "foreigner")){
-			classAdv = 2;
-
-		} else if (!strcmp(classEnemy, "alterEgo")){
+		} else if (rulerEnemy){
 			classAdv= 0.5;
 		}
 
-	} else if (!strcmp(class, "pretender")){
+	} else if (foreigner){
+
+		if (foreignerEnemy){
+			classAdv = 2;
+
+		} else if (alterEgoEnemy){
+			classAdv= 0.5;
+		}
+
+	} else if (pretender){
 		classMod = 0.9;
 
 		switch (classTypeEnemy){
@@ -481,23 +507,23 @@ int main(int argc, char *argv[]){
 				classAdv = 0.5;
 				break;
 			default:
-				if (!strcmp(class, "alterEgo")){
+				if (alterEgoEnemy){
 					classAdv = 2;
 				}
 		}
 
-		} else if (!strcmp(classEnemy, "caster")){
+		} else if (caster){
 			classAdv= 0.5;
 
-		} else if (!strcmp(classEnemy, "ruler")){
+		} else if (rulerEnemy){
 			classAdv= 0.5;
 		}
 
-	} else if (strcmp(classEnemy, "berserker")){
+	} else if (berserker){
 		printf("%s\n","Class not specified, defaults to no class advantage!");
 	}
 
-	if (strcmp(classEnemy, "berserker") && strcmp(class, "berserker")){
+	if (berserkerEnemy){
 		classAdv = 2;
 	}
 
