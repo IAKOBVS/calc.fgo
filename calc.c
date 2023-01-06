@@ -146,9 +146,6 @@ int main(int argc, char *argv[]){
 	int pretenderEnemy = 0;
 	int foreignerEnemy = 0;
 
-	float classMod = 1;
-	float classAdv = 1;
-
 	int aoe = 0;
 	int st = 0;
 
@@ -175,6 +172,18 @@ int main(int argc, char *argv[]){
 	int pm = 0;
 	int nm = 0;
 	int cd = 0;
+
+	int man = 0;
+	int sky = 0;
+	int earth = 0;
+	int star = 0;
+	int beast = 0;
+
+	int manEnemy = 0;
+	int skyEnemy = 0;
+	int earthEnemy = 0;
+	int starEnemy = 0;
+	int beastEnemy = 0;
 
 	for (int currArgv=1; currArgv<argc; ++currArgv){
 
@@ -249,8 +258,6 @@ int main(int argc, char *argv[]){
 
 
 			/* class */
-		/* } else if (inStr(2, "cl", argv, currArgv, argvLen)){ */
-
 		} else if (inStr(3, "sab", argv, currArgv, argvLen)){
 			saber = 1;
 			/* classType = 1; */
@@ -296,8 +303,39 @@ int main(int argc, char *argv[]){
 		} else if (inStr(3, "pre", argv, currArgv, argvLen)){
 			pretender = 1;
 
-		/* } else if (inStr(2, "en", argv, currArgv, argvLen)){ */
+			/* attribute */
+		} else if (inStr(3, "man", argv, currArgv, argvLen)){
+			man = 1;
 
+		} else if (inStr(3, "sky", argv, currArgv, argvLen)){
+			sky = 1;
+
+		} else if (inStr(3, "ear", argv, currArgv, argvLen)){
+			earth = 1;
+
+		} else if (inStr(3, "star", argv, currArgv, argvLen)){
+			star = 1;
+
+		} else if (inStr(3, "beast", argv, currArgv, argvLen)){
+			beast = 1;
+
+
+		} else if (inStr(4, "eman", argv, currArgv, argvLen)){
+			manEnemy = 1;
+
+		} else if (inStr(4, "esky", argv, currArgv, argvLen)){
+			skyEnemy = 1;
+
+		} else if (inStr(4, "eear", argv, currArgv, argvLen)){
+			earthEnemy = 1;
+
+		} else if (inStr(4, "esta", argv, currArgv, argvLen)){
+			starEnemy = 1;
+
+		} else if (inStr(4, "ebea", argv, currArgv, argvLen)){
+			beastEnemy = 1;
+
+			/* enemy */ 
 		} else if (inStr(4, "esab", argv, currArgv, argvLen)){
 			saberEnemy = 1;
 			classTypeEnemy = 1;
@@ -370,6 +408,9 @@ int main(int argc, char *argv[]){
 			au = au + 40;
 		}
 	}
+
+	float classMod = 1;
+	float classAdv = 1;
 
 	if (saber){
 		if (lancerEnemy){
@@ -546,6 +587,40 @@ int main(int argc, char *argv[]){
 		classAdv = 2;
 	}
 
+	float attributeMod = 1;
+
+	if (man){
+		if (skyEnemy){
+			attributeMod = 1.1;
+
+		} else if (earthEnemy){
+			attributeMod = 0.9;
+
+		}
+	} else if (sky){
+		if (manEnemy){
+			attributeMod = 0.9;
+
+		} else if (earthEnemy){
+			attributeMod = 1.1;
+
+		}
+	} else if (earth){
+		if (manEnemy){
+			attributeMod = 1.1;
+		} else if (skyEnemy){
+			attributeMod = 0.9;
+		}
+	} else if (star){
+		if (beastEnemy){
+			attributeMod = 1.1;
+		}
+	} else if (beast){
+		if (starEnemy){
+			attributeMod = 1.1;
+		}
+	}
+
 	float total = 1;
 
 	float totalNp = 1;
@@ -647,7 +722,7 @@ int main(int argc, char *argv[]){
 
 	const float CONST_MULT= 0.23;
 
-	total = total * toPercent((au + dd - ad - du)) * CONST_MULT * classAdv * classMod;
+	total = total * toPercent((au + dd - ad - du)) * CONST_MULT * classAdv * classMod * attributeMod;
 
 	totalCard = totalCard * total * toPercent((cd + pm)) * cardMod;
 
