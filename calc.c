@@ -214,6 +214,10 @@ int main(int argc, char *argv[]){
 	int quickSecond = 0;
 	int quickThird = 0;
 
+	int npFirst = 0;
+	int npSecond = 0;
+	int npThird = 0;
+
 	for (int currArgv=1; currArgv<argc; ++currArgv){
 
 		int argvLen = countTilNull(argv, currArgv);
@@ -526,7 +530,9 @@ int main(int argc, char *argv[]){
 			}
 			if (noChain){
 
-				if (inStr(3, "npbb", argv, currArgv, argvLen)){
+				if (inStr(4, "npbb", argv, currArgv, argvLen)){
+
+					npFirst = 1;
 
 					if (buster){
 						busterFirst = 1;
@@ -543,7 +549,9 @@ int main(int argc, char *argv[]){
 					noChain = 0;
 					continue;
 
-					} else if (inStr(3, "npaa", argv, currArgv, argvLen)){
+				} else if (inStr(4, "npaa", argv, currArgv, argvLen)){
+
+					npFirst = 1;
 
 					if (buster){
 						busterFirst = 1;
@@ -560,7 +568,26 @@ int main(int argc, char *argv[]){
 					noChain = 0;
 					continue;
 
-			} else if (inStr(3, "bbb", argv, currArgv, argvLen)){
+				} else if (inStr(4, "npqq", argv, currArgv, argvLen)){
+
+					npFirst = 1;
+
+					if (buster){
+						busterFirst = 1;
+
+					} else if (arts){
+						artsFirst = 1;
+
+					} else if (quick){
+						quickFirst = 1;
+					}
+
+					quickSecond = 1;
+					quickThird = 1;
+					noChain = 0;
+					continue;
+
+				} else if (inStr(3, "bbb", argv, currArgv, argvLen)){
 
 					busterFirst = 1;
 					busterSecond = 1;
@@ -931,6 +958,81 @@ int main(int argc, char *argv[]){
 	/* total = total * BASE_MULTIPLIER * (1.0 + ((float)(attackUp + defenseDown - attackDown - defenseUp)) * 0.01) * classAdv * classMod * attributeMod * ((float)attackStat) * cardMod; */
 
 	/* float totalCard = total * (1.0 + ((float)(criticalDamage + powerMod)) * 0.01); */
+
+	float totalCard = 1;
+	if ((criticalDamage + powerMod)){
+		totalCard = 1.0 + (float)(criticalDamage + powerMod) * 0.01;
+	}
+	totalCard = totalCard * total;
+
+	float cardFirst = 1;
+	float cardSecond = 1;
+	float cardThird = 1;
+
+	if (!noChain){
+		if (npFirst){
+			if (buster){
+				busterFirst = 1;
+
+			} else if (quick){
+				quickFirst = 1;
+
+			} else if (arts){
+				artsFirst = 1;
+			}
+
+		} else if (busterFirst){
+
+			if (!npFirst){
+				cardFirst = 1.5;
+			}
+
+			if (busterSecond){
+				cardSecond = 1.8;
+			}
+
+			if (busterThird){
+				cardThird = 2.1;
+			}
+		} else if (quickFirst){
+
+			if (!npFirst){
+				cardFirst = 0.8;
+			}
+			if (quickSecond){
+				cardSecond = 0.96;
+			}
+			if (quickThird){
+				cardThird = 1.12;
+			}
+		} else if (artsFirst){
+
+			if (!npFirst){
+				cardFirst = 1;
+			}
+			if (artsSecond){
+				cardSecond = 1.2;
+			}
+			if (artsThird){
+				cardThird = 1.12;
+			}
+		}
+
+		if (!npFirst){
+			cardFirst = cardFirst * totalCard;
+			printf("%f\n", cardFirst);
+		}
+
+		if (!npSecond){
+			cardSecond = cardSecond * totalCard;
+			printf("%f\n", cardSecond);
+		}
+
+		if (!npThird){
+			cardThird = cardThird * totalCard;
+			printf("%f\n", cardThird);
+		}
+	}
 
 	/* printf("%s\n", "attackStat"); */
 	/* printf("%d\n", attackStat); */
