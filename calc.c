@@ -66,23 +66,6 @@ int inStr(int substrLen, char substr[], char *argv[], int currArgv, int argvLen)
 	return 0;
 }
 
-/* int inLastOfStr(int substrLen, char substr[], char *argv[], int currArgv, int argvLen){ */
-/* 	if (argv[currArgv][0] != substr[0]){ */
-/* 		return 0; */
-/* 	} */
-
-/* 	int substrEnd = substrLen + 2 - 1; */
-
-/* 	for (int i=2; i<argvLen ; ++i){ */
-/* 		if (argv[currArgv][i] == substr[i]){ */
-/* 			if (i == substrEnd){ */
-/* 				return 1; */
-/* 			} */
-/* 		} */
-/* 	} */
-/* 	return 0; */
-/* } */
-
 int main(int argc, char *argv[]){
 	if (!argv[1]){
 		printf("%s\n\n", "Usage: calc arguments");
@@ -384,7 +367,7 @@ int main(int argc, char *argv[]){
 				noClassEnemy = 0;
 			}
 
-		if (noAttribute){
+		} else if (noAttribute){
 
 			if (inStr(3, "man", argv, currArgv, argvLen)){
 				man = 1;
