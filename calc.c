@@ -3,6 +3,17 @@
 #include <string.h>
 #include <locale.h>
 /* thousand separator */
+void printstr(char str[]){
+	printf("%s\n", str);
+}
+
+void printint(int var){
+	printf("%d\n", var);
+}
+
+void printfl(float var){
+	printf("%f\n", var);
+}
 
 float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault){
 	switch (np){
@@ -26,13 +37,17 @@ float toPercent(int var){
 	return 1.0 * (float)var * 0.01;
 }
 
-int getBuff(char *argv[], int currArg, int lenToEnd){
-	char numInString[lenToEnd];
+int getBuff(char *argv[], int currArg, int argvLen){
+	/* setvbuf(stdout, NULL, _IONBF, 0); */ 
+	char numInString[argvLen];
 	int j=0;
-	for (int i=2; i<=lenToEnd; ++i){
+	for (int i=2; i<=argvLen; ++i){
 		numInString[j] = argv[currArg][i];
+		/* printf("%s\n","numInString"); */
+		/* puts(numInString); */
 		j++;
 	}
+	/* printf("%s\n","result"); */
 	return (strtol(numInString, NULL, 10));
 }
 
@@ -743,7 +758,12 @@ int main(int argc, char *argv[]){
 		}
 
 	} else if (buster){
-		total = total * toPercent(busterMod);
+		if (busterMod){
+			total = 1.0  + (float)busterMod * 0.01;
+		}
+		/* total = total * toPercent(busterMod); */
+		printf("%s\n", "busterMod");
+		printf("%f\n", total);
 		cardMod = 1.5;
 
 		if (aoe){
@@ -752,6 +772,7 @@ int main(int argc, char *argv[]){
 
 			} else {
 				npMod = whichNpMod(np, 3, 4, 4.5, 4.75, 5);
+				printf("%f\n", npMod);
 
 			}
 
@@ -791,6 +812,9 @@ int main(int argc, char *argv[]){
 		printf("%s\n", "card type not specified!");
 	}
 
+	printstr("npMod");
+	printfl(npMod);
+
 	if (!aoe && !st){
 		printf("%s\n", "np type not specified!");
 	}
@@ -804,19 +828,57 @@ int main(int argc, char *argv[]){
 		defenseUp = defenseUp - 100;
 	}
 
-	const float BASE_MULTIPLIER = 0.23;
-
-	total = total * BASE_MULTIPLIER * (1.0 + ((float)(attackUp + defenseDown - attackDown - defenseUp)) * 0.01) * classAdv * classMod * attributeMod * ((float)attackStat) * cardMod;
-
-	float totalCard = total * (1.0 + ((float)(criticalDamage + powerMod)) * 0.01);
-
-
-	float totalNp = total * (1.0 + ((float)(npUp + powerMod)) * 0.01) * specialAttack * npMod;
-
 	setlocale(LC_NUMERIC, "");
 
-	printf("%'g\n", totalCard);
-	printf("%'g\n", totalNp);
+	const float BASE_MULTIPLIER = 0.23;
+
+	if ((attackUp + defenseDown - attackDown - defenseUp)){
+		total = total * (1.0 + ((float)(attackUp + defenseDown - attackDown - defenseUp)) * 0.01);
+	}
+	total = total * BASE_MULTIPLIER * classAdv * classMod * attributeMod * ((float)attackStat) * cardMod;
+
+	/* total = total * BASE_MULTIPLIER * (1.0 + ((float)(attackUp + defenseDown - attackDown - defenseUp)) * 0.01) * classAdv * classMod * attributeMod * ((float)attackStat) * cardMod; */
+
+	/* float totalCard = total * (1.0 + ((float)(criticalDamage + powerMod)) * 0.01); */
+
+	printf("%s\n", "attackStat");
+	printf("%d\n", attackStat);
+	printf("%s\n", "busterMod");
+	printf("%d\n", busterMod);
+	printf("%s\n", "powerMod");
+	printf("%d\n", powerMod);
+	printf("%s\n", "npUp");
+	printf("%d\n", npUp);
+	printstr("npMod");
+	printf("%f\n",npMod);
+	printstr("classAdv");
+	printf("%f\n",attributeMod);
+	printstr("atrributeMod");
+	printf("%f\n",classAdv);
+	printstr("classMod");
+	printf("%f\n",classMod);
+	printstr("npMod");
+	printf("%f\n",npMod);
+	printstr("total");
+	printf("%f\n",total);
+
+
+	float totalNp = 1;
+	if ((npUp + powerMod)){
+		totalNp = 1.0 + (float)(npUp + powerMod) * 0.01;
+		printf("%s\n","totalNp");
+		printf("%'g\n",totalNp);
+	}
+	totalNp = totalNp * specialAttack * npMod * total;
+	printf("%'g\n",totalNp);
+	/* printf("%s\n","totalNp"); */
+
+	/* totalNp = total * (1.0 + ((float)(npUp + powerMod)) * 0.01) * (float)specialAttack * (float)npMod; */
+	printf("%s\n","totalNp");
+
+
+	/* printf("%'g\n", totalCard); */
+	/* printf("%'g\n", totalNp); */
 
 	/* printf("%'f\n", totalCard); */
 	/* printf("%'f\n", totalNp); */
