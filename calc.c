@@ -3,6 +3,7 @@
 #include <string.h>
 #include <locale.h>
 /* thousand separator */
+
 void printstr(char str[]){
 	printf("%s\n", str);
 }
@@ -108,7 +109,7 @@ int main(int argc, char *argv[]){
 		printf("%s\n", "artsMod = arts up");
 		printf("%s\n", "bm = buster up");
 		printf("%s\n\n", "qm = quick up");
-		printf("%s\n", "se = special attack; e.g., gilgamesh, se150");
+		printf("%s\n", "se = super effective; e.g., gilgamesh, se150");
 		printf("%s\n", "sr = np strengthening");
 		printf("%s\n", "pm = powermod; e.g., arjuna alter, pm50");
 		printf("%s\n", "cd = critical damage");
@@ -176,7 +177,7 @@ int main(int argc, char *argv[]){
 
 	int np = 5;
 
-	float specialAttack = 1;
+	float superEffective = 1;
 	int npStrengthening = 0;
 
 	int arts = 0;
@@ -197,6 +198,20 @@ int main(int argc, char *argv[]){
 	int powerMod = 0;
 	int npUp = 0;
 	int criticalDamage = 0;
+
+	int noChain = 1;
+
+	int artsFirst = 0;
+	int artsSecond = 0;
+	int artsThird = 0;
+
+	int busterFirst = 0;
+	int busterSecond = 0;
+	int busterThird = 0;
+
+	int quickFirst = 0;
+	int quickSecond = 0;
+	int quickThird = 0;
 
 	for (int currArgv=1; currArgv<argc; ++currArgv){
 
@@ -237,12 +252,11 @@ int main(int argc, char *argv[]){
 			criticalDamage = criticalDamage + getBuff(argv, currArgv, argvLen);
 
 		} else if (inStr(2, "se", argv, currArgv, argvLen)){
-			specialAttack = getBuff(argv, currArgv, argvLen) / 100.0;
+			superEffective = getBuff(argv, currArgv, argvLen) / 100.0;
 
 			/* attack stat */
 		} else if (inStr(2, "at", argv, currArgv, argvLen)){
 			attackStat = getBuff(argv, currArgv, argvLen) + 1000;
-			continue;
 			/* printf("%d\n", attackStat); */
 
 		} else if (inStr(2, "np", argv, currArgv, argvLen)){
@@ -762,8 +776,8 @@ int main(int argc, char *argv[]){
 			total = 1.0  + (float)busterMod * 0.01;
 		}
 		/* total = total * toPercent(busterMod); */
-		printf("%s\n", "busterMod");
-		printf("%f\n", total);
+		/* printf("%s\n", "busterMod"); */
+		/* printf("%f\n", total); */
 		cardMod = 1.5;
 
 		if (aoe){
@@ -772,7 +786,7 @@ int main(int argc, char *argv[]){
 
 			} else {
 				npMod = whichNpMod(np, 3, 4, 4.5, 4.75, 5);
-				printf("%f\n", npMod);
+				/* printf("%f\n", npMod); */
 
 			}
 
@@ -812,9 +826,6 @@ int main(int argc, char *argv[]){
 		printf("%s\n", "card type not specified!");
 	}
 
-	printstr("npMod");
-	printfl(npMod);
-
 	if (!aoe && !st){
 		printf("%s\n", "np type not specified!");
 	}
@@ -841,40 +852,39 @@ int main(int argc, char *argv[]){
 
 	/* float totalCard = total * (1.0 + ((float)(criticalDamage + powerMod)) * 0.01); */
 
-	printf("%s\n", "attackStat");
-	printf("%d\n", attackStat);
-	printf("%s\n", "busterMod");
-	printf("%d\n", busterMod);
-	printf("%s\n", "powerMod");
-	printf("%d\n", powerMod);
-	printf("%s\n", "npUp");
-	printf("%d\n", npUp);
-	printstr("npMod");
-	printf("%f\n",npMod);
-	printstr("classAdv");
-	printf("%f\n",attributeMod);
-	printstr("atrributeMod");
-	printf("%f\n",classAdv);
-	printstr("classMod");
-	printf("%f\n",classMod);
-	printstr("npMod");
-	printf("%f\n",npMod);
-	printstr("total");
-	printf("%f\n",total);
-
+	/* printf("%s\n", "attackStat"); */
+	/* printf("%d\n", attackStat); */
+	/* printf("%s\n", "busterMod"); */
+	/* printf("%d\n", busterMod); */
+	/* printf("%s\n", "powerMod"); */
+	/* printf("%d\n", powerMod); */
+	/* printf("%s\n", "npUp"); */
+	/* printf("%d\n", npUp); */
+	/* printstr("npMod"); */
+	/* printf("%f\n",npMod); */
+	/* printstr("classAdv"); */
+	/* printf("%f\n",attributeMod); */
+	/* printstr("atrributeMod"); */
+	/* printf("%f\n",classAdv); */
+	/* printstr("classMod"); */
+	/* printf("%f\n",classMod); */
+	/* printstr("npMod"); */
+	/* printf("%f\n",npMod); */
+	/* printstr("total"); */
+	/* printf("%f\n",total); */
 
 	float totalNp = 1;
 	if ((npUp + powerMod)){
 		totalNp = 1.0 + (float)(npUp + powerMod) * 0.01;
-		printf("%s\n","totalNp");
-		printf("%'g\n",totalNp);
+		/* printf("%s\n","totalNp"); */
+		/* printf("%'g\n",totalNp); */
 	}
-	totalNp = totalNp * specialAttack * npMod * total;
+	totalNp = totalNp * superEffective * npMod * total;
 	printf("%'g\n",totalNp);
 	/* printf("%s\n","totalNp"); */
 
-	/* totalNp = total * (1.0 + ((float)(npUp + powerMod)) * 0.01) * (float)specialAttack * (float)npMod; */
-	printf("%s\n","totalNp");
+	/* totalNp = total * (1.0 + ((float)(npUp + powerMod)) * 0.01) * (float)superEffective * (float)npMod; */
+	/* printf("%s\n","totalNp"); */
 
 
 	/* printf("%'g\n", totalCard); */
