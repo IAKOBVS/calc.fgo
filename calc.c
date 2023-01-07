@@ -76,25 +76,22 @@ int main(int argc, char *argv[]){
 		printf("%s\n", "st = single target np");
 		printf("%s\n\n", "aoe = aoe np");
 		printf("%s\n", "at = attack stat");
-		printf("%s\n", "au = attack up");
-		printf("%s\n\n", "ad = attack down");
-		printf("%s\n", "du = defense up");
+		printf("%s\n", "attackUp = attack up");
+		printf("%s\n\n", "attackDown = attack down");
+		printf("%s\n", "= defense up");
 		printf("%s\n", "dd = defense down");
 		printf("%s\n\n", "di = defense ignore");
-		printf("%s\n", "am = arts up");
+		printf("%s\n", "artsMod = arts up");
 		printf("%s\n", "bm = buster up");
 		printf("%s\n\n", "qm = quick up");
 		printf("%s\n", "se = special attack; e.g., gilgamesh, se150");
-		printf("%s\n", "sr = np strengthening");
+		printf("%s\n", "specialAttack = np strengthening");
 		printf("%s\n", "pm = powermod; e.g., arjuna alter, pm50");
-		printf("%s\n", "cd = crit up");
+		printf("%s\n", "criticalDamage = crit up");
 		exit(0);
 	}
 
 	int attackStat = 1;
-
-	/* knight, cavalry, extra */
-	/* 1, 2, 3 */
 
 	int noClass = 1;
 	int noClassEnemy = 1;
@@ -136,6 +133,8 @@ int main(int argc, char *argv[]){
 	int pretenderEnemy = 0;
 	int foreignerEnemy = 0;
 
+	/* knight = 1 */
+	/* cavalry = 2 */	
 	int classTypeEnemy = 0;
 
 	int man = 0;
@@ -155,68 +154,68 @@ int main(int argc, char *argv[]){
 
 	int np = 5;
 
+	float specialAttack = 1;
+	int npStrengthening = 0;
+
 	int arts = 0;
 	int buster = 0;
 	int quick = 0;
 
-	int au = 0;
-	int ad = 0;
+	int attackUp = 0;
+	int attackDown = 0;
 
-	int du = 0;
-	int dd = 0;
+	int defenseUp = 0;
+	int defenseDown = 0;
 	int defenseIgnore = 0;
 
-	int am = 0;
-	int bm = 0;
-	int qm = 0;
+	int artsMod = 0;
+	int busterMod = 0;
+	int quickMod = 0;
 
-	float se = 1;
-	float sr = 0;
-
-	int pm = 0;
-	int nm = 0;
-	int cd = 0;
+	int powerMod = 0;
+	int npUp = 0;
+	int criticalDamage = 0;
 
 	for (int currArgv=1; currArgv<argc; ++currArgv){
 
 		int argvLen = strlen(argv[currArgv]);
 
 		if (inStr(2, "au", argv, currArgv, argvLen)){
-			au = au + getBuff(argv, currArgv, argvLen);
+			attackUp = attackUp + getBuff(argv, currArgv, argvLen);
 
 		} else if (inStr(2, "ad", argv, currArgv, argvLen)){
-			ad = ad - getBuff(argv, currArgv, argvLen);
+			attackDown = attackDown - getBuff(argv, currArgv, argvLen);
 
 		} else if (inStr(2, "dd", argv, currArgv, argvLen)){
-			dd = dd + getBuff(argv, currArgv, argvLen);
+			defenseDown = defenseDown + getBuff(argv, currArgv, argvLen);
 
 		} else if (inStr(2, "du", argv, currArgv, argvLen)){
-			du = du + getBuff(argv, currArgv, argvLen);
+			defenseUp = defenseUp + getBuff(argv, currArgv, argvLen);
 
 
 		} else if (inStr(2, "di", argv, currArgv, argvLen)){
 			defenseIgnore = 1;
 
 		} else if (inStr(2, "bm", argv, currArgv, argvLen)){
-			bm = bm + getBuff(argv, currArgv, argvLen);
+			busterMod = busterMod + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr(2, "qm", argv, currArgv, argvLen)){
-			qm = qm + getBuff(argv, currArgv, argvLen);
+		} else if (inStr(2, "qMod", argv, currArgv, argvLen)){
+			quickMod = quickMod + getBuff(argv, currArgv, argvLen);
 
 		} else if (inStr(2, "am", argv, currArgv, argvLen)){
-			am = am + getBuff(argv, currArgv, argvLen);
+			artsMod = artsMod + getBuff(argv, currArgv, argvLen);
 
 		} else if (inStr(2, "pm", argv, currArgv, argvLen)){
-			pm = pm + getBuff(argv, currArgv, argvLen);
+			powerMod = powerMod + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr(2, "nm", argv, currArgv, argvLen)){
-			nm = nm + getBuff(argv, currArgv, argvLen);
+		} else if (inStr(2, "nu", argv, currArgv, argvLen)){
+			npUp = npUp + getBuff(argv, currArgv, argvLen);
 
 		} else if (inStr(2, "cd", argv, currArgv, argvLen)){
-			cd = cd + getBuff(argv, currArgv, argvLen);
+			criticalDamage = criticalDamage + getBuff(argv, currArgv, argvLen);
 
 		} else if (inStr(2, "se", argv, currArgv, argvLen)){
-			se = getBuff(argv, currArgv, argvLen) / 100.0;
+			specialAttack = getBuff(argv, currArgv, argvLen) / 100.0;
 
 			/* attack stat */
 		} else if (inStr(2, "at", argv, currArgv, argvLen)){
@@ -234,7 +233,7 @@ int main(int argc, char *argv[]){
 
 			/* strengthening */
 		} else if (inStr(2, "sr", argv, currArgv, argvLen)){
-			sr = 1;
+			npStrengthening = 1;
 
 		} else if (noCardType){
 
@@ -416,29 +415,29 @@ int main(int argc, char *argv[]){
 
 			/* aliases */
 		} else if (inStr(2, "vi", argv, currArgv, argvLen)){
-			bm = bm + 100;
+			busterMod = busterMod + 100;
 			if (buster){
-				cd = cd + 100;
+				criticalDamage = criticalDamage + 100;
 			}
 
 		} else if (inStr(2, "ss", argv, currArgv, argvLen)){
-			au = au + 40;
-			bm = bm + 30;
-			qm = qm + 130;
+			attackUp = attackUp + 40;
+			busterMod = busterMod + 30;
+			quickMod = quickMod + 130;
 			if (buster){
-				cd = cd + 200;
+				criticalDamage = criticalDamage + 200;
 			}
 
 		} else if (inStr(2, "sk", argv, currArgv, argvLen)){
-			au = au + 60;
-			qm = qm + 100;
+			attackUp = attackUp + 60;
+			quickMod = quickMod + 100;
 			if (quick){
-				cd = cd + cd + 200;
+				criticalDamage = criticalDamage + criticalDamage + 200;
 			}
 
 		} else if (inStr(2, "ca", argv, currArgv, argvLen)){
-			am = am + 100;
-			au = au + 40;
+			artsMod = artsMod + 100;
+			attackUp = attackUp + 40;
 		}
 	}
 
@@ -667,10 +666,10 @@ int main(int argc, char *argv[]){
 	}
 
 	if (arts){
-		total = total * toPercent(am);
+		total = total * toPercent(artsMod);
 
 		if (aoe){
-			if (sr){
+			if (npStrengthening){
 				npMod = whichNpMod(np, 5, 7.5, 8.25, 8.625, 9);
 
 			} else {
@@ -679,7 +678,7 @@ int main(int argc, char *argv[]){
 			}
 		} else if (st){
 
-			if (sr){
+			if (npStrengthening){
 				npMod = whichNpMod(np, 12, 15, 16.5, 17.25, 18);
 
 			} else {
@@ -689,11 +688,11 @@ int main(int argc, char *argv[]){
 		}
 
 	} else if (buster){
-		total = total * toPercent(bm);
+		total = total * toPercent(busterMod);
 		cardMod = 1.5;
 
 		if (aoe){
-			if (sr){
+			if (npStrengthening){
 				npMod = whichNpMod(np, 4, 5, 5.5, 5.75, 6);
 
 			} else {
@@ -702,7 +701,7 @@ int main(int argc, char *argv[]){
 			}
 
 		} else if (st){
-			if (sr){
+			if (npStrengthening){
 				npMod = whichNpMod(np, 8, 10, 11, 11.5, 12);
 
 			} else {
@@ -711,11 +710,11 @@ int main(int argc, char *argv[]){
 			}
 		}
 	} else if (quick){
-		total = total * toPercent(qm);
+		total = total * toPercent(quickMod);
 		cardMod = 0.8;
 
 		if (aoe){
-			if (sr){
+			if (npStrengthening){
 				npMod = whichNpMod(np, 8, 10, 11, 11.5, 12);
 
 			} else {
@@ -724,7 +723,7 @@ int main(int argc, char *argv[]){
 			}
 
 		} else if (st){
-			if (sr){
+			if (npStrengthening){
 				npMod = whichNpMod(np, 16, 20, 22, 23, 24);
 
 			} else {
@@ -741,22 +740,22 @@ int main(int argc, char *argv[]){
 		printf("%s\n", "np type not specified!");
 	}
 
-	if (dd > 100){
-		dd = 100;
+	if (defenseDown > 100){
+		defenseDown = 100;
 		printf("%s\n", "def down exceeds 100, defaults to 100!");
 	}
 
 	if (defenseIgnore){
-		du = du - 100;
+		defenseUp = defenseUp - 100;
 	}
 
-	const float CONST_MULT= 0.23;
+	const float BASE_MULTIPLIER = 0.23;
 
-	total = total * CONST_MULT * toPercent((au + dd - ad - du)) * classAdv * classMod * attributeMod * (float)attackStat * cardMod;
+	total = total * BASE_MULTIPLIER  * toPercent((attackUp + defenseDown - attackDown - defenseUp)) * classAdv * classMod * attributeMod * (float)attackStat * cardMod;
 
-	totalCard = total * toPercent((cd + pm));
+	totalCard = total * toPercent((criticalDamage + powerMod));
 
-	totalNp = total * toPercent((nm + pm)) * se * npMod;
+	totalNp = total * toPercent((npUp + powerMod)) * specialAttack * npMod;
 
 	/* thousand separator */
 
