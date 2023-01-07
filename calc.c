@@ -102,8 +102,8 @@ int main(int argc, char *argv[]){
 		printf("%s\n\n", "aoe = aoe np");
 		printf("%s\n", "at = attack stat");
 		printf("%s\n", "au = attack up");
-		printf("%s\n\n", "ad= attack down");
-		printf("%s\n", "= defense up");
+		printf("%s\n\n", "ad = attack down");
+		printf("%s\n", "du = defense up");
 		printf("%s\n", "dd = defense down");
 		printf("%s\n\n", "di = defense ignore");
 		printf("%s\n", "artsMod = arts up");
@@ -111,6 +111,7 @@ int main(int argc, char *argv[]){
 		printf("%s\n\n", "qm = quick up");
 		printf("%s\n", "se = super effective; e.g., gilgamesh, se150");
 		printf("%s\n", "sr = np strengthening");
+		printf("%s\n", "nu = np damage up");
 		printf("%s\n", "pm = powermod; e.g., arjuna alter, pm50");
 		printf("%s\n", "cd = critical damage");
 		exit(0);
@@ -522,6 +523,85 @@ int main(int argc, char *argv[]){
 					noAttributeEnemy = 0;
 					continue;
 				}
+			}
+			if (noChain){
+
+				if (inStr(3, "npbb", argv, currArgv, argvLen)){
+
+					if (buster){
+						busterFirst = 1;
+
+					} else if (arts){
+						artsFirst = 1;
+
+					} else if (quick){
+						quickFirst = 1;
+					}
+
+					busterSecond = 1;
+					busterThird = 1;
+					noChain = 0;
+					continue;
+
+					} else if (inStr(3, "npaa", argv, currArgv, argvLen)){
+
+					if (buster){
+						busterFirst = 1;
+
+					} else if (arts){
+						artsFirst = 1;
+
+					} else if (quick){
+						quickFirst = 1;
+					}
+
+					artsSecond = 1;
+					artsThird = 1;
+					noChain = 0;
+					continue;
+
+			} else if (inStr(3, "bbb", argv, currArgv, argvLen)){
+
+					busterFirst = 1;
+					busterSecond = 1;
+					busterThird = 1;
+					noChain = 0;
+					continue;
+
+				} else if (inStr(3, "bba", argv, currArgv, argvLen)){
+
+					busterFirst = 1;
+					busterSecond = 1;
+					artsThird = 1;
+					noChain = 0;
+					continue;
+
+				} else if (inStr(3, "bbq", argv, currArgv, argvLen)){
+
+					busterFirst = 1;
+					busterSecond = 1;
+					quickThird = 1;
+					noChain = 0;
+					continue;
+
+				} else if (inStr(3, "bab", argv, currArgv, argvLen)){
+
+					busterFirst = 1;
+					artsSecond = 1;
+					busterThird = 1;
+					noChain = 0;
+					continue;
+
+				} else if (inStr(3, "bqb", argv, currArgv, argvLen)){
+
+					busterFirst = 1;
+					quickSecond = 1;
+					busterThird = 1;
+					noChain = 0;
+					continue;
+
+				}
+
 			}
 		}
 	}
