@@ -980,8 +980,9 @@ int main(int argc, char *argv[]){
 			} else if (arts){
 				artsFirst = 1;
 			}
+		}
 
-		} else if (busterFirst){
+		if (busterFirst){
 
 			if (!npFirst){
 				cardFirst = 1.5;
