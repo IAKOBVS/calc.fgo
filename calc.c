@@ -77,33 +77,13 @@ float toPercent(int var)
 
 int getBuff(char *argv[], int currArg, int argvLen)
 {
-	/* setvbuf(stdout, NULL, _IONBF, 0); */
 	char numInString[argvLen];
 	int j = 0;
 	for (int i = 2; i <= argvLen; ++i) {
 		numInString[j] = argv[currArg][i];
-		/* printf("%s\n","numInString"); */
-		/* puts(numInString); */
 		j++;
 	}
-	/* printf("%s\n","result"); */
 	return (strtol(numInString, NULL, 10));
-}
-
-float ifNotZeroFl(float var)
-{
-	if (!var) {
-		return 1;
-	}
-	return var;
-}
-
-int ifNotZero(float var)
-{
-	if (!var) {
-		return 1;
-	}
-	return var;
 }
 
 int inStr(int substrLen, char substr[], char *argv[], int currArgv, int argvLen)
@@ -206,13 +186,13 @@ int main(int argc, char *argv[])
 	int busterSecond = 0;
 	int busterThird = 0;
 
+	int busterAt = 0;
+
 	int quickFirst = 0;
 	int quickSecond = 0;
 	int quickThird = 0;
 
-	int npFirst = 0;
-	int npSecond = 0;
-	int npThird = 0;
+	int npAt = 0;
 
 	for (int currArgv = 1; currArgv < argc; ++currArgv) {
 
@@ -485,7 +465,7 @@ int main(int argc, char *argv[])
 
 				if (inStr(4, "npbb", argv, currArgv, argvLen)) {
 
-					npFirst = 1;
+					npAt = 1;
 
 					switch (cardType) {
 					case BUSTER:
@@ -505,7 +485,7 @@ int main(int argc, char *argv[])
 
 				} else if (inStr(4, "npaa", argv, currArgv, argvLen)) {
 
-					npFirst = 1;
+					npAt = 1;
 
 					switch (cardType) {
 					case BUSTER:
@@ -525,7 +505,7 @@ int main(int argc, char *argv[])
 
 				} else if (inStr(4, "npqq", argv, currArgv, argvLen)) {
 
-					npFirst = 1;
+					npAt = 1;
 
 					switch (cardType) {
 					case BUSTER:
@@ -939,7 +919,7 @@ int main(int argc, char *argv[])
 	float cardThird = 1;
 
 	if (!noChain) {
-		if (npFirst) {
+		if (npAt != 1) {
 			switch (cardType) {
 				case BUSTER:
 					busterFirst = 1;
@@ -953,7 +933,7 @@ int main(int argc, char *argv[])
 		}
 		if (busterFirst) {
 
-			if (!npFirst) {
+			if (npAt != 1) {
 				cardFirst = 1.5;
 			}
 
@@ -966,7 +946,7 @@ int main(int argc, char *argv[])
 			}
 		} else if (quickFirst) {
 
-			if (!npFirst) {
+			if (npAt != 1) {
 				cardFirst = 0.8;
 			}
 			if (quickSecond) {
@@ -977,7 +957,7 @@ int main(int argc, char *argv[])
 			}
 		} else if (artsFirst) {
 
-			if (!npFirst) {
+			if (npAt != 1) {
 				cardFirst = 1;
 			}
 			if (artsSecond) {
@@ -988,17 +968,17 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		if (!npFirst) {
+		if (npAt != 1) {
 			cardFirst = cardFirst * totalCard;
 			printf("%f\n", cardFirst);
 		}
 
-		if (!npSecond) {
+		if (npAt != 2) {
 			cardSecond = cardSecond * totalCard;
 			printf("%f\n", cardSecond);
 		}
 
-		if (!npThird) {
+		if (npAt != 3) {
 			cardThird = cardThird * totalCard;
 			printf("%f\n", cardThird);
 		}
