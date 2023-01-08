@@ -36,20 +36,20 @@
 #define ST 1
 #define AOE 2
 
-void printstr(char str[])
-{
-	printf("%s\n", str);
-}
+/* void printstr(char str[]) */
+/* { */
+/* 	printf("%s\n", str); */
+/* } */
 
-void printint(int var)
-{
-	printf("%d\n", var);
-}
+/* void printint(int var) */
+/* { */
+/* 	printf("%d\n", var); */
+/* } */
 
-void printfl(float var)
-{
-	printf("%f\n", var);
-}
+/* void printfl(float var) */
+/* { */
+/* 	printf("%f\n", var); */
+/* } */
 
 float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault)
 {
@@ -67,13 +67,13 @@ float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float ca
 	}
 }
 
-float toPercent(int var)
-{
-	if (!var) {
-		return 1.0;
-	}
-	return 1.0 * (float)var * 0.01;
-}
+/* float toPercent(int var) */
+/* { */
+/* 	if (!var) { */
+/* 		return 1.0; */
+/* 	} */
+/* 	return 1.0 * (float)var * 0.01; */
+/* } */
 
 int getBuff(char *argv[], int currArg, int argvLen)
 {
@@ -815,7 +815,10 @@ int main(int argc, char *argv[])
 
 	switch (cardType) {
 	case ARTS:
-		total = total * toPercent(artsMod);
+		if (artsMod) {
+			artsMod = 1.0 + (float)artsMod * 0.01;
+			total = total * artsMod;
+		}
 
 		switch (npType) {
 		case AOE:
@@ -836,7 +839,10 @@ int main(int argc, char *argv[])
 		}
 		break;
 	case BUSTER:
-		total = 1.0 + (float)busterMod * 0.01;
+		if (busterMod) {
+			busterMod = 1.0 + (float)busterMod * 0.01;
+			total = total * busterMod;
+		}
 		cardMod = 1.5;
 
 		switch (npType) {
@@ -860,7 +866,10 @@ int main(int argc, char *argv[])
 		break;
 
 	case QUICK:
-		total = total * toPercent(quickMod);
+		if (quickMod) {
+			quickMod = 1.0 * (float)quickMod * 0.01;
+			total = total * quickMod;
+		}
 		cardMod = 0.8;
 
 		switch (npType) {
