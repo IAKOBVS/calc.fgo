@@ -1,0 +1,40 @@
+#!/usr/bin/dash
+RAM_LIST_SERVANTS=/tmp/list_servant_names.json
+
+grepName=$(echo "$1" | sed 's/-/\ /g')
+namesNum=$(echo "$grepName" | wc -w)
+case $namesNum in
+	'1')
+		whichGrep(){ grep -i -F -m 1 "$1" "$RAM_LIST_SERVANTS";};;
+	'2')
+		grepFirst=$(echo "$grepName" | cut -d' ' -f1)
+		grepSecond=$(echo "$grepName" | cut -d' ' -f2)
+		whichGrep(){ grep -i -F "$grepFirst" "$RAM_LIST_SERVANTS" | grep -i -F -m 1 "$grepSecond";};;
+	'3')
+		grepFirst=$(echo "$grepName" | cut -d' ' -f1)
+		grepSecond=$(echo "$grepName" | cut -d' ' -f2)
+		grepThird=$(echo "$grepName" | cut -d' ' -f3)
+		whichGrep(){ grep -i -F "$grepFirst" "$RAM_LIST_SERVANTS" | grep -i -F "$grepSecond" | grep -i -F -m 1 "$grepThird";};;
+esac
+servantInfo=$(whichGrep "$@")
+otherInfo=$(echo "$servantInfo" | awk '{print $3, "at"$4}')
+otherCalc=$(echo "$@" | cut -d' ' -f2-)
+whereIsTargetType=1
+whereIsCardType=2
+cardType=$(echo "$servantInfo" | cut -d' ' -f"$whereIsCardType")
+targetType=$(echo "$servantInfo" | cut -d' ' -f"$whereIsTargetType")
+case "$cardType" in
+	'cardArts')
+		cardType=aa;;
+	'cardBuster')
+		cardType=bb;;
+	'cardQuick')
+		cardType=qq;;
+esac
+case "$targetType" in
+	'attackEnemyAll')
+		targetType=aoe;;
+	'attackEnemyOne')
+		targetType=st;;
+esac
+calc $cardType $targetType $otherInfo $otherCalc
