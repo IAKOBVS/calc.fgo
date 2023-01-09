@@ -1,6 +1,5 @@
 #!/usr/bin/dash
 RAM_LIST_SERVANTS=/tmp/list_servant_names.json
-
 grepName=$(echo "$1" | sed 's/-/\ /g')
 namesNum=$(echo "$grepName" | wc -w)
 case $namesNum in
