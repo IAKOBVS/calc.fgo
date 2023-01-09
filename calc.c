@@ -139,7 +139,6 @@ int main(int argc, char *argv[])
 		printf("%s\n", "cd = critical damage");
 		exit(0);
 	}
-
 	int noCardType = 1;
 
 	int attackStat = 0;
@@ -567,6 +566,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	/* checkclass */
 	float classMod = 1;
 	float classAdv = 1;
 
@@ -733,7 +733,7 @@ int main(int argc, char *argv[])
 		case CAVALRY:
 			classAdv = 0.5;
 			break;
-		cefault:
+		case 0:
 			switch (classEnemy) {
 			case ALTER_EGO:
 				classAdv = 2;
@@ -751,10 +751,6 @@ int main(int argc, char *argv[])
 		classAdv = 2;
 	} else if (classEnemy == ALTER_EGO) {
 
-	}
-
-	if (classEnemy == BERSERKER) {
-		classAdv = 2;
 	}
 
 	float attributeMod = 1;
@@ -828,6 +824,7 @@ int main(int argc, char *argv[])
 			} else {
 				npMod = whichNpMod(np, 4.5, 6, 6.75, 7.125, 7.5);
 			}
+
 			break;
 		case ST:
 			if (npStrengthening) {
