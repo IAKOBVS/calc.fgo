@@ -36,20 +36,20 @@
 #define ST 1
 #define AOE 2
 
-/* void printstr(char str[]) */
-/* { */
-/* 	printf("%s\n", str); */
-/* } */
+inline void printstr(char str[])
+{
+	printf("%s\n", str);
+}
 
-/* void printint(int var) */
-/* { */
-/* 	printf("%d\n", var); */
-/* } */
+inline void printint(int var)
+{
+	printf("%d\n", var);
+}
 
-/* void printfl(float var) */
-/* { */
-/* 	printf("%f\n", var); */
-/* } */
+inline void printfl(float var)
+{
+	printf("%f\n", var);
+}
 
 float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault)
 {
@@ -66,14 +66,6 @@ float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float ca
 		return caseDefault;
 	}
 }
-
-/* float toPercent(int var) */
-/* { */
-/* 	if (!var) { */
-/* 		return 1.0; */
-/* 	} */
-/* 	return 1.0 * (float)var * 0.01; */
-/* } */
 
 int getBuff(char *argv[], int currArg, int argvLen)
 {
@@ -116,27 +108,27 @@ int countTilNull(char *argv[], int currArgv)
 int main(int argc, char *argv[])
 {
 	if (!argv[1]) {
-		printf("%s\n\n", "Usage: calc arguments");
-		printf("%s\n", "arguments:");
-		printf("%s\n", "bb = buster servant");
-		printf("%s\n", "aa = arts servant");
-		printf("%s\n\n", "qq = quick servant");
-		printf("%s\n", "st = single target np");
-		printf("%s\n\n", "aoe = aoe np");
-		printf("%s\n", "at = attack stat");
-		printf("%s\n", "au = attack up");
-		printf("%s\n\n", "ad = attack down");
-		printf("%s\n", "du = defense up");
-		printf("%s\n", "dd = defense down");
-		printf("%s\n\n", "di = defense ignore");
-		printf("%s\n", "artsMod = arts up");
-		printf("%s\n", "bm = buster up");
-		printf("%s\n\n", "qm = quick up");
-		printf("%s\n", "se = super effective; e.g., gilgamesh, se150");
-		printf("%s\n", "sr = np strengthening");
-		printf("%s\n", "nu = np damage up");
-		printf("%s\n", "pm = powermod; e.g., arjuna alter, pm50");
-		printf("%s\n", "cd = critical damage");
+		printf("Usage: calc arguments\n\n");
+		printf("arguments:\n");
+		printf("bb = buster servant\n");
+		printf("aa = arts servant\n");
+		printf("qq = quick servant\n\n");
+		printf("st = single target np\n");
+		printf("aoe = aoe np\n\n");
+		printf("at = attack stat\n");
+		printf("au = attack up\n");
+		printf("ad = attack down\n\n");
+		printf("du = defense up\n");
+		printf("dd = defense down\n");
+		printf("di = defense ignore\n\n");
+		printf("artsMod = arts up\n");
+		printf("bm = buster up\n");
+		printf("qm = quick up\n\n");
+		printf("se = super effective; e.g., gilgamesh, se150\n");
+		printf("sr = np strengthening\n");
+		printf("nu = np damage up\n");
+		printf("pm = powermod; e.g., arjuna alter, pm50\n");
+		printf("cd = critical damage\n");
 		exit(0);
 	}
 	int noCardType = 1;
