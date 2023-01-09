@@ -36,9 +36,9 @@
 #define ST 1
 #define AOE 2
 
-inline void printstr(char str[])
+inline void printdbl(double var)
 {
-	printf("%s\n", str);
+	printf("%f\n", var);
 }
 
 inline void printint(int var)
@@ -176,8 +176,6 @@ int main(int argc, char *argv[])
 	int busterFirst = 0;
 	int busterSecond = 0;
 	int busterThird = 0;
-
-	int busterAt = 0;
 
 	int quickFirst = 0;
 	int quickSecond = 0;
