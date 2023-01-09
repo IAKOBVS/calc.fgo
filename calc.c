@@ -566,10 +566,10 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	/* checkclass */
 	float classMod = 1;
 	float classAdv = 1;
 
+	/* checkclass */
 	switch (class) {
 	case SABER:
 		switch (classEnemy) {
@@ -755,6 +755,7 @@ int main(int argc, char *argv[])
 
 	float attributeMod = 1;
 
+	/* checkattribute */
 	switch (attribute) {
 	case MAN:
 		switch (attributeEnemy) {
@@ -809,6 +810,7 @@ int main(int argc, char *argv[])
 		printf("%s\n", "attack stat not specified!");
 	}
 
+	/* checkcardtype */
 	switch (cardType) {
 	case ARTS:
 		if (artsMod) {
@@ -924,6 +926,7 @@ int main(int argc, char *argv[])
 	float cardSecond = 1;
 	float cardThird = 1;
 
+	/* checkchain */
 	if (!noChain) {
 		if (npAt != 1) {
 			switch (cardType) {
