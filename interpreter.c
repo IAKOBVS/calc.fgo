@@ -3,11 +3,14 @@
 #include <unistd.h>
 #include <string.h>
 #include <locale.h>
+#include <ctype.h>
 
 #define NP_TYPE argv[1]
 #define CARD_TYPE argv[2]
 #define CLASS argv[3]
 #define MAX_ATK argv[4]
+#define ATTRIBUTE argv[5]
+#define AFTER 6
 
 #define BASE_MULTIPLIER 0.23
 
@@ -84,7 +87,7 @@ int getBuff(char *argv[], int currArg, int argvLen)
 	return (strtol(numInString, NULL, 10));
 }
 
-int inStr(int substrLen, char substr[], char *argv[], int currArgv, int argvLen)
+int startsWith(int substrLen, char substr[], char *argv[], int currArgv, int argvLen)
 {
 	if (argv[currArgv][0] != substr[0]) {
 		return 0;
@@ -120,6 +123,7 @@ int main(int argc, char *argv[])
 	int classEnemy = 0;
 
 	/* int classType = 0; */
+
 	int classTypeEnemy = 0;
 
 	int cardType = 0;
@@ -165,205 +169,235 @@ int main(int argc, char *argv[])
 
 	int npAt = 0;
 
+	/* parsenptype */
 	if (!strcmp(NP_TYPE, "attackEnemyAll")) {
 		npType = AOE;
 	} else if (!strcmp(NP_TYPE, "attackEnemyOne")) {
 		npType = ST;
 	}
 
-	if (!strcmp(CARD_TYPE, "cardArts")) {
-		cardType = ARTS;
-	} else if (!strcmp(CARD_TYPE, "cardBuster")) {
-		cardType = BUSTER;
-	} else if (!strcmp(CARD_TYPE, "cardQuick")) {
-		cardType = QUICK;
-	}
-
+	/* parseattackstat */
 	attackStat = strtol(MAX_ATK, NULL, 10);
 
-	if (!strcmp(CLASS, "saber")) {
-		class = SABER;
-		/* classType = KNIGHT; */
-
-	} else if (!strcmp(CLASS, "archer")) {
-		class = ARCHER;
-		/* classType = KNIGHT; */
-
-	} else if (!strcmp(CLASS, "lancer")) {
-		class = LANCER;
-		/* classType = KNIGHT; */
-
-	} else if (!strcmp(CLASS, "rider")) {
-		class = RIDER;
-		/* classType = CAVALRY; */
-
-	} else if (!strcmp(CLASS, "assassin")) {
-		class = ASSASSIN;
-		/* classType = CAVALRY; */
-
-	} else if (!strcmp(CLASS, "caster")) {
-		class = CASTER;
-		/* classType = CAVALRY; */
-
-	} else if (!strcmp(CLASS, "berserker")) {
-		class = BERSERKER;
-
-	} else if (!strcmp(CLASS, "avenger")) {
-		class = AVENGER;
-
-	} else if (!strcmp(CLASS, "alterEgo")) {
-		class = ALTER_EGO;
-
-	} else if (!strcmp(CLASS, "moonCancer")) {
-		class = MOON_CANCER;
-
-	} else if (!strcmp(CLASS, "foreigner")) {
-		class = FOREIGNER;
-
-	} else if (!strcmp(CLASS, "pretender")) {
-		class = PRETENDER;
-	}
-
-	for (int currArgv = 1; currArgv < argc; ++currArgv) {
+	/* parseother */
+		for (int currArgv = 1; currArgv < argc; ++currArgv) {
 
 		int argvLen = countTilNull(argv, currArgv);
 
-		if (inStr(2, "au", argv, currArgv, argvLen)) {
+		if (startsWith(2, "au", argv, currArgv, argvLen)) {
 			attackUp = attackUp + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr(2, "ad", argv, currArgv, argvLen)) {
+		} else if (startsWith(2, "ad", argv, currArgv, argvLen)) {
 			attackDown = attackDown - getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr(2, "dd", argv, currArgv, argvLen)) {
+		} else if (startsWith(2, "dd", argv, currArgv, argvLen)) {
 			defenseDown = defenseDown + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr(2, "du", argv, currArgv, argvLen)) {
+		} else if (startsWith(2, "du", argv, currArgv, argvLen)) {
 			defenseUp = defenseUp + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr(2, "di", argv, currArgv, argvLen)) {
+		} else if (startsWith(2, "di", argv, currArgv, argvLen)) {
 			defenseIgnore = 1;
 
-		} else if (inStr(2, "bm", argv, currArgv, argvLen)) {
+		} else if (startsWith(2, "bm", argv, currArgv, argvLen)) {
 			busterMod = busterMod + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr(2, "qMod", argv, currArgv, argvLen)) {
+		} else if (startsWith(2, "qMod", argv, currArgv, argvLen)) {
 			quickMod = quickMod + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr(2, "am", argv, currArgv, argvLen)) {
+		} else if (startsWith(2, "am", argv, currArgv, argvLen)) {
 			artsMod = artsMod + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr(2, "pm", argv, currArgv, argvLen)) {
+		} else if (startsWith(2, "pm", argv, currArgv, argvLen)) {
 			powerMod = powerMod + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr(2, "nu", argv, currArgv, argvLen)) {
+		} else if (startsWith(2, "nu", argv, currArgv, argvLen)) {
 			npUp = npUp + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr(2, "cd", argv, currArgv, argvLen)) {
+		} else if (startsWith(2, "cd", argv, currArgv, argvLen)) {
 			criticalDamage = criticalDamage + getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr(2, "se", argv, currArgv, argvLen)) {
+		} else if (startsWith(2, "se", argv, currArgv, argvLen)) {
 			superEffective = getBuff(argv, currArgv, argvLen) / 100.0;
 
-		} else if (inStr(2, "at", argv, currArgv, argvLen)) {
+		} else if (startsWith(2, "at", argv, currArgv, argvLen)) {
 			attackStat = getBuff(argv, currArgv, argvLen) + 1000;
 
-		} else if (inStr(2, "np", argv, currArgv, argvLen)) {
+		} else if (isdigit(argv[currArgv][0])) {
+			attackStat = strtol(argv[currArgv], NULL, 10);
+
+		} else if (startsWith(2, "np", argv, currArgv, argvLen)) {
 			np = getBuff(argv, currArgv, argvLen);
 
-		} else if (inStr(2, "sr", argv, currArgv, argvLen)) {
+		} else if (startsWith(2, "sr", argv, currArgv, argvLen)) {
 			npStrengthening = 1;
 
-		} else if (inStr(2, "vi", argv, currArgv, argvLen)) {
-			busterMod = busterMod + 100;
+		} else if (startsWith(2, "vi", argv, currArgv, argvLen)) {
+			busterMod = busterMod + 50;
+			if (cardType == BUSTER) {
+				criticalDamage = criticalDamage + 50;
+			}
+
+		} else if (startsWith(2, "ss", argv, currArgv, argvLen)) {
+			attackUp = attackUp + 20;
+			busterMod = busterMod + 15;
+			quickMod = quickMod + 65;
 			if (cardType == BUSTER) {
 				criticalDamage = criticalDamage + 100;
 			}
 
-		} else if (inStr(2, "ss", argv, currArgv, argvLen)) {
-			attackUp = attackUp + 40;
-			busterMod = busterMod + 30;
-			quickMod = quickMod + 130;
-			if (cardType == BUSTER) {
-				criticalDamage = criticalDamage + 200;
-			}
-
-		} else if (inStr(2, "sk", argv, currArgv, argvLen)) {
-			attackUp = attackUp + 60;
-			quickMod = quickMod + 100;
+		} else if (startsWith(2, "sk", argv, currArgv, argvLen)) {
+			attackUp = attackUp + 30;
+			quickMod = quickMod + 50;
 			if (cardType == QUICK) {
-				criticalDamage = criticalDamage + criticalDamage + 200;
+				criticalDamage = criticalDamage + criticalDamage + 100;
 			}
 
-		} else if (inStr(2, "ca", argv, currArgv, argvLen)) {
-			artsMod = artsMod + 100;
-			attackUp = attackUp + 40;
+		} else if (startsWith(2, "ca", argv, currArgv, argvLen)) {
+			artsMod = artsMod + 50;
+			attackUp = attackUp + 20;
 
 		} else {
 
-			if (!cardType) {
-				if (inStr(2, "st", argv, currArgv, argvLen)) {
+			if (!npType) {
+
+				if (startsWith(2, "st", argv, currArgv, argvLen) || startsWith(14, "attackEnemyAll", argv, currArgv, argvLen)) {
 					cardType = ST;
 					continue;
 
-				} else if (inStr(2, "ao", argv, currArgv, argvLen)) {
+				} else if (startsWith(2, "ao", argv, currArgv, argvLen) || startsWith(14, "attackEnemyOne", argv, currArgv, argvLen)) {
 					cardType = AOE;
+					continue;
+				}
+			}
+
+			if (!cardType) {
+
+				if (startsWith(2, "aa", argv, currArgv, argvLen) || startsWith(7, "cardArt", argv, currArgv, argvLen)) {
+					cardType = ARTS;
+					continue;
+
+				} else if (startsWith(2, "bb", argv, currArgv, argvLen) || startsWith(7, "cardBus", argv, currArgv, argvLen)) {
+					cardType = BUSTER;
+					continue;
+
+				} else if (startsWith(2, "qq", argv, currArgv, argvLen) || startsWith(7, "cardQui", argv, currArgv, argvLen)) {
+					cardType = QUICK;
+					continue;
+				}
+			}
+
+			if (!class) {
+
+				if (startsWith(3, "sab", argv, currArgv, argvLen)) {
+					class = SABER;
+					/* classType = KNIGHT; */
+					continue;
+
+				} else if (startsWith(3, "arc", argv, currArgv, argvLen)) {
+					class = ARCHER;
+					/* classType = KNIGHT; */
+					continue;
+
+				} else if (startsWith(3, "lan", argv, currArgv, argvLen)) {
+					class = LANCER;
+					/* classType = KNIGHT; */
+					continue;
+
+				} else if (startsWith(3, "rid", argv, currArgv, argvLen)) {
+					class = RIDER;
+					/* classType = CAVALRY; */
+					continue;
+
+				} else if (startsWith(3, "ass", argv, currArgv, argvLen)) {
+					class = ASSASSIN;
+					/* classType = CAVALRY; */
+					continue;
+
+				} else if (startsWith(3, "cas", argv, currArgv, argvLen)) {
+					class = CASTER;
+					/* classType = CAVALRY; */
+					continue;
+
+				} else if (startsWith(3, "zer", argv, currArgv, argvLen)) {
+					class = BERSERKER;
+					continue;
+
+				} else if (startsWith(3, "ave", argv, currArgv, argvLen)) {
+					class = AVENGER;
+					continue;
+
+				} else if (startsWith(3, "alt", argv, currArgv, argvLen)) {
+					class = ALTER_EGO;
+					continue;
+
+				} else if (startsWith(3, "moo", argv, currArgv, argvLen)) {
+					class = MOON_CANCER;
+					continue;
+
+				} else if (startsWith(3, "for", argv, currArgv, argvLen)) {
+					class = FOREIGNER;
+					continue;
+
+				} else if (startsWith(3, "pre", argv, currArgv, argvLen)) {
+					class = PRETENDER;
 					continue;
 				}
 			}
 
 			if (!classEnemy) {
 
-				if (inStr(4, "esab", argv, currArgv, argvLen)) {
+				if (startsWith(4, "esab", argv, currArgv, argvLen)) {
 					classEnemy = SABER;
 					classTypeEnemy = KNIGHT;
 					continue;
 
-				} else if (inStr(4, "earc", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "earc", argv, currArgv, argvLen)) {
 					classEnemy = ARCHER;
 					classTypeEnemy = KNIGHT;
 					continue;
 
-				} else if (inStr(4, "elan", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "elan", argv, currArgv, argvLen)) {
 					classEnemy = LANCER;
 					classTypeEnemy = KNIGHT;
 					continue;
 
-				} else if (inStr(4, "erid", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "erid", argv, currArgv, argvLen)) {
 					classEnemy = RIDER;
 					classTypeEnemy = CAVALRY;
 					continue;
 
-				} else if (inStr(4, "eass", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "eass", argv, currArgv, argvLen)) {
 					classEnemy = ASSASSIN;
 					classTypeEnemy = CAVALRY;
 					continue;
 
-				} else if (inStr(4, "ecas", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "ecas", argv, currArgv, argvLen)) {
 					classEnemy = CASTER;
 					classTypeEnemy = CAVALRY;
 					continue;
 
-				} else if (inStr(4, "ezer", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "ezer", argv, currArgv, argvLen)) {
 					classEnemy = BERSERKER;
 					continue;
 
-				} else if (inStr(4, "erul", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "erul", argv, currArgv, argvLen)) {
 					classEnemy = RULER;
 					continue;
 
-				} else if (inStr(4, "eave", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "eave", argv, currArgv, argvLen)) {
 					classEnemy = AVENGER;
 					continue;
 
-				} else if (inStr(4, "emoo", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "emoo", argv, currArgv, argvLen)) {
 					classEnemy = MOON_CANCER;
 					continue;
 
-				} else if (inStr(4, "efor", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "efor", argv, currArgv, argvLen)) {
 					classEnemy = FOREIGNER;
 					continue;
 
-				} else if (inStr(4, "epre", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "epre", argv, currArgv, argvLen)) {
 					classEnemy = PRETENDER;
 					continue;
 				}
@@ -371,23 +405,23 @@ int main(int argc, char *argv[])
 
 			if (!attribute) {
 
-				if (inStr(3, "man", argv, currArgv, argvLen)) {
+				if (startsWith(3, "man", argv, currArgv, argvLen) || startsWith(12, "attributeMan", argv, currArgv, argvLen)) {
 					attribute = MAN;
 					continue;
 
-				} else if (inStr(3, "sky", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "sky", argv, currArgv, argvLen) || startsWith(12, "attributeSky", argv, currArgv, argvLen)) {
 					attribute = SKY;
 					continue;
 
-				} else if (inStr(3, "ear", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "ear", argv, currArgv, argvLen) || startsWith(12, "attributeEar", argv, currArgv, argvLen)) {
 					attribute = EARTH;
 					continue;
 
-				} else if (inStr(3, "star", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "star", argv, currArgv, argvLen) || startsWith(12, "attributeSta", argv, currArgv, argvLen)) {
 					attribute = STAR;
 					continue;
 
-				} else if (inStr(3, "beast", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "beast", argv, currArgv, argvLen) || startsWith(12, "attributeBea", argv, currArgv, argvLen)) {
 					attribute = BEAST;
 					continue;
 				}
@@ -395,23 +429,23 @@ int main(int argc, char *argv[])
 
 			if (!attributeEnemy) {
 
-				if (inStr(4, "eman", argv, currArgv, argvLen)) {
+				if (startsWith(4, "eman", argv, currArgv, argvLen)) {
 					attributeEnemy = MAN;
 					continue;
 
-				} else if (inStr(4, "esky", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "esky", argv, currArgv, argvLen)) {
 					attributeEnemy = SKY;
 					continue;
 
-				} else if (inStr(4, "eear", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "eear", argv, currArgv, argvLen)) {
 					attributeEnemy = EARTH;
 					continue;
 
-				} else if (inStr(4, "esta", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "esta", argv, currArgv, argvLen)) {
 					attributeEnemy = STAR;
 					continue;
 
-				} else if (inStr(4, "ebea", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "ebea", argv, currArgv, argvLen)) {
 					attributeEnemy = BEAST;
 					continue;
 				}
@@ -419,7 +453,7 @@ int main(int argc, char *argv[])
 
 			if (noChain) {
 
-				if (inStr(4, "npbb", argv, currArgv, argvLen)) {
+				if (startsWith(4, "npbb", argv, currArgv, argvLen)) {
 
 					npAt = 1;
 
@@ -439,7 +473,7 @@ int main(int argc, char *argv[])
 					noChain = 0;
 					continue;
 
-				} else if (inStr(4, "npaa", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "npaa", argv, currArgv, argvLen)) {
 
 					npAt = 1;
 
@@ -459,7 +493,7 @@ int main(int argc, char *argv[])
 					noChain = 0;
 					continue;
 
-				} else if (inStr(4, "npqq", argv, currArgv, argvLen)) {
+				} else if (startsWith(4, "npqq", argv, currArgv, argvLen)) {
 
 					npAt = 1;
 
@@ -479,7 +513,7 @@ int main(int argc, char *argv[])
 					noChain = 0;
 					continue;
 
-				} else if (inStr(3, "bbb", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "bbb", argv, currArgv, argvLen)) {
 
 					busterFirst = 1;
 					busterSecond = 1;
@@ -487,7 +521,7 @@ int main(int argc, char *argv[])
 					noChain = 0;
 					continue;
 
-				} else if (inStr(3, "bba", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "bba", argv, currArgv, argvLen)) {
 
 					busterFirst = 1;
 					busterSecond = 1;
@@ -495,7 +529,7 @@ int main(int argc, char *argv[])
 					noChain = 0;
 					continue;
 
-				} else if (inStr(3, "bbq", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "bbq", argv, currArgv, argvLen)) {
 
 					busterFirst = 1;
 					busterSecond = 1;
@@ -503,7 +537,7 @@ int main(int argc, char *argv[])
 					noChain = 0;
 					continue;
 
-				} else if (inStr(3, "bab", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "bab", argv, currArgv, argvLen)) {
 
 					busterFirst = 1;
 					artsSecond = 1;
@@ -511,7 +545,7 @@ int main(int argc, char *argv[])
 					noChain = 0;
 					continue;
 
-				} else if (inStr(3, "bqb", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "bqb", argv, currArgv, argvLen)) {
 
 					busterFirst = 1;
 					quickSecond = 1;
