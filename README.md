@@ -6,7 +6,7 @@ gcc calc.c -o /path/to/bins
 ```
 ## Usage:
 ```
-calc.c arguments
+autocalc arguments
 ```
 ## Arguments:
 ```
