@@ -417,11 +417,11 @@ int main(int argc, char *argv[])
 					attribute = EARTH;
 					continue;
 
-				} else if (startsWith(3, "star", argv, currArgv, argvLen) || startsWith(12, "attributeSta", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "sta", argv, currArgv, argvLen) || startsWith(12, "attributeSta", argv, currArgv, argvLen)) {
 					attribute = STAR;
 					continue;
 
-				} else if (startsWith(3, "beast", argv, currArgv, argvLen) || startsWith(12, "attributeBea", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "bea", argv, currArgv, argvLen) || startsWith(12, "attributeBea", argv, currArgv, argvLen)) {
 					attribute = BEAST;
 					continue;
 				}
