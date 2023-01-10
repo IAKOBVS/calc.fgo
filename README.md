@@ -8,15 +8,20 @@ gcc calc.c -o /path/to/bins
 ```
 ## Usage:
 ```
-autocalc servant arguments
+autocalc <arguments>
 ```
 ## Arguments:
 ```
 atk = atk stat
+au = atk up
 am = arts up
 bm = buster up
 qm = quick up
 np = np damage
 pm = powermod
 se = special attack (e.g., se150)
+
+enemy
+attribute; e.g., eearth, esky
+class; e.g., esaber, eavenger
 ```
