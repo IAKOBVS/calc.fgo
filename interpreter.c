@@ -876,12 +876,12 @@ int main(int argc, char *argv[])
 	total = total * BASE_MULTIPLIER;
 	total = total * classAdv * classMod * attributeMod * ((float)attackStat) * cardMod;
 
-	printf("classAdv is %f\n", classAdv);
-	printf("classMod is %f\n", classMod);
-	printf("attributeMod is %f\n", attributeMod);
-	printf("attackStat is %i\n", attackStat);
+		/* printf("classAdv is %f\n", classAdv); */
+		/* printf("classMod is %f\n", classMod); */
+		/* printf("attributeMod is %f\n", attributeMod); */
+		/* printf("attackStat is %i\n", attackStat); */
 
-	printf("total is %f\n", total);
+		/* printf("total is %f\n", total); */
 
 	/* total = total * BASE_MULTIPLIER * (1.0 + ((float)(attackUp + defenseDown
 	 * - attackDown - defenseUp)) * 0.01) * classAdv * classMod * attributeMod *
