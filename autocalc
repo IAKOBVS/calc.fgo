@@ -25,7 +25,7 @@ whereIsAtt=5
 cardType=$(echo "$servantInfo" | cut -d' ' -f"$whereIsCardType")
 targetType=$(echo "$servantInfo" | cut -d' ' -f"$whereIsTargetType")
 class=$(echo "$servantInfo" | cut -d' ' -f"$whereIsClass")
-attackStat=$(echo "$servantInfo" | awk -v a="$whereIsAttackStat" '{print "at"$a}')
+attackStat=$(echo "$servantInfo" | awk -v a="$whereIsAttackStat" '{print "atk"$a}')
 attribute=$(echo "$servantInfo" | cut -d' ' -f"$whereIsAtt")
 case "$cardType" in
 	'cardArts')
@@ -53,5 +53,4 @@ case "$attribute" in
 	'attributeBeast')
 		attribute='bea';;
 esac
-# calc $cardType $targetType $class $attribute $attackStat $otherCalc
-echo $cardType $targetType $class $attribute $attackStat $otherCalc
+interpreter $cardType $targetType $class $attribute $attackStat $otherCalc

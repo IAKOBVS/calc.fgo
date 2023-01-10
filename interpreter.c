@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <ctype.h>
+#include <string.h>
 
 #define BASE_MULTIPLIER 0.23
 
@@ -73,12 +74,34 @@ int getBuff(char *argv[], int currArg, int argvLen)
 {
 	char numInString[argvLen];
 	int j = 0;
-	for (int i = 2; i<argvLen; ++i) {
+	for (int i = 2; i <= argvLen; ++i) {
 		numInString[j] = argv[currArg][i];
 		j++;
 	}
 	return (strtol(numInString, NULL, 10));
 }
+
+int getNum(char *argv[], int currArg, int argvLen, int startAt)
+{
+	char numInString[argvLen];
+	int j = 0;
+	for (int i = startAt; i <= argvLen; ++i) {
+		numInString[j] = argv[currArg][i];
+		j++;
+	}
+	return (strtol(numInString, NULL, 10));
+}
+
+/* int copyArgv(char *argv[], int currArg, int argvLen) */
+/* { */
+/* 	char numInString[argvLen]; */
+/* 	int j = 0; */
+/* 	for (int i = 2; i<argvLen; ++i) { */
+/* 		numInString[j] = argv[currArg][i]; */
+/* 		j++; */
+/* 	} */
+/* 	return (strtol(numInString, NULL, 10)); */
+/* } */
 
 int startsWith(int substrLen, char substr[], char *argv[], int currArgv, int argvLen)
 {
@@ -88,7 +111,7 @@ int startsWith(int substrLen, char substr[], char *argv[], int currArgv, int arg
 
 	int substrEnd = substrLen - 1;
 
-	for (int i = 0; i <= argvLen; ++i) {
+	for (int i = 0; i<argvLen; ++i) {
 		if (argv[currArgv][i] == substr[i]) {
 			if (i == substrEnd) {
 				return 1;
@@ -219,11 +242,11 @@ int main(int argc, char *argv[])
 		} else if (startsWith(2, "se", argv, currArgv, argvLen)) {
 			superEffective = getBuff(argv, currArgv, argvLen) / 100.0;
 
-		} else if (startsWith(2, "at", argv, currArgv, argvLen)) {
-			attackStat = attackStat * (getBuff(argv, currArgv, argvLen) + 1000);
+		} else if (startsWith(3, "atk", argv, currArgv, argvLen)) {
+			attackStat = getNum(argv, currArgv, argvLen, 3);
 
 		/* } else if (isdigit(argv[currArgv][0])) { */
-		/* 	attackStat = copyArgv(argv, currArgv, argvLen); */
+		/* 	attackStat = copyArgv(argv, currArgv, argvLen) + 1000; */
 
 		} else if (startsWith(2, "np", argv, currArgv, argvLen)) {
 			np = getBuff(argv, currArgv, argvLen);
@@ -260,11 +283,11 @@ int main(int argc, char *argv[])
 
 			if (!npType) {
 
-				if (startsWith(2, "st", argv, currArgv, argvLen) || startsWith(14, "attackEnemyAll", argv, currArgv, argvLen)) {
+				if (startsWith(2, "st", argv, currArgv, argvLen)) {
 					npType = ST;
 					continue;
 
-				} else if (startsWith(2, "ao", argv, currArgv, argvLen) || startsWith(14, "attackEnemyOne", argv, currArgv, argvLen)) {
+				} else if (startsWith(2, "ao", argv, currArgv, argvLen)) {
 					npType = AOE;
 					continue;
 				}
@@ -272,15 +295,15 @@ int main(int argc, char *argv[])
 
 			if (!cardType) {
 
-				if (startsWith(2, "aa", argv, currArgv, argvLen) || startsWith(7, "cardArt", argv, currArgv, argvLen)) {
+				if (startsWith(2, "aa", argv, currArgv, argvLen)) {
 					cardType = ARTS;
 					continue;
 
-				} else if (startsWith(2, "bb", argv, currArgv, argvLen) || startsWith(7, "cardBus", argv, currArgv, argvLen)) {
+				} else if (startsWith(2, "bb", argv, currArgv, argvLen)) {
 					cardType = BUSTER;
 					continue;
 
-				} else if (startsWith(2, "qq", argv, currArgv, argvLen) || startsWith(7, "cardQui", argv, currArgv, argvLen)) {
+				} else if (startsWith(2, "qq", argv, currArgv, argvLen)) {
 					cardType = QUICK;
 					continue;
 				}
@@ -404,23 +427,23 @@ int main(int argc, char *argv[])
 
 			if (!attribute) {
 
-				if (startsWith(3, "man", argv, currArgv, argvLen) || startsWith(12, "attributeMan", argv, currArgv, argvLen)) {
+				if (startsWith(3, "man", argv, currArgv, argvLen)) {
 					attribute = MAN;
 					continue;
 
-				} else if (startsWith(3, "sky", argv, currArgv, argvLen) || startsWith(12, "attributeSky", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "sky", argv, currArgv, argvLen)) {
 					attribute = SKY;
 					continue;
 
-				} else if (startsWith(3, "ear", argv, currArgv, argvLen) || startsWith(12, "attributeEar", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "ear", argv, currArgv, argvLen)) {
 					attribute = EARTH;
 					continue;
 
-				} else if (startsWith(3, "sta", argv, currArgv, argvLen) || startsWith(12, "attributeSta", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "sta", argv, currArgv, argvLen)) {
 					attribute = STAR;
 					continue;
 
-				} else if (startsWith(3, "bea", argv, currArgv, argvLen) || startsWith(12, "attributeBea", argv, currArgv, argvLen)) {
+				} else if (startsWith(3, "bea", argv, currArgv, argvLen)) {
 					attribute = BEAST;
 					continue;
 				}
@@ -838,7 +861,6 @@ int main(int argc, char *argv[])
 		total = total *	(1.0 + ((float)(attackUp + defenseDown - attackDown - defenseUp)) * 0.01);
 	}
 	total = total * BASE_MULTIPLIER;
-	printf("total is %f\n", total);
 	total = total * classAdv * classMod * attributeMod * ((float)attackStat) * cardMod;
 
 	printf("classAdv is %f\n", classAdv);
