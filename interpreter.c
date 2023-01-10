@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
 #include <locale.h>
 #include <ctype.h>
 
@@ -10,6 +9,7 @@
 #define CLASS argv[3]
 #define MAX_ATK argv[4]
 #define ATTRIBUTE argv[5]
+
 #define AFTER 6
 
 #define BASE_MULTIPLIER 0.23
@@ -155,13 +155,13 @@ int main(int argc, char *argv[])
 
 	int noChain = 1;
 
-	int artsFirst = 0;
-	int artsSecond = 0;
-	int artsThird = 0;
-
 	int busterFirst = 0;
 	int busterSecond = 0;
 	int busterThird = 0;
+
+	int artsFirst = 0;
+	int artsSecond = 0;
+	int artsThird = 0;
 
 	int quickFirst = 0;
 	int quickSecond = 0;
@@ -169,18 +169,12 @@ int main(int argc, char *argv[])
 
 	int npAt = 0;
 
-	/* parsenptype */
-	if (!strcmp(NP_TYPE, "attackEnemyAll")) {
-		npType = AOE;
-	} else if (!strcmp(NP_TYPE, "attackEnemyOne")) {
-		npType = ST;
-	}
+	int critAll = 0;
+	int critFirst = 0;
+	int critSecond = 0;
+	int critThird = 0;
 
-	/* parseattackstat */
-	attackStat = strtol(MAX_ATK, NULL, 10);
-
-	/* parseother */
-		for (int currArgv = 1; currArgv < argc; ++currArgv) {
+	for (int currArgv = 1; currArgv < argc; ++currArgv) {
 
 		int argvLen = countTilNull(argv, currArgv);
 
@@ -202,7 +196,7 @@ int main(int argc, char *argv[])
 		} else if (startsWith(2, "bm", argv, currArgv, argvLen)) {
 			busterMod = busterMod + getBuff(argv, currArgv, argvLen);
 
-		} else if (startsWith(2, "qMod", argv, currArgv, argvLen)) {
+		} else if (startsWith(2, "qm", argv, currArgv, argvLen)) {
 			quickMod = quickMod + getBuff(argv, currArgv, argvLen);
 
 		} else if (startsWith(2, "am", argv, currArgv, argvLen)) {
@@ -216,6 +210,18 @@ int main(int argc, char *argv[])
 
 		} else if (startsWith(2, "cd", argv, currArgv, argvLen)) {
 			criticalDamage = criticalDamage + getBuff(argv, currArgv, argvLen);
+
+		} else if (startsWith(4, "crit", argv, currArgv, argvLen)) {
+			critAll = 1;
+
+		} else if (startsWith(3, "cr1", argv, currArgv, argvLen)) {
+			critFirst = 1;
+
+		} else if (startsWith(3, "cr2", argv, currArgv, argvLen)) {
+			critSecond = 1;
+
+		} else if (startsWith(3, "cr3", argv, currArgv, argvLen)) {
+			critThird = 1;
 
 		} else if (startsWith(2, "se", argv, currArgv, argvLen)) {
 			superEffective = getBuff(argv, currArgv, argvLen) / 100.0;
@@ -453,105 +459,50 @@ int main(int argc, char *argv[])
 
 			if (noChain) {
 
-				if (startsWith(4, "npbb", argv, currArgv, argvLen)) {
-
-					npAt = 1;
-
-					switch (cardType) {
-					case BUSTER:
-						busterFirst = 1;
-						break;
-					case ARTS:
-						artsFirst = 1;
-						break;
-					case QUICK:
-						quickFirst = 1;
-					}
-
-					busterSecond = 1;
-					busterThird = 1;
+				/* checkfirstcard */
+				if (argv[currArgv][0] == 'a'){
+					artsFirst = 1;
 					noChain = 0;
-					continue;
 
-				} else if (startsWith(4, "npaa", argv, currArgv, argvLen)) {
+				} else if (argv[currArgv][0] == 'b'){
+					busterFirst = 1;
+					noChain = 0;
 
+				} else if (argv[currArgv][0] == 'q'){
+					quickFirst = 1;
+					noChain = 0;
+
+				} else if (argv[currArgv][0] == 'n' && argv[currArgv][1] == 'p'){
 					npAt = 1;
+					noChain = 0;
+				}
 
-					switch (cardType) {
-					case BUSTER:
-						busterFirst = 1;
-						break;
-					case ARTS:
-						artsFirst = 1;
-						break;
-					case QUICK:
-						quickFirst = 1;
-					}
-
+				/* checksecondcard */
+				if (argv[currArgv][1] == 'a'){
 					artsSecond = 1;
-					artsThird = 1;
-					noChain = 0;
-					continue;
 
-				} else if (startsWith(4, "npqq", argv, currArgv, argvLen)) {
+				} else if (argv[currArgv][1] == 'b'){
+					busterSecond = 1;
 
-					npAt = 1;
-
-					switch (cardType) {
-					case BUSTER:
-						busterFirst = 1;
-						break;
-					case ARTS:
-						artsFirst = 1;
-						break;
-					case QUICK:
-						quickFirst = 1;
-					}
-
+				} else if (argv[currArgv][1] == 'q'){
 					quickSecond = 1;
-					quickThird = 1;
-					noChain = 0;
-					continue;
 
-				} else if (startsWith(3, "bbb", argv, currArgv, argvLen)) {
+				} else if (argv[currArgv][1] == 'n' && argv[currArgv][2] == 'p'){
+					npAt = 2;
+				}
 
-					busterFirst = 1;
-					busterSecond = 1;
-					busterThird = 1;
-					noChain = 0;
-					continue;
-
-				} else if (startsWith(3, "bba", argv, currArgv, argvLen)) {
-
-					busterFirst = 1;
-					busterSecond = 1;
+				/* checkthirdcard */
+				if (argv[currArgv][2] == 'a'){
 					artsThird = 1;
-					noChain = 0;
-					continue;
 
-				} else if (startsWith(3, "bbq", argv, currArgv, argvLen)) {
+				} else if (argv[currArgv][2] == 'b'){
+					busterThird = 1;
 
-					busterFirst = 1;
-					busterSecond = 1;
+				} else if (argv[currArgv][2] == 'q'){
 					quickThird = 1;
-					noChain = 0;
-					continue;
 
-				} else if (startsWith(3, "bab", argv, currArgv, argvLen)) {
-
-					busterFirst = 1;
-					artsSecond = 1;
-					busterThird = 1;
-					noChain = 0;
-					continue;
-
-				} else if (startsWith(3, "bqb", argv, currArgv, argvLen)) {
-
-					busterFirst = 1;
-					quickSecond = 1;
-					busterThird = 1;
-					noChain = 0;
-					continue;
+				} else if (argv[currArgv][2] == 'n' && argv[currArgv][3] == 'p'){
+					npAt = 3;
 				}
 			}
 		}
@@ -908,10 +859,14 @@ int main(int argc, char *argv[])
 	 * 0.01); */
 
 	float totalCard = 1;
-	if ((criticalDamage + powerMod)) {
-		totalCard = 1.0 + (float)(criticalDamage + powerMod) * 0.01;
+	if (powerMod) {
+		totalCard = 1.0 + (float)powerMod * 0.01;
 	}
 	totalCard = totalCard * total;
+
+	if (criticalDamage) {
+		criticalDamage = 1.0 + (float)criticalDamage * 0.01;
+	}
 
 	float cardFirst = 1;
 	float cardSecond = 1;
@@ -919,18 +874,19 @@ int main(int argc, char *argv[])
 
 	/* checkchain */
 	if (!noChain) {
-		if (npAt != 1) {
+		if (npAt == 1) {
 			switch (cardType) {
 				case BUSTER:
 					busterFirst = 1;
 					break;
-				case QUICK:
-					quickFirst = 1;
-					break;
 				case ARTS:
 					artsFirst = 1;
+					break;
+				case QUICK:
+					quickFirst = 1;
 			}
 		}
+
 		if (busterFirst) {
 
 			if (npAt != 1) {
@@ -941,12 +897,12 @@ int main(int argc, char *argv[])
 				cardSecond = 1.8;
 			}
 
-			if (busterThird) {
+			if (busterThird == 3) {
 				cardThird = 2.1;
 			}
 		} else if (quickFirst) {
 
-			if (npAt != 1) {
+			if (!npAt) {
 				cardFirst = 0.8;
 			}
 			if (quickSecond) {
@@ -955,7 +911,7 @@ int main(int argc, char *argv[])
 			if (quickThird) {
 				cardThird = 1.12;
 			}
-		} else if (artsFirst) {
+		} else if (artsFirst == 1) {
 
 			if (npAt != 1) {
 				cardFirst = 1;
@@ -968,19 +924,31 @@ int main(int argc, char *argv[])
 			}
 		}
 
+		if (critAll) {
+			totalCard = totalCard * criticalDamage;
+		} else {
+			if (critFirst) {
+				cardFirst = cardFirst * criticalDamage;
+			}
+			if (critSecond) {
+				cardSecond = cardSecond * criticalDamage;
+			}
+			if (critThird) {
+				cardThird = cardThird * criticalDamage;
+			}
+		}
+
 		if (npAt != 1) {
 			cardFirst = cardFirst * totalCard;
-			printf("%f\n", cardFirst);
-		}
+			printf("%f 1\n", cardFirst);
 
-		if (npAt != 2) {
+		} else if (npAt != 2) {
 			cardSecond = cardSecond * totalCard;
-			printf("%f\n", cardSecond);
-		}
+			printf("%f 2\n", cardSecond);
 
-		if (npAt != 3) {
+		} else if (npAt != 3) {
 			cardThird = cardThird * totalCard;
-			printf("%f\n", cardThird);
+			printf("%f 3\n", cardThird);
 		}
 	}
 
