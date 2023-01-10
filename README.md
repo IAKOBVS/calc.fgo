@@ -6,11 +6,11 @@ gcc calc.c -o /path/to/bins
 ```
 ## Usage:
 ```
-autocalc arguments
+autocalc servant arguments
 ```
 ## Arguments:
 ```
-atk = atk up
+atk = atk stat
 am = arts up
 bm = buster up
 qm = quick up
