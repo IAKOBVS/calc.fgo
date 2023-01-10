@@ -10,7 +10,7 @@ calc.c arguments
 ```
 ## Arguments:
 ```
-at = atk up
+atk = atk up
 am = arts up
 bm = buster up
 qm = quick up
