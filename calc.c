@@ -416,11 +416,11 @@ int main(int argc, char *argv[])
 					attribute = EARTH;
 					continue;
 
-				} else if (inStr(3, "star", argv, currArgv, argvLen)) {
+				} else if (inStr(3, "sta", argv, currArgv, argvLen)) {
 					attribute = STAR;
 					continue;
 
-				} else if (inStr(3, "beast", argv, currArgv, argvLen)) {
+				} else if (inStr(3, "bea", argv, currArgv, argvLen)) {
 					attribute = BEAST;
 					continue;
 				}

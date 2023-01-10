@@ -16,12 +16,17 @@ case $namesNum in
 		whichGrep(){ grep -i -F "$grepFirst" "$RAM_LIST_SERVANTS" | grep -i -F "$grepSecond" | grep -i -F -m 1 "$grepThird";};;
 esac
 servantInfo=$(whichGrep "$@")
-otherInfo=$(echo "$servantInfo" | awk '{print $3, "at"$4}')
 otherCalc=$(echo "$@" | cut -d' ' -f2-)
 whereIsTargetType=1
 whereIsCardType=2
+whereIsClass=3
+whereIsAttackStat=4
+whereIsAtt=5
 cardType=$(echo "$servantInfo" | cut -d' ' -f"$whereIsCardType")
 targetType=$(echo "$servantInfo" | cut -d' ' -f"$whereIsTargetType")
+class=$(echo "$servantInfo" | cut -d' ' -f"$whereIsClass")
+attackStat=$(echo "$servantInfo" | awk -v a="$whereIsAttackStat" '{print "at"$a}')
+attribute=$(echo "$servantInfo" | cut -d' ' -f"$whereIsAtt")
 case "$cardType" in
 	'cardArts')
 		cardType=aa;;
@@ -32,8 +37,21 @@ case "$cardType" in
 esac
 case "$targetType" in
 	'attackEnemyAll')
-		targetType=aoe;;
+		targetType=ao;;
 	'attackEnemyOne')
 		targetType=st;;
 esac
-calc $cardType $targetType $otherInfo $otherCalc
+case "$attribute" in
+	'attributeHuman')
+		attribute='man';;
+	'attributeSky')
+		attribute='sky';;
+	'attributeEarth')
+		attribute='ear';;
+	'attributeStar')
+		attribute='sta';;
+	'attributeBeast')
+		attribute='bea';;
+esac
+# calc $cardType $targetType $class $attribute $attackStat $otherCalc
+echo $cardType $targetType $class $attribute $attackStat $otherCalc

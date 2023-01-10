@@ -5,6 +5,8 @@
 
 #define BASE_MULTIPLIER 0.23
 
+#define MAX_ATK_LENGTH 5
+
 #define SABER 1
 #define ARCHER 2
 #define LANCER 3
@@ -71,7 +73,7 @@ int getBuff(char *argv[], int currArg, int argvLen)
 {
 	char numInString[argvLen];
 	int j = 0;
-	for (int i = 2; i <= argvLen; ++i) {
+	for (int i = 2; i<argvLen; ++i) {
 		numInString[j] = argv[currArg][i];
 		j++;
 	}
@@ -109,7 +111,7 @@ int main(int argc, char *argv[])
 {
 	/* int noCardType = 1; */
 
-	int attackStat = 0;
+	int attackStat = 1;
 	int class = 0;
 	int classEnemy = 0;
 
@@ -165,7 +167,7 @@ int main(int argc, char *argv[])
 	int critSecond = 0;
 	int critThird = 0;
 
-	for (int currArgv = 1; currArgv < argc; ++currArgv) {
+	for (int currArgv=1; currArgv<argc; ++currArgv) {
 
 		int argvLen = countTilNull(argv, currArgv);
 
@@ -218,10 +220,10 @@ int main(int argc, char *argv[])
 			superEffective = getBuff(argv, currArgv, argvLen) / 100.0;
 
 		} else if (startsWith(2, "at", argv, currArgv, argvLen)) {
-			attackStat = getBuff(argv, currArgv, argvLen) + 1000;
+			attackStat = attackStat * (getBuff(argv, currArgv, argvLen) + 1000);
 
-		} else if (isdigit(argv[currArgv][0])) {
-			attackStat = strtol(argv[currArgv], NULL, 10);
+		/* } else if (isdigit(argv[currArgv][0])) { */
+		/* 	attackStat = copyArgv(argv, currArgv, argvLen); */
 
 		} else if (startsWith(2, "np", argv, currArgv, argvLen)) {
 			np = getBuff(argv, currArgv, argvLen);
@@ -259,11 +261,11 @@ int main(int argc, char *argv[])
 			if (!npType) {
 
 				if (startsWith(2, "st", argv, currArgv, argvLen) || startsWith(14, "attackEnemyAll", argv, currArgv, argvLen)) {
-					cardType = ST;
+					npType = ST;
 					continue;
 
 				} else if (startsWith(2, "ao", argv, currArgv, argvLen) || startsWith(14, "attackEnemyOne", argv, currArgv, argvLen)) {
-					cardType = AOE;
+					npType = AOE;
 					continue;
 				}
 			}
@@ -738,11 +740,6 @@ int main(int argc, char *argv[])
 	float npMod = 1;
 	float cardMod = 1;
 
-	if (!attackStat) {
-		attackStat = 1;
-		printf("attack stat not specified!\n");
-	}
-
 	/* checkcardtype */
 	switch (cardType) {
 	case ARTS:
@@ -840,7 +837,16 @@ int main(int argc, char *argv[])
 	if ((attackUp + defenseDown - attackDown - defenseUp)) {
 		total = total *	(1.0 + ((float)(attackUp + defenseDown - attackDown - defenseUp)) * 0.01);
 	}
-	total = total * BASE_MULTIPLIER * classAdv * classMod * attributeMod * ((float)attackStat) * cardMod;
+	total = total * BASE_MULTIPLIER;
+	printf("total is %f\n", total);
+	total = total * classAdv * classMod * attributeMod * ((float)attackStat) * cardMod;
+
+	printf("classAdv is %f\n", classAdv);
+	printf("classMod is %f\n", classMod);
+	printf("attributeMod is %f\n", attributeMod);
+	printf("attackStat is %i\n", attackStat);
+
+	printf("total is %f\n", total);
 
 	/* total = total * BASE_MULTIPLIER * (1.0 + ((float)(attackUp + defenseDown
 	 * - attackDown - defenseUp)) * 0.01) * classAdv * classMod * attributeMod *
