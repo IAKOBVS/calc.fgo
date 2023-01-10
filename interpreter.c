@@ -4,14 +4,6 @@
 #include <locale.h>
 #include <ctype.h>
 
-#define NP_TYPE argv[1]
-#define CARD_TYPE argv[2]
-#define CLASS argv[3]
-#define MAX_ATK argv[4]
-#define ATTRIBUTE argv[5]
-
-#define AFTER 6
-
 #define BASE_MULTIPLIER 0.23
 
 #define SABER 1
@@ -926,6 +918,7 @@ int main(int argc, char *argv[])
 
 		if (critAll) {
 			totalCard = totalCard * criticalDamage;
+
 		} else {
 			if (critFirst) {
 				cardFirst = cardFirst * criticalDamage;
