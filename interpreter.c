@@ -92,17 +92,6 @@ int getNum(char *argv[], int currArg, int argvLen, int startAt)
 	return (strtol(numInString, NULL, 10));
 }
 
-/* int copyArgv(char *argv[], int currArg, int argvLen) */
-/* { */
-/* 	char numInString[argvLen]; */
-/* 	int j = 0; */
-/* 	for (int i = 2; i<argvLen; ++i) { */
-/* 		numInString[j] = argv[currArg][i]; */
-/* 		j++; */
-/* 	} */
-/* 	return (strtol(numInString, NULL, 10)); */
-/* } */
-
 int startsWith(int substrLen, char substr[], char *argv[], int currArgv, int argvLen)
 {
 	if (argv[currArgv][0] != substr[0]) {
@@ -132,6 +121,30 @@ int countTilNull(char *argv[], int currArgv)
 
 int main(int argc, char *argv[])
 {
+	if (!argv[1]) {
+	printf("Usage: calc arguments\n\n");
+	printf("arguments:\n");
+	printf("bb = buster servant\n");
+	printf("aa = arts servant\n");
+	printf("qq = quick servant\n\n");
+	printf("st = single target np\n");
+	printf("aoe = aoe np\n\n");
+	printf("at = attack stat\n");
+	printf("au = attack up\n");
+	printf("ad = attack down\n\n");
+	printf("du = defense up\n");
+	printf("dd = defense down\n");
+	printf("di = defense ignore\n\n");
+	printf("artsMod = arts up\n");
+	printf("bm = buster up\n");
+	printf("qm = quick up\n\n");
+	printf("se = super effective; e.g., gilgamesh, se150\n");
+	printf("sr = np strengthening\n");
+	printf("nu = np damage up\n");
+	printf("pm = powermod; e.g., arjuna alter, pm50\n");
+	printf("cd = critical damage\n");
+	exit(0);
+	}
 	/* int noCardType = 1; */
 
 	int attackStat = 1;
