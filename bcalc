@@ -1,0 +1,9 @@
+#!/usr/bin/bash
+supports=$(echo "$@" | cut -d ',' -f1)
+servants=$(echo "$@" | cut -d',' -f2-)
+printf '\n'
+for servant in $servants; do
+	servant=$(echo "$servant" | sed 's/_/-/g ; s/-/\ /g; s/,//g')
+	{ autocalc $supports $servant && printf '%s\n\n' "$servant";} &
+done
+wait

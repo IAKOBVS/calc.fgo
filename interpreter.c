@@ -971,18 +971,18 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		if (npAt != 1) {
-			cardFirst = cardFirst * totalCard;
-			printf("%f 1\n", cardFirst);
+		/* if (npAt != 1) { */
+		/* 	cardFirst = cardFirst * totalCard; */
+		/* 	printf("%f 1\n", cardFirst); */
 
-		} else if (npAt != 2) {
-			cardSecond = cardSecond * totalCard;
-			printf("%f 2\n", cardSecond);
+		/* } else if (npAt != 2) { */
+		/* 	cardSecond = cardSecond * totalCard; */
+		/* 	printf("%f 2\n", cardSecond); */
 
-		} else if (npAt != 3) {
-			cardThird = cardThird * totalCard;
-			printf("%f 3\n", cardThird);
-		}
+		/* } else if (npAt != 3) { */
+		/* 	cardThird = cardThird * totalCard; */
+		/* 	printf("%f 3\n", cardThird); */
+		/* } */
 	}
 
 	/* printf("%s\n", "attackStat"); */
