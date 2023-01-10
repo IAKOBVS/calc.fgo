@@ -4,7 +4,7 @@ A simple FGO damage calculator.
 getList and GLOBAL from https://github.com/IAKOBVS/scripts4fgo, which requires jq, recode, and wget
 ## Installation
 ```
-gcc calc.c -o /path/to/bins
+gcc interpreter.c -o /path/to/bins/calc
 ```
 ## Usage:
 ```

@@ -238,7 +238,7 @@ int main(int argc, char *argv[])
 			npUp = npUp + getBuff(argv, currArgv, argvLen);
 
 		} else if (startsWith(2, "cd", argv, currArgv, argvLen)) {
-			criticalDamage = criticalDamage + getBuff(argv, currArgv, argvLen);
+			criticalDamage = criticalDamage + criticalDamage + getBuff(argv, currArgv, argvLen);
 
 		} else if (startsWith(4, "crit", argv, currArgv, argvLen)) {
 			critAll = 1;
@@ -487,11 +487,13 @@ int main(int argc, char *argv[])
 			}
 
 			if (noChain) {
+				printf("noChain is true in if\n");
 
 				/* checkfirstcard */
 				if (argv[currArgv][0] == 'a'){
 					artsFirst = 1;
 					noChain = 0;
+					printf("true");
 
 				} else if (argv[currArgv][0] == 'b'){
 					busterFirst = 1;
@@ -900,6 +902,9 @@ int main(int argc, char *argv[])
 		criticalDamage = 1.0 + (float)criticalDamage * 0.01;
 	}
 
+	totalCard = totalCard * criticalDamage;
+	printf("%'g\n", totalCard);
+
 	float cardFirst = 1;
 	float cardSecond = 1;
 	float cardThird = 1;
@@ -943,7 +948,7 @@ int main(int argc, char *argv[])
 			if (quickThird) {
 				cardThird = 1.12;
 			}
-		} else if (artsFirst == 1) {
+		} else if (artsFirst) {
 
 			if (npAt != 1) {
 				cardFirst = 1;
@@ -958,6 +963,7 @@ int main(int argc, char *argv[])
 
 		if (critAll) {
 			totalCard = totalCard * criticalDamage;
+			printf("critAll\n");
 
 		} else {
 			if (critFirst) {
@@ -971,18 +977,20 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		/* if (npAt != 1) { */
-		/* 	cardFirst = cardFirst * totalCard; */
-		/* 	printf("%f 1\n", cardFirst); */
+		if (npAt != 1) {
+			cardFirst = cardFirst * totalCard;
+			printf("%f 1\n", cardFirst);
 
-		/* } else if (npAt != 2) { */
-		/* 	cardSecond = cardSecond * totalCard; */
-		/* 	printf("%f 2\n", cardSecond); */
+		} else if (npAt != 2) {
+			cardSecond = cardSecond * totalCard;
+			printf("%f 2\n", cardSecond);
 
-		/* } else if (npAt != 3) { */
-		/* 	cardThird = cardThird * totalCard; */
-		/* 	printf("%f 3\n", cardThird); */
-		/* } */
+		} else if (npAt != 3) {
+			cardThird = cardThird * totalCard;
+			printf("%f 3\n", cardThird);
+		}
+	} else {
+		printf("noChain is true outside\n");
 	}
 
 	/* printf("%s\n", "attackStat"); */
