@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-/* #include <locale.h> */
+#include <locale.h>
 
 #define BASE_MULTIPLIER 0.23
 #define MAX_ATK_LENGTH 5
@@ -54,6 +54,23 @@ inline void printfl(float var)
 void verbose(){
 
 }
+
+int intToFloat(float var)
+{
+	if (!var) {
+		return 1;
+	}
+	return var;
+}
+
+float returnFl(float var)
+{
+	if (!var) {
+		return 1;
+	}
+	return var;
+}
+
 int countTilNull(char *argv[], int currArgv)
 {
 	int i = 0;
@@ -119,7 +136,7 @@ float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float ca
 	}
 }
 
-void getCardDamage(int noChain, int total, int powerMod, int npAt, int criticalDamage, int critFirst, int critSecond, int critThird, int cardType, int busterFirst, int busterSecond, int busterThird, int artsFirst, int artsSecond, int artsThird, int quickFirst, int quickSecond, int quickThird)
+void getCardDamage(int noChain, int total, int powerMod, int npAt, int critDamageMod, int critFirst, int critSecond, int critThird, int cardType, int busterFirst, int busterSecond, int busterThird, int artsFirst, int artsSecond, int artsThird, int quickFirst, int quickSecond, int quickThird)
 {
 	if (noChain) {
 		printf("no card chain\n");
@@ -128,18 +145,21 @@ void getCardDamage(int noChain, int total, int powerMod, int npAt, int criticalD
 	float cardFirst = 1;
 	float cardSecond = 1;
 	float cardThird = 1;
+
 	float totalCard = 1;
-	float tempCrit;
+
+	float tmpCrit;
 
 	if (powerMod) {
 		totalCard = 1.0 + (float)powerMod * 0.01;
 	}
+
 	totalCard = totalCard * total;
 
-	if (criticalDamage) {
-		tempCrit = 2.0 + (float)criticalDamage * 0.01;
+	if (critDamageMod) {
+		tmpCrit = 2.0 + (float)critDamageMod * 0.01;
 	} else {
-		tempCrit = 2;
+		tmpCrit = 2;
 	}
 
 	switch (npAt) {
@@ -200,18 +220,13 @@ void getCardDamage(int noChain, int total, int powerMod, int npAt, int criticalD
 		cardThird = 1.12;
 
 	} else if (artsThird) {
-		cardThird = 1.12;
+		cardThird = 1.4;
 	}
 
 	if (busterFirst) {
 		cardFirst = 1.5 + 0.5;
 		cardSecond = cardSecond + 0.5;
 		cardThird = cardThird + 0.5;
-
-		/* if (busterSecond && busterThird) { */
-		/* 	cardSecond = cardSecond + 0.2; */
-		/* 	cardThird = cardThird + 0.2; */
-		/* } */
 
 	} else if (quickFirst) {
 		cardFirst = 0.8;
@@ -221,13 +236,13 @@ void getCardDamage(int noChain, int total, int powerMod, int npAt, int criticalD
 	}
 
 	if (critFirst) {
-		cardFirst = cardFirst * tempCrit;
+		cardFirst = cardFirst * tmpCrit;
 	}
 	if (critSecond) {
-		cardSecond = cardSecond * tempCrit;
+		cardSecond = cardSecond * tmpCrit;
 	}
 	if (critThird) {
-		cardThird = cardThird * tempCrit;
+		cardThird = cardThird * tmpCrit;
 	}
 
 	cardFirst = cardFirst * totalCard;
@@ -240,7 +255,7 @@ void getCardDamage(int noChain, int total, int powerMod, int npAt, int criticalD
 	printf("%'g -- 3\n", cardThird);
 }
 
-void getNpMod(float *total, int cardType, float *cardMod, float artsMod, float busterMod, float quickMod, int np, int npStrengthening, int npType, float *npMod)
+void getNpMod(float *total, int cardType, float *cardMod, float artsMod, float busterMod, float quickMod, int np, int npStrengthening, int npType, float *npDamageMultiplier)
 {
 	switch (cardType) {
 	case ARTS:
@@ -252,19 +267,19 @@ void getNpMod(float *total, int cardType, float *cardMod, float artsMod, float b
 		switch (npType) {
 		case AOE:
 			if (npStrengthening) {
-				*npMod = whichNpMod(np, 5, 7.5, 8.25, 8.625, 9);
+				*npDamageMultiplier = whichNpMod(np, 5, 7.5, 8.25, 8.625, 9);
 
 			} else {
-				*npMod = whichNpMod(np, 4.5, 6, 6.75, 7.125, 7.5);
+				*npDamageMultiplier = whichNpMod(np, 4.5, 6, 6.75, 7.125, 7.5);
 			}
 
 			break;
 		case ST:
 			if (npStrengthening) {
-				*npMod = whichNpMod(np, 12, 15, 16.5, 17.25, 18);
+				*npDamageMultiplier = whichNpMod(np, 12, 15, 16.5, 17.25, 18);
 
 			} else {
-				*npMod = whichNpMod(np, 9, 12, 13.5, 14.25, 15);
+				*npDamageMultiplier = whichNpMod(np, 9, 12, 13.5, 14.25, 15);
 			}
 		}
 		break;
@@ -278,23 +293,22 @@ void getNpMod(float *total, int cardType, float *cardMod, float artsMod, float b
 		switch (npType) {
 		case AOE:
 			if (npStrengthening) {
-				*npMod = whichNpMod(np, 4, 5, 5.5, 5.75, 6);
+				*npDamageMultiplier = whichNpMod(np, 4, 5, 5.5, 5.75, 6);
 
 			} else {
-				*npMod = whichNpMod(np, 3, 4, 4.5, 4.75, 5);
+				*npDamageMultiplier = whichNpMod(np, 3, 4, 4.5, 4.75, 5);
 			}
 			break;
 		case ST:
 			if (npStrengthening) {
-				*npMod = whichNpMod(np, 8, 10, 11, 11.5, 12);
+				*npDamageMultiplier = whichNpMod(np, 8, 10, 11, 11.5, 12);
 
 			} else {
-				*npMod = whichNpMod(np, 6, 8, 9, 9.5, 10);
+				*npDamageMultiplier = whichNpMod(np, 6, 8, 9, 9.5, 10);
 			}
 			break;
 		}
 		break;
-
 	case QUICK:
 		if (quickMod) {
 			quickMod = 1.0 * (float)quickMod * 0.01;
@@ -305,39 +319,38 @@ void getNpMod(float *total, int cardType, float *cardMod, float artsMod, float b
 		switch (npType) {
 		case AOE:
 			if (npStrengthening) {
-				*npMod = whichNpMod(np, 8, 10, 11, 11.5, 12);
+				*npDamageMultiplier = whichNpMod(np, 8, 10, 11, 11.5, 12);
 
 			} else {
-				*npMod = whichNpMod(np, 6, 8, 9, 9.5, 10);
+				*npDamageMultiplier = whichNpMod(np, 6, 8, 9, 9.5, 10);
 			}
 			break;
 		case ST:
 			if (npStrengthening) {
-				*npMod = whichNpMod(np, 16, 20, 22, 23, 24);
+				*npDamageMultiplier = whichNpMod(np, 16, 20, 22, 23, 24);
 
 			} else {
-				*npMod = whichNpMod(np, 12, 16, 18, 19, 20);
+				*npDamageMultiplier = whichNpMod(np, 12, 16, 18, 19, 20);
 			}
 		}
-
 	default:
 		printf("card type not specified!\n");
 	}
 }
 
-void geClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, float *classAdv)
+void geClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, float *classAtkBonus)
 {
 	switch (class) {
 	case SABER:
 		switch (classEnemy) {
 		case LANCER:
-			*classAdv = 2;
+			*classAtkBonus = 2;
 			break;
 		case ARCHER:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 			break;
 		case RULER:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 		}
 		break;
 	case ARCHER:
@@ -345,13 +358,13 @@ void geClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, 
 
 		switch (classEnemy) {
 		case SABER:
-			*classAdv = 2;
+			*classAtkBonus = 2;
 			break;
 		case LANCER:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 			break;
 		case RULER:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 		}
 		break;
 	case LANCER:
@@ -359,13 +372,13 @@ void geClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, 
 
 		switch (classEnemy) {
 		case ARCHER:
-			*classAdv = 2;
+			*classAtkBonus = 2;
 			break;
 		case SABER:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 			break;
 		case RULER:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 		}
 		break;
 	case ASSASSIN:
@@ -373,13 +386,13 @@ void geClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, 
 
 		switch (classEnemy) {
 		case RIDER:
-			*classAdv = 2;
+			*classAtkBonus = 2;
 			break;
 		case CASTER:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 			break;
 		case RULER:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 		}
 		break;
 	case CASTER:
@@ -387,25 +400,25 @@ void geClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, 
 
 		switch (classEnemy) {
 		case ASSASSIN:
-			*classAdv = 2;
+			*classAtkBonus = 2;
 			break;
 		case RIDER:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 			break;
 		case RULER:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 		}
 		break;
 	case RIDER:
 		switch (classEnemy) {
 		case CASTER:
-			*classAdv = 2;
+			*classAtkBonus = 2;
 			break;
 		case ASSASSIN:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 			break;
 		case RULER:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 		}
 		break;
 	case BERSERKER:
@@ -413,10 +426,10 @@ void geClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, 
 
 		switch (classEnemy) {
 		case FOREIGNER:
-			*classAdv = 2;
+			*classAtkBonus = 2;
 			break;
 		default:
-			*classAdv = 1.5;
+			*classAtkBonus = 1.5;
 		}
 		break;
 	case RULER:
@@ -424,10 +437,10 @@ void geClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, 
 
 		switch (classEnemy) {
 		case MOON_CANCER:
-			*classAdv = 2;
+			*classAtkBonus = 2;
 			break;
 		case AVENGER:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 		}
 		break;
 	case ALTER_EGO:
@@ -435,18 +448,18 @@ void geClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, 
 
 		switch (classTypeEnemy) {
 		case KNIGHT:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 			break;
 		case CAVALRY:
-			*classAdv = 2;
+			*classAtkBonus = 2;
 			break;
 		default:
 			switch (classEnemy) {
 			case FOREIGNER:
-				*classAdv = 2;
+				*classAtkBonus = 2;
 				break;
 			case PRETENDER:
-				*classAdv = 0.5;
+				*classAtkBonus = 0.5;
 			}
 		}
 		break;
@@ -455,48 +468,48 @@ void geClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, 
 
 		switch (classTypeEnemy) {
 		case RULER:
-			*classAdv = 2;
+			*classAtkBonus = 2;
 			break;
 		case MOON_CANCER:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 		}
 		break;
 	case MOON_CANCER:
 		switch (classTypeEnemy) {
 		case AVENGER:
-			*classAdv = 2;
+			*classAtkBonus = 2;
 			break;
 		case RULER:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 		}
 		break;
 	case FOREIGNER:
 		switch (classTypeEnemy) {
 		case FOREIGNER:
-			*classAdv = 2;
+			*classAtkBonus = 2;
 			break;
 		case PRETENDER:
-			*classAdv = 2;
+			*classAtkBonus = 2;
 			break;
 		case ALTER_EGO:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 		}
 		break;
 	case PRETENDER:
 		switch (classTypeEnemy) {
 		case KNIGHT:
-			*classAdv = 1.5;
+			*classAtkBonus = 1.5;
 			break;
 		case CAVALRY:
-			*classAdv = 0.5;
+			*classAtkBonus = 0.5;
 			break;
 		case 0:
 			switch (classEnemy) {
 			case ALTER_EGO:
-				*classAdv = 2;
+				*classAtkBonus = 2;
 				break;
 			case FOREIGNER:
-				*classAdv = 0.5;
+				*classAtkBonus = 0.5;
 			}
 		}
 		break;
@@ -505,52 +518,52 @@ void geClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, 
 	}
 
 	if (classEnemy == BERSERKER) {
-		*classAdv = 2;
+		*classAtkBonus = 2;
 	} else if (classEnemy == ALTER_EGO) {
 
 	}
 }
 
-void getAttributeMod(int attribute, int attributeEnemy, float *attributeMod)
+void getAttributeMod(int attribute, int attributeEnemy, float *attributeModifier)
 {
 	switch (attribute) {
 	case MAN:
 		switch (attributeEnemy) {
 		case SKY:
-			*attributeMod = 1.1;
+			*attributeModifier = 1.1;
 			break;
 		case EARTH:
-			*attributeMod = 0.9;
+			*attributeModifier = 0.9;
 		}
 		break;
 	case SKY:
 		switch (attributeEnemy) {
 		case MAN:
-			*attributeMod = 0.9;
+			*attributeModifier = 0.9;
 			break;
 		case EARTH:
-			*attributeMod = 1.1;
+			*attributeModifier = 1.1;
 		}
 		break;
 	case EARTH:
 		switch (attributeEnemy) {
 		case MAN:
-			*attributeMod = 1.1;
+			*attributeModifier = 1.1;
 			break;
 		case SKY:
-			*attributeMod = 0.9;
+			*attributeModifier = 0.9;
 		}
 		break;
 	case STAR:
 
 		if (attributeEnemy == BEAST) {
-			*attributeMod = 1.1;
+			*attributeModifier = 1.1;
 		}
 		break;
 	case BEAST:
 
 		if (attributeEnemy == STAR) {
-			*attributeMod = 1.1;
+			*attributeModifier = 1.1;
 		}
 		break;
 	default:
@@ -583,7 +596,7 @@ int main(int argc, char *argv[])
 		printf("cd = critical damage\n");
 		exit(0);
 	}
-	int attackStat = 1;
+	int servantAtk = 1;
 	int class = 0;
 	int classEnemy = 0;
 
@@ -600,14 +613,14 @@ int main(int argc, char *argv[])
 
 	int np = 5;
 
-	float superEffective = 1;
+	float superEffectiveModifier = 1;
 	int npStrengthening = 0;
 
-	int attackUp = 0;
-	int attackDown = 0;
+	int atkMod = 0;
+	int atkModDown = 0;
 
-	int defenseUp = 0;
-	int defenseDown = 0;
+	int defMod = 0;
+	int defModDown = 0;
 	int defenseIgnore = 0;
 
 	int artsMod = 0;
@@ -615,8 +628,8 @@ int main(int argc, char *argv[])
 	int quickMod = 0;
 
 	int powerMod = 0;
-	int npUp = 0;
-	int criticalDamage = 0;
+	int npDamageMod = 0;
+	int critDamageMod = 0;
 
 	int noChain = 1;
 
@@ -639,22 +652,23 @@ int main(int argc, char *argv[])
 	int critThird = 0;
 
 	int verbose = 0;
+	int goldFou = 0;
 
 	for (int currArgv=1; currArgv<argc; ++currArgv) {
 
 		int argvLen = countTilNull(argv, currArgv);
 
 		if (startsWith(2, "au", argv, currArgv, argvLen)) {
-			attackUp = attackUp + getBuff(argv, currArgv, argvLen);
+			atkMod = atkMod + getBuff(argv, currArgv, argvLen);
 
 		} else if (startsWith(2, "ad", argv, currArgv, argvLen)) {
-			attackDown = attackDown - getBuff(argv, currArgv, argvLen);
+			atkModDown = atkModDown - getBuff(argv, currArgv, argvLen);
 
 		} else if (startsWith(2, "dd", argv, currArgv, argvLen)) {
-			defenseDown = defenseDown + getBuff(argv, currArgv, argvLen);
+			defModDown = defModDown + getBuff(argv, currArgv, argvLen);
 
 		} else if (startsWith(2, "du", argv, currArgv, argvLen)) {
-			defenseUp = defenseUp + getBuff(argv, currArgv, argvLen);
+			defMod = defMod + getBuff(argv, currArgv, argvLen);
 
 		} else if (startsWith(2, "di", argv, currArgv, argvLen)) {
 			defenseIgnore = 1;
@@ -672,10 +686,10 @@ int main(int argc, char *argv[])
 			powerMod = powerMod + getBuff(argv, currArgv, argvLen);
 
 		} else if (startsWith(2, "nu", argv, currArgv, argvLen)) {
-			npUp = npUp + getBuff(argv, currArgv, argvLen);
+			npDamageMod = npDamageMod + getBuff(argv, currArgv, argvLen);
 
 		} else if (startsWith(2, "cd", argv, currArgv, argvLen)) {
-			criticalDamage = criticalDamage + getBuff(argv, currArgv, argvLen);
+			critDamageMod = critDamageMod + getBuff(argv, currArgv, argvLen);
 
 		} else if (startsWith(4, "crit", argv, currArgv, argvLen)) {
 			critFirst = 1;
@@ -692,10 +706,10 @@ int main(int argc, char *argv[])
 			critThird = 1;
 
 		} else if (startsWith(2, "se", argv, currArgv, argvLen)) {
-			superEffective = getBuff(argv, currArgv, argvLen) / 100.0;
+			superEffectiveModifier = getBuff(argv, currArgv, argvLen) / 100.0;
 
 		} else if (startsWith(3, "atk", argv, currArgv, argvLen)) {
-			attackStat = getNum(argv, currArgv, argvLen, 3);
+			servantAtk = getNum(argv, currArgv, argvLen, 3);
 
 		} else if (startsWith(2, "np", argv, currArgv, argvLen)) {
 			np = getBuff(argv, currArgv, argvLen);
@@ -706,27 +720,27 @@ int main(int argc, char *argv[])
 		} else if (startsWith(2, "vi", argv, currArgv, argvLen)) {
 			busterMod = busterMod + 50;
 			if (cardType == BUSTER) {
-				criticalDamage = criticalDamage + 50;
+				critDamageMod = critDamageMod + 50;
 			}
 
 		} else if (startsWith(2, "ss", argv, currArgv, argvLen)) {
-			attackUp = attackUp + 20;
+			atkMod = atkMod + 20;
 			busterMod = busterMod + 15;
 			quickMod = quickMod + 65;
 			if (cardType == BUSTER) {
-				criticalDamage = criticalDamage + 100;
+				critDamageMod = critDamageMod + 100;
 			}
 
 		} else if (startsWith(2, "sk", argv, currArgv, argvLen)) {
-			attackUp = attackUp + 30;
+			atkMod = atkMod + 30;
 			quickMod = quickMod + 50;
 			if (cardType == QUICK) {
-				criticalDamage = criticalDamage + criticalDamage + 100;
+				critDamageMod = critDamageMod + critDamageMod + 100;
 			}
 
 		} else if (startsWith(2, "ca", argv, currArgv, argvLen)) {
 			artsMod = artsMod + 50;
-			attackUp = attackUp + 20;
+			atkMod = atkMod + 20;
 
 		} else if (startsWith(2, "-v", argv, currArgv, argvLen)) {
 			verbose = 1;
@@ -968,48 +982,49 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
-	/* setlocale(LC_NUMERIC, ""); */
+	setlocale(LC_NUMERIC, "");
 
 	float total = 1;
+	float totalNp = 1;
+	float totalCard = 1;
+
+	float classAtkBonus = 1;
 	float classMod = 1;
-	float classAdv = 1;
 	float cardMod = 1;
-	float attributeMod = 1;
-	float npMod = 1;
 
-	geClassMod(class, classEnemy, classTypeEnemy, &classMod, &classAdv);
+	float attributeModifier = 1;
+	float npDamageMultiplier = 1;
 
-	getAttributeMod(attribute, attributeEnemy, &attributeMod);
-
-	getNpMod(&total, cardType, &cardMod, artsMod, busterMod, quickMod, np, npStrengthening, npType, &npMod);
-
-	if (defenseDown > 100) {
-		defenseDown = 100;
+	if (defModDown > 100) {
+		defModDown = 100;
 		printf("def down exceeds 100, defaults to 100!\n");
 	}
 
 	if (defenseIgnore) {
-		defenseUp = defenseUp - 100;
+		defMod = defMod - 100;
 	}
 
-	if ((attackUp + defenseDown - attackDown - defenseUp)) {
-		total = total *	(1.0 + (float)(attackUp + defenseDown - attackDown - defenseUp) * 0.01);
-	}
+	geClassMod(class, classEnemy, classTypeEnemy, &classMod, &classAtkBonus);
 
-	total = total * BASE_MULTIPLIER * classAdv * classMod * attributeMod * ((float)attackStat) * cardMod;
+	getAttributeMod(attribute, attributeEnemy, &attributeModifier);
 
-	getCardDamage(noChain, total, powerMod, npAt, criticalDamage, critFirst, critSecond, critThird, cardType, busterFirst, busterSecond, busterThird, artsFirst, artsSecond, artsThird, quickFirst, quickSecond, quickThird);
+	total = total * BASE_MULTIPLIER * classAtkBonus * classMod * attributeModifier
+		* returnFl(((float)servantAtk + 1000.0 + (float)goldFou))
+		* (1.0 + ((float)atkMod + (float)defModDown - (float)atkModDown - (float)defMod) * 0.01);
 
-	float totalNp = 1;
-	if ((npUp + powerMod)) {
-		totalNp = 1.0 + (float)(npUp + powerMod) * 0.01;
-	}
-	totalNp = totalNp * superEffective * npMod * total;
+	getCardDamage(noChain, total, powerMod, npAt, critDamageMod, critFirst, critSecond, critThird, cardType, busterFirst, busterSecond, busterThird, artsFirst, artsSecond, artsThird, quickFirst, quickSecond, quickThird);
+
+	getNpMod(&total, cardType, &cardMod, artsMod, busterMod, quickMod, np, npStrengthening, npType, &npDamageMultiplier);
+
+	totalNp = total
+		* superEffectiveModifier * npDamageMultiplier * cardMod
+		* (1.0 + (float)(npDamageMod + powerMod) * 0.01);
+
 	printf("%'g\n", totalNp);
 
 	if (verbose) {
-		printf("attackStat\n");
-		printf("%d\n", attackStat);
+		printf("\nservantAtk\n");
+		printf("%d\n", servantAtk);
 
 		printf("busterMod\n");
 		printf("%d\n", busterMod);
@@ -1017,26 +1032,23 @@ int main(int argc, char *argv[])
 		printf("powerMod\n");
 		printf("%d\n", powerMod);
 
-		printf("npUp\n");
-		printf("%d\n", npUp);
+		printf("npDamageMod\n");
+		printf("%d\n", npDamageMod);
 
-		printf("npMod\n");
-		printf("%f\n",npMod);
+		printf("npDamageMultiplier\n");
+		printf("%f\n",npDamageMultiplier);
 
-		printf("classAdv\n");
-		printf("%f\n",attributeMod);
+		printf("classAtkBonus\n");
+		printf("%f\n",attributeModifier);
 
 		printf("atrributeMod\n");
-		printf("%f\n",classAdv);
+		printf("%f\n",classAtkBonus);
 
 		printf("classMod\n");
 		printf("%f\n",classMod);
 
-		printf("npMod\n");
-		printf("%f\n",npMod);
-
-		printf("total\n");
-		printf("%f\n",total);
-	}
+		printf("npDamageMultiplier\n");
+		printf("%f\n",npDamageMultiplier);
+		}
 	return 0;
 }
