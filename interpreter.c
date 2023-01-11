@@ -257,6 +257,7 @@ void getCardDamage(int noChain, int total, int powerMod, int npAt, int critDamag
 		}
 		printf("%'g -- 2\n", cardSecond);
 		printf("%'g -- 3\n", cardThird);
+
 	} else {
 		printf("%'g -- 1\n", cardFirst);
 		printf("%'g -- 2\n", cardSecond);
@@ -1016,10 +1017,13 @@ int main(int argc, char *argv[])
 
 	getAttributeMod(attribute, attributeEnemy, &attributeModifier);
 
+	float tempAtt = 1 + (float)atkMod * 0.01;
+
+	total = total * tempAtt;
+
 	total = total
 		* BASE_MULTIPLIER * classAtkBonus * classMod * attributeModifier
-		* returnFl(((float)servantAtk + 1000.0 + (float)goldFou))
-		* (1.0 + ((float)atkMod + (float)defModDown - (float)atkModDown - (float)defMod) * 0.01);
+		* returnFl(((float)servantAtk + 1000.0 + (float)goldFou));
 
 	/* getCardDamage(noChain, total, powerMod, npAt, critDamageMod, critFirst, critSecond, critThird, cardType, busterFirst, busterSecond, busterThird, artsFirst, artsSecond, artsThird, quickFirst, quickSecond, quickThird, servantAtk); */
 
@@ -1029,7 +1033,7 @@ int main(int argc, char *argv[])
 		* superEffectiveModifier * npDamageMultiplier * cardMod
 		* (1.0 + (float)(npDamageMod + powerMod) * 0.01);
 
-	printf("%'g\n%g ~ %g\n", totalNp, (totalNp*0.9), (totalNp*1.1));
+	printf("%'g\n%'g ~ %'g\n", totalNp, (totalNp*0.9), (totalNp*1.1));
 
 	if (verbose) {
 		printf("\nservantAtk\n");
