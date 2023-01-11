@@ -1029,7 +1029,7 @@ int main(int argc, char *argv[])
 		* superEffectiveModifier * npDamageMultiplier * cardMod
 		* (1.0 + (float)(npDamageMod + powerMod) * 0.01);
 
-	printf("%'g\n", totalNp);
+	printf("%'g\n%g ~ %g\n", totalNp, (totalNp*0.9), (totalNp*1.1));
 
 	if (verbose) {
 		printf("\nservantAtk\n");
