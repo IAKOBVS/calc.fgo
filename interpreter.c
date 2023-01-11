@@ -936,60 +936,60 @@ int main(int argc, char *argv[])
 					continue;
 				}
 			}
-			if (noChain) {
-				/* checkfirstcard */
-				if (argv[currArgv][0] == 'a'){
-					artsFirst = 1;
-					noChain = 0;
+			/* if (noChain) { */
+			/* 	/1* checkfirstcard *1/ */
+			/* 	if (argv[currArgv][0] == 'a'){ */
+			/* 		artsFirst = 1; */
+			/* 		noChain = 0; */
 
-				} else if (argv[currArgv][0] == 'b'){
-					busterFirst = 1;
-					noChain = 0;
+			/* 	} else if (argv[currArgv][0] == 'b'){ */
+			/* 		busterFirst = 1; */
+			/* 		noChain = 0; */
 
-				} else if (argv[currArgv][0] == 'q'){
-					quickFirst = 1;
-					noChain = 0;
+			/* 	} else if (argv[currArgv][0] == 'q'){ */
+			/* 		quickFirst = 1; */
+			/* 		noChain = 0; */
 
-				} else if (argv[currArgv][0] == 'n') {
-					npAt = 1;
-					noChain = 0;
+			/* 	} else if (argv[currArgv][0] == 'n') { */
+			/* 		npAt = 1; */
+			/* 		noChain = 0; */
 
-				} else {
-					continue;
-				}
-				/* checksecondcard */
-				if (argv[currArgv][1] == 'a'){
-					artsSecond = 1;
+			/* 	} else { */
+			/* 		continue; */
+			/* 	} */
+			/* 	/1* checksecondcard *1/ */
+			/* 	if (argv[currArgv][1] == 'a'){ */
+			/* 		artsSecond = 1; */
 
-				} else if (argv[currArgv][1] == 'b'){
-					busterSecond = 1;
+			/* 	} else if (argv[currArgv][1] == 'b'){ */
+			/* 		busterSecond = 1; */
 
-				} else if (argv[currArgv][1] == 'q'){
-					quickSecond = 1;
+			/* 	} else if (argv[currArgv][1] == 'q'){ */
+			/* 		quickSecond = 1; */
 
-				} else if (argv[currArgv][1] == 'n') {
-					npAt = 2;
+			/* 	} else if (argv[currArgv][1] == 'n') { */
+			/* 		npAt = 2; */
 
-				} else {
-					continue;
-				}
-				/* checkthirdcard */
-				if (argv[currArgv][2] == 'a'){
-					artsThird = 1;
+			/* 	} else { */
+			/* 		continue; */
+			/* 	} */
+			/* 	/1* checkthirdcard *1/ */
+			/* 	if (argv[currArgv][2] == 'a'){ */
+			/* 		artsThird = 1; */
 
-				} else if (argv[currArgv][2] == 'b'){
-					busterThird = 1;
+			/* 	} else if (argv[currArgv][2] == 'b'){ */
+			/* 		busterThird = 1; */
 
-				} else if (argv[currArgv][2] == 'q'){
-					quickThird = 1;
+			/* 	} else if (argv[currArgv][2] == 'q'){ */
+			/* 		quickThird = 1; */
 
-				} else if (argv[currArgv][2] == 'n') {
-					npAt = 3;
+			/* 	} else if (argv[currArgv][2] == 'n') { */
+			/* 		npAt = 3; */
 
-				} else {
-					continue;
-				}
-			}
+			/* 	} else { */
+			/* 		continue; */
+			/* 	} */
+			/* } */
 		}
 	}
 	setlocale(LC_NUMERIC, "");
