@@ -152,17 +152,9 @@ void getCardDamage(int noChain, int total, int powerMod, int npAt, int critDamag
 
 	float tmpCrit;
 
-	if (powerMod) {
-		totalCard = 1.0 + (float)powerMod * 0.01;
-	}
-
 	totalCard = totalCard * total;
 
-	if (critDamageMod) {
-		tmpCrit = 2.0 + (float)critDamageMod * 0.01;
-	} else {
-		tmpCrit = 2;
-	}
+	tmpCrit = 2.0 + (float)critDamageMod + (float)powerMod * 0.01;
 
 	switch (npAt) {
 	case 1:
@@ -246,25 +238,30 @@ void getCardDamage(int noChain, int total, int powerMod, int npAt, int critDamag
 	if (critThird) {
 		cardThird = cardThird * tmpCrit;
 	}
-
-	/* if (busterFirst && npAt != 1) { */
-	/* 	cardFirst = cardFirst + returnFl((float)(BUSTER_CHAIN_MOD * (float)servantAtk)); */
-	/* } */
-	/* if (busterSecond && npAt != 1) { */
-	/* 	cardSecond = cardSecond + returnFl((float)(BUSTER_CHAIN_MOD * (float)servantAtk)); */
-	/* } */
-	/* if (busterThird && npAt != 1) { */
-	/* 	cardThird = cardThird + returnFl((float)(BUSTER_CHAIN_MOD * (float)servantAtk)); */
-	/* } */
-
 	cardFirst = cardFirst * totalCard;
-	printf("%'g -- 1\n", cardFirst);
-
 	cardSecond = cardSecond * totalCard;
-	printf("%'g -- 2\n", cardSecond);
-
 	cardThird = cardThird * totalCard;
-	printf("%'g -- 3\n", cardThird);
+
+	if (busterFirst && npAt != 1) {
+
+		float busterChainMod = BUSTER_CHAIN_MOD * servantAtk;
+
+		cardFirst = cardFirst + busterChainMod;
+		printf("%'g -- 1\n", cardFirst);
+
+		if (busterSecond && npAt != 2) {
+			cardSecond = cardSecond + busterChainMod;
+		}
+		if (busterThird && npAt != 3) {
+			cardThird = cardThird + busterChainMod;
+		}
+		printf("%'g -- 2\n", cardSecond);
+		printf("%'g -- 3\n", cardThird);
+	} else {
+		printf("%'g -- 1\n", cardFirst);
+		printf("%'g -- 2\n", cardSecond);
+		printf("%'g -- 3\n", cardThird);
+	}
 }
 
 void getNpMod(float *total, int cardType, float *cardMod, float artsMod, float busterMod, float quickMod, int np, int npStrengthening, int npType, float *npDamageMultiplier)
@@ -1024,7 +1021,7 @@ int main(int argc, char *argv[])
 		* returnFl(((float)servantAtk + 1000.0 + (float)goldFou))
 		* (1.0 + ((float)atkMod + (float)defModDown - (float)atkModDown - (float)defMod) * 0.01);
 
-	getCardDamage(noChain, total, powerMod, npAt, critDamageMod, critFirst, critSecond, critThird, cardType, busterFirst, busterSecond, busterThird, artsFirst, artsSecond, artsThird, quickFirst, quickSecond, quickThird, servantAtk);
+	/* getCardDamage(noChain, total, powerMod, npAt, critDamageMod, critFirst, critSecond, critThird, cardType, busterFirst, busterSecond, busterThird, artsFirst, artsSecond, artsThird, quickFirst, quickSecond, quickThird, servantAtk); */
 
 	getNpMod(&total, cardType, &cardMod, artsMod, busterMod, quickMod, np, npStrengthening, npType, &npDamageMultiplier);
 
