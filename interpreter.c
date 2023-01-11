@@ -36,6 +36,8 @@
 #define ST 1
 #define AOE 2
 
+#define BUSTER_CHAIN_MOD 0.2
+
 inline void printdbl(double var)
 {
 	printf("%f\n", var);
@@ -55,7 +57,7 @@ void verbose(){
 
 }
 
-int intToFloat(float var)
+inline int intToFloat(float var)
 {
 	if (!var) {
 		return 1;
@@ -136,7 +138,7 @@ float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float ca
 	}
 }
 
-void getCardDamage(int noChain, int total, int powerMod, int npAt, int critDamageMod, int critFirst, int critSecond, int critThird, int cardType, int busterFirst, int busterSecond, int busterThird, int artsFirst, int artsSecond, int artsThird, int quickFirst, int quickSecond, int quickThird)
+void getCardDamage(int noChain, int total, int powerMod, int npAt, int critDamageMod, int critFirst, int critSecond, int critThird, int cardType, int busterFirst, int busterSecond, int busterThird, int artsFirst, int artsSecond, int artsThird, int quickFirst, int quickSecond, int quickThird, int servantAtk)
 {
 	if (noChain) {
 		printf("no card chain\n");
@@ -244,6 +246,16 @@ void getCardDamage(int noChain, int total, int powerMod, int npAt, int critDamag
 	if (critThird) {
 		cardThird = cardThird * tmpCrit;
 	}
+
+	/* if (busterFirst && npAt != 1) { */
+	/* 	cardFirst = cardFirst + returnFl((float)(BUSTER_CHAIN_MOD * (float)servantAtk)); */
+	/* } */
+	/* if (busterSecond && npAt != 1) { */
+	/* 	cardSecond = cardSecond + returnFl((float)(BUSTER_CHAIN_MOD * (float)servantAtk)); */
+	/* } */
+	/* if (busterThird && npAt != 1) { */
+	/* 	cardThird = cardThird + returnFl((float)(BUSTER_CHAIN_MOD * (float)servantAtk)); */
+	/* } */
 
 	cardFirst = cardFirst * totalCard;
 	printf("%'g -- 1\n", cardFirst);
@@ -986,7 +998,6 @@ int main(int argc, char *argv[])
 
 	float total = 1;
 	float totalNp = 1;
-	float totalCard = 1;
 
 	float classAtkBonus = 1;
 	float classMod = 1;
@@ -1008,11 +1019,12 @@ int main(int argc, char *argv[])
 
 	getAttributeMod(attribute, attributeEnemy, &attributeModifier);
 
-	total = total * BASE_MULTIPLIER * classAtkBonus * classMod * attributeModifier
+	total = total
+		* BASE_MULTIPLIER * classAtkBonus * classMod * attributeModifier
 		* returnFl(((float)servantAtk + 1000.0 + (float)goldFou))
 		* (1.0 + ((float)atkMod + (float)defModDown - (float)atkModDown - (float)defMod) * 0.01);
 
-	getCardDamage(noChain, total, powerMod, npAt, critDamageMod, critFirst, critSecond, critThird, cardType, busterFirst, busterSecond, busterThird, artsFirst, artsSecond, artsThird, quickFirst, quickSecond, quickThird);
+	getCardDamage(noChain, total, powerMod, npAt, critDamageMod, critFirst, critSecond, critThird, cardType, busterFirst, busterSecond, busterThird, artsFirst, artsSecond, artsThird, quickFirst, quickSecond, quickThird, servantAtk);
 
 	getNpMod(&total, cardType, &cardMod, artsMod, busterMod, quickMod, np, npStrengthening, npType, &npDamageMultiplier);
 
