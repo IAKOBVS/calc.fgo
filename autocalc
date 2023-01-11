@@ -54,4 +54,3 @@ case "$attribute" in
 		attribute='bea';;
 esac
 interpreter $cardType $targetType $class $attribute $attackStat $otherCalc
-# echo $cardType $targetType $class $attribute $attackStat $otherCalc

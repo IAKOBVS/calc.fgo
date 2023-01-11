@@ -1,11 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <locale.h>
-#include <ctype.h>
-#include <string.h>
+/* #include <locale.h> */
 
 #define BASE_MULTIPLIER 0.23
-
 #define MAX_ATK_LENGTH 5
 
 #define SABER 1
@@ -54,42 +51,16 @@ inline void printfl(float var)
 	printf("%f\n", var);
 }
 
-float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault)
-{
-	switch (np) {
-	case 1:
-		return caseOne;
-	case 2:
-		return caseTwo;
-	case 3:
-		return caseThree;
-	case 4:
-		return caseFour;
-	default:
-		return caseDefault;
-	}
-}
+void verbose(){
 
-int getBuff(char *argv[], int currArg, int argvLen)
-{
-	char numInString[argvLen];
-	int j = 0;
-	for (int i = 2; i <= argvLen; ++i) {
-		numInString[j] = argv[currArg][i];
-		j++;
-	}
-	return (strtol(numInString, NULL, 10));
 }
-
-int getNum(char *argv[], int currArg, int argvLen, int startAt)
+int countTilNull(char *argv[], int currArgv)
 {
-	char numInString[argvLen];
-	int j = 0;
-	for (int i = startAt; i <= argvLen; ++i) {
-		numInString[j] = argv[currArg][i];
-		j++;
+	int i = 0;
+	while (argv[currArgv][i] != '\0') {
+		++i;
 	}
-	return (strtol(numInString, NULL, 10));
+	return i;
 }
 
 int startsWith(int substrLen, char substr[], char *argv[], int currArgv, int argvLen)
@@ -110,15 +81,482 @@ int startsWith(int substrLen, char substr[], char *argv[], int currArgv, int arg
 	return 0;
 }
 
-int countTilNull(char *argv[], int currArgv)
+int getBuff(char *argv[], int currArg, int argvLen)
 {
-	int i = 0;
-	while (argv[currArgv][i] != '\0') {
-		++i;
+	char numInString[argvLen];
+	int j = 0;
+	for (int i = 2; i<argvLen; ++i) {
+		numInString[j] = argv[currArg][i];
+		j++;
 	}
-	return i;
+	return (strtol(numInString, NULL, 10));
 }
 
+int getNum(char *argv[], int currArg, int argvLen, int startAt)
+{
+	char numInString[argvLen];
+	int j = 0;
+	for (int i = startAt; i<argvLen; ++i) {
+		numInString[j] = argv[currArg][i];
+		j++;
+	}
+	return (strtol(numInString, NULL, 10));
+}
+
+float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault)
+{
+	switch (np) {
+	case 1:
+		return caseOne;
+	case 2:
+		return caseTwo;
+	case 3:
+		return caseThree;
+	case 4:
+		return caseFour;
+	default:
+		return caseDefault;
+	}
+}
+
+void getCardDamage(int noChain, int total, int powerMod, int npAt, int criticalDamage, int critFirst, int critSecond, int critThird, int cardType, int busterFirst, int busterSecond, int busterThird, int artsFirst, int artsSecond, int artsThird, int quickFirst, int quickSecond, int quickThird)
+{
+	if (noChain) {
+		printf("no card chain\n");
+	}
+
+	float cardFirst = 1;
+	float cardSecond = 1;
+	float cardThird = 1;
+	float totalCard = 1;
+	float tempCrit;
+
+	if (powerMod) {
+		totalCard = 1.0 + (float)powerMod * 0.01;
+	}
+	totalCard = totalCard * total;
+
+	if (criticalDamage) {
+		tempCrit = 2.0 + (float)criticalDamage * 0.01;
+	} else {
+		tempCrit = 2;
+	}
+
+	switch (npAt) {
+	case 1:
+		switch (cardType) {
+		case BUSTER:
+			busterFirst = 1;
+			break;
+		case ARTS:
+			artsFirst = 1;
+			break;
+		case QUICK:
+			quickFirst = 1;
+		}
+		break;
+		cardFirst = 0;
+	case 2:
+		switch (cardType) {
+		case BUSTER:
+			busterSecond = 1;
+			break;
+		case ARTS:
+			artsSecond = 1;
+			break;
+		case QUICK:
+			quickSecond = 1;
+		}
+		break;
+		cardSecond = 0;
+	case 3:
+		switch (cardType) {
+		case BUSTER:
+			busterThird = 1;
+			break;
+		case ARTS:
+			artsThird = 1;
+			break;
+		case QUICK:
+			quickThird = 1;
+		}
+		cardThird = 0;
+	}
+
+	if (busterSecond) {
+		cardSecond = 1.8;
+
+	} else if (quickSecond) {
+		cardSecond = 0.96;
+
+	} else if (artsSecond) {
+		cardSecond = 1.2;
+	}
+
+	if (busterThird) {
+		cardThird = 2.1;
+
+	} else if (quickThird) {
+		cardThird = 1.12;
+
+	} else if (artsThird) {
+		cardThird = 1.12;
+	}
+
+	if (busterFirst) {
+		cardFirst = 1.5 + 0.5;
+		cardSecond = cardSecond + 0.5;
+		cardThird = cardThird + 0.5;
+
+		/* if (busterSecond && busterThird) { */
+		/* 	cardSecond = cardSecond + 0.2; */
+		/* 	cardThird = cardThird + 0.2; */
+		/* } */
+
+	} else if (quickFirst) {
+		cardFirst = 0.8;
+
+	} else if (artsFirst) {
+		cardFirst = 1;
+	}
+
+	if (critFirst) {
+		cardFirst = cardFirst * tempCrit;
+	}
+	if (critSecond) {
+		cardSecond = cardSecond * tempCrit;
+	}
+	if (critThird) {
+		cardThird = cardThird * tempCrit;
+	}
+
+	cardFirst = cardFirst * totalCard;
+	printf("%'g -- 1\n", cardFirst);
+
+	cardSecond = cardSecond * totalCard;
+	printf("%'g -- 2\n", cardSecond);
+
+	cardThird = cardThird * totalCard;
+	printf("%'g -- 3\n", cardThird);
+}
+
+void getNpMod(float *total, int cardType, float *cardMod, float artsMod, float busterMod, float quickMod, int np, int npStrengthening, int npType, float *npMod)
+{
+	switch (cardType) {
+	case ARTS:
+		if (artsMod) {
+			artsMod = 1.0 + (float)artsMod * 0.01;
+			*total = *total * artsMod;
+		}
+
+		switch (npType) {
+		case AOE:
+			if (npStrengthening) {
+				*npMod = whichNpMod(np, 5, 7.5, 8.25, 8.625, 9);
+
+			} else {
+				*npMod = whichNpMod(np, 4.5, 6, 6.75, 7.125, 7.5);
+			}
+
+			break;
+		case ST:
+			if (npStrengthening) {
+				*npMod = whichNpMod(np, 12, 15, 16.5, 17.25, 18);
+
+			} else {
+				*npMod = whichNpMod(np, 9, 12, 13.5, 14.25, 15);
+			}
+		}
+		break;
+	case BUSTER:
+		if (busterMod) {
+			busterMod = 1.0 + (float)busterMod * 0.01;
+			*total = *total * busterMod;
+		}
+		*cardMod = 1.5;
+
+		switch (npType) {
+		case AOE:
+			if (npStrengthening) {
+				*npMod = whichNpMod(np, 4, 5, 5.5, 5.75, 6);
+
+			} else {
+				*npMod = whichNpMod(np, 3, 4, 4.5, 4.75, 5);
+			}
+			break;
+		case ST:
+			if (npStrengthening) {
+				*npMod = whichNpMod(np, 8, 10, 11, 11.5, 12);
+
+			} else {
+				*npMod = whichNpMod(np, 6, 8, 9, 9.5, 10);
+			}
+			break;
+		}
+		break;
+
+	case QUICK:
+		if (quickMod) {
+			quickMod = 1.0 * (float)quickMod * 0.01;
+			*total = *total * quickMod;
+		}
+		*cardMod = 0.8;
+
+		switch (npType) {
+		case AOE:
+			if (npStrengthening) {
+				*npMod = whichNpMod(np, 8, 10, 11, 11.5, 12);
+
+			} else {
+				*npMod = whichNpMod(np, 6, 8, 9, 9.5, 10);
+			}
+			break;
+		case ST:
+			if (npStrengthening) {
+				*npMod = whichNpMod(np, 16, 20, 22, 23, 24);
+
+			} else {
+				*npMod = whichNpMod(np, 12, 16, 18, 19, 20);
+			}
+		}
+
+	default:
+		printf("card type not specified!\n");
+	}
+}
+
+void geClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, float *classAdv)
+{
+	switch (class) {
+	case SABER:
+		switch (classEnemy) {
+		case LANCER:
+			*classAdv = 2;
+			break;
+		case ARCHER:
+			*classAdv = 0.5;
+			break;
+		case RULER:
+			*classAdv = 0.5;
+		}
+		break;
+	case ARCHER:
+		*classMod = 0.95;
+
+		switch (classEnemy) {
+		case SABER:
+			*classAdv = 2;
+			break;
+		case LANCER:
+			*classAdv = 0.5;
+			break;
+		case RULER:
+			*classAdv = 0.5;
+		}
+		break;
+	case LANCER:
+		*classMod = 1.05;
+
+		switch (classEnemy) {
+		case ARCHER:
+			*classAdv = 2;
+			break;
+		case SABER:
+			*classAdv = 0.5;
+			break;
+		case RULER:
+			*classAdv = 0.5;
+		}
+		break;
+	case ASSASSIN:
+		*classMod = 0.9;
+
+		switch (classEnemy) {
+		case RIDER:
+			*classAdv = 2;
+			break;
+		case CASTER:
+			*classAdv = 0.5;
+			break;
+		case RULER:
+			*classAdv = 0.5;
+		}
+		break;
+	case CASTER:
+		*classMod = 0.9;
+
+		switch (classEnemy) {
+		case ASSASSIN:
+			*classAdv = 2;
+			break;
+		case RIDER:
+			*classAdv = 0.5;
+			break;
+		case RULER:
+			*classAdv = 0.5;
+		}
+		break;
+	case RIDER:
+		switch (classEnemy) {
+		case CASTER:
+			*classAdv = 2;
+			break;
+		case ASSASSIN:
+			*classAdv = 0.5;
+			break;
+		case RULER:
+			*classAdv = 0.5;
+		}
+		break;
+	case BERSERKER:
+		*classMod = 1.1;
+
+		switch (classEnemy) {
+		case FOREIGNER:
+			*classAdv = 2;
+			break;
+		default:
+			*classAdv = 1.5;
+		}
+		break;
+	case RULER:
+		*classMod = 1.1;
+
+		switch (classEnemy) {
+		case MOON_CANCER:
+			*classAdv = 2;
+			break;
+		case AVENGER:
+			*classAdv = 0.5;
+		}
+		break;
+	case ALTER_EGO:
+		*classMod = 1.0;
+
+		switch (classTypeEnemy) {
+		case KNIGHT:
+			*classAdv = 0.5;
+			break;
+		case CAVALRY:
+			*classAdv = 2;
+			break;
+		default:
+			switch (classEnemy) {
+			case FOREIGNER:
+				*classAdv = 2;
+				break;
+			case PRETENDER:
+				*classAdv = 0.5;
+			}
+		}
+		break;
+	case AVENGER:
+		*classMod = 1.1;
+
+		switch (classTypeEnemy) {
+		case RULER:
+			*classAdv = 2;
+			break;
+		case MOON_CANCER:
+			*classAdv = 0.5;
+		}
+		break;
+	case MOON_CANCER:
+		switch (classTypeEnemy) {
+		case AVENGER:
+			*classAdv = 2;
+			break;
+		case RULER:
+			*classAdv = 0.5;
+		}
+		break;
+	case FOREIGNER:
+		switch (classTypeEnemy) {
+		case FOREIGNER:
+			*classAdv = 2;
+			break;
+		case PRETENDER:
+			*classAdv = 2;
+			break;
+		case ALTER_EGO:
+			*classAdv = 0.5;
+		}
+		break;
+	case PRETENDER:
+		switch (classTypeEnemy) {
+		case KNIGHT:
+			*classAdv = 1.5;
+			break;
+		case CAVALRY:
+			*classAdv = 0.5;
+			break;
+		case 0:
+			switch (classEnemy) {
+			case ALTER_EGO:
+				*classAdv = 2;
+				break;
+			case FOREIGNER:
+				*classAdv = 0.5;
+			}
+		}
+		break;
+	default:
+		printf("class not specified, defaults to no class advantage!\n");
+	}
+
+	if (classEnemy == BERSERKER) {
+		*classAdv = 2;
+	} else if (classEnemy == ALTER_EGO) {
+
+	}
+}
+
+void getAttributeMod(int attribute, int attributeEnemy, float *attributeMod)
+{
+	switch (attribute) {
+	case MAN:
+		switch (attributeEnemy) {
+		case SKY:
+			*attributeMod = 1.1;
+			break;
+		case EARTH:
+			*attributeMod = 0.9;
+		}
+		break;
+	case SKY:
+		switch (attributeEnemy) {
+		case MAN:
+			*attributeMod = 0.9;
+			break;
+		case EARTH:
+			*attributeMod = 1.1;
+		}
+		break;
+	case EARTH:
+		switch (attributeEnemy) {
+		case MAN:
+			*attributeMod = 1.1;
+			break;
+		case SKY:
+			*attributeMod = 0.9;
+		}
+		break;
+	case STAR:
+
+		if (attributeEnemy == BEAST) {
+			*attributeMod = 1.1;
+		}
+		break;
+	case BEAST:
+
+		if (attributeEnemy == STAR) {
+			*attributeMod = 1.1;
+		}
+		break;
+	default:
+		printf("attribute not specified!\n");
+	}
+}
 int main(int argc, char *argv[])
 {
 	if (!argv[1]) {
@@ -145,8 +583,6 @@ int main(int argc, char *argv[])
 		printf("cd = critical damage\n");
 		exit(0);
 	}
-	/* int noCardType = 1; */
-
 	int attackStat = 1;
 	int class = 0;
 	int classEnemy = 0;
@@ -198,10 +634,11 @@ int main(int argc, char *argv[])
 
 	int npAt = 0;
 
-	int critAll = 0;
 	int critFirst = 0;
 	int critSecond = 0;
 	int critThird = 0;
+
+	int verbose = 0;
 
 	for (int currArgv=1; currArgv<argc; ++currArgv) {
 
@@ -238,10 +675,12 @@ int main(int argc, char *argv[])
 			npUp = npUp + getBuff(argv, currArgv, argvLen);
 
 		} else if (startsWith(2, "cd", argv, currArgv, argvLen)) {
-			criticalDamage = criticalDamage + criticalDamage + getBuff(argv, currArgv, argvLen);
+			criticalDamage = criticalDamage + getBuff(argv, currArgv, argvLen);
 
 		} else if (startsWith(4, "crit", argv, currArgv, argvLen)) {
-			critAll = 1;
+			critFirst = 1;
+			critSecond = 1;
+			critThird = 1;
 
 		} else if (startsWith(3, "cr1", argv, currArgv, argvLen)) {
 			critFirst = 1;
@@ -257,9 +696,6 @@ int main(int argc, char *argv[])
 
 		} else if (startsWith(3, "atk", argv, currArgv, argvLen)) {
 			attackStat = getNum(argv, currArgv, argvLen, 3);
-
-		/* } else if (isdigit(argv[currArgv][0])) { */
-		/* 	attackStat = copyArgv(argv, currArgv, argvLen) + 1000; */
 
 		} else if (startsWith(2, "np", argv, currArgv, argvLen)) {
 			np = getBuff(argv, currArgv, argvLen);
@@ -292,10 +728,11 @@ int main(int argc, char *argv[])
 			artsMod = artsMod + 50;
 			attackUp = attackUp + 20;
 
+		} else if (startsWith(2, "-v", argv, currArgv, argvLen)) {
+			verbose = 1;
+
 		} else {
-
 			if (!npType) {
-
 				if (startsWith(2, "st", argv, currArgv, argvLen)) {
 					npType = ST;
 					continue;
@@ -305,9 +742,7 @@ int main(int argc, char *argv[])
 					continue;
 				}
 			}
-
 			if (!cardType) {
-
 				if (startsWith(2, "aa", argv, currArgv, argvLen)) {
 					cardType = ARTS;
 					continue;
@@ -321,9 +756,7 @@ int main(int argc, char *argv[])
 					continue;
 				}
 			}
-
 			if (!class) {
-
 				if (startsWith(3, "sab", argv, currArgv, argvLen)) {
 					class = SABER;
 					/* classType = KNIGHT; */
@@ -379,9 +812,7 @@ int main(int argc, char *argv[])
 					continue;
 				}
 			}
-
 			if (!classEnemy) {
-
 				if (startsWith(4, "esab", argv, currArgv, argvLen)) {
 					classEnemy = SABER;
 					classTypeEnemy = KNIGHT;
@@ -437,9 +868,7 @@ int main(int argc, char *argv[])
 					continue;
 				}
 			}
-
 			if (!attribute) {
-
 				if (startsWith(3, "man", argv, currArgv, argvLen)) {
 					attribute = MAN;
 					continue;
@@ -461,9 +890,7 @@ int main(int argc, char *argv[])
 					continue;
 				}
 			}
-
 			if (!attributeEnemy) {
-
 				if (startsWith(4, "eman", argv, currArgv, argvLen)) {
 					attributeEnemy = MAN;
 					continue;
@@ -485,15 +912,11 @@ int main(int argc, char *argv[])
 					continue;
 				}
 			}
-
 			if (noChain) {
-				printf("noChain is true in if\n");
-
 				/* checkfirstcard */
 				if (argv[currArgv][0] == 'a'){
 					artsFirst = 1;
 					noChain = 0;
-					printf("true");
 
 				} else if (argv[currArgv][0] == 'b'){
 					busterFirst = 1;
@@ -503,11 +926,13 @@ int main(int argc, char *argv[])
 					quickFirst = 1;
 					noChain = 0;
 
-				} else if (argv[currArgv][0] == 'n' && argv[currArgv][1] == 'p'){
+				} else if (argv[currArgv][0] == 'n') {
 					npAt = 1;
 					noChain = 0;
-				}
 
+				} else {
+					continue;
+				}
 				/* checksecondcard */
 				if (argv[currArgv][1] == 'a'){
 					artsSecond = 1;
@@ -518,10 +943,12 @@ int main(int argc, char *argv[])
 				} else if (argv[currArgv][1] == 'q'){
 					quickSecond = 1;
 
-				} else if (argv[currArgv][1] == 'n' && argv[currArgv][2] == 'p'){
+				} else if (argv[currArgv][1] == 'n') {
 					npAt = 2;
-				}
 
+				} else {
+					continue;
+				}
 				/* checkthirdcard */
 				if (argv[currArgv][2] == 'a'){
 					artsThird = 1;
@@ -532,334 +959,29 @@ int main(int argc, char *argv[])
 				} else if (argv[currArgv][2] == 'q'){
 					quickThird = 1;
 
-				} else if (argv[currArgv][2] == 'n' && argv[currArgv][3] == 'p'){
+				} else if (argv[currArgv][2] == 'n') {
 					npAt = 3;
+
+				} else {
+					continue;
 				}
 			}
 		}
 	}
-
-	float classMod = 1;
-	float classAdv = 1;
-
-	/* checkclass */
-	switch (class) {
-	case SABER:
-		switch (classEnemy) {
-		case LANCER:
-			classAdv = 2;
-			break;
-		case ARCHER:
-			classAdv = 0.5;
-			break;
-		case RULER:
-			classAdv = 0.5;
-		}
-		break;
-	case ARCHER:
-		classMod = 0.95;
-
-		switch (classEnemy) {
-		case SABER:
-			classAdv = 2;
-			break;
-		case LANCER:
-			classAdv = 0.5;
-			break;
-		case RULER:
-			classAdv = 0.5;
-		}
-		break;
-	case LANCER:
-		classMod = 1.05;
-
-		switch (classEnemy) {
-		case ARCHER:
-			classAdv = 2;
-			break;
-		case SABER:
-			classAdv = 0.5;
-			break;
-		case RULER:
-			classAdv = 0.5;
-		}
-		break;
-	case ASSASSIN:
-		classMod = 0.9;
-
-		switch (classEnemy) {
-		case RIDER:
-			classAdv = 2;
-			break;
-		case CASTER:
-			classAdv = 0.5;
-			break;
-		case RULER:
-			classAdv = 0.5;
-		}
-		break;
-	case CASTER:
-		classMod = 0.9;
-
-		switch (classEnemy) {
-		case ASSASSIN:
-			classAdv = 2;
-			break;
-		case RIDER:
-			classAdv = 0.5;
-			break;
-		case RULER:
-			classAdv = 0.5;
-		}
-		break;
-	case RIDER:
-		switch (classEnemy) {
-		case CASTER:
-			classAdv = 2;
-			break;
-		case ASSASSIN:
-			classAdv = 0.5;
-			break;
-		case RULER:
-			classAdv = 0.5;
-		}
-		break;
-	case BERSERKER:
-		classMod = 1.1;
-
-		switch (classEnemy) {
-		case FOREIGNER:
-			classAdv = 2;
-			break;
-		default:
-			classAdv = 1.5;
-		}
-		break;
-	case RULER:
-		classMod = 1.1;
-
-		switch (classEnemy) {
-		case MOON_CANCER:
-			classAdv = 2;
-			break;
-		case AVENGER:
-			classAdv = 0.5;
-		}
-		break;
-	case ALTER_EGO:
-		classMod = 1.0;
-
-		switch (classTypeEnemy) {
-		case KNIGHT:
-			classAdv = 0.5;
-			break;
-		case CAVALRY:
-			classAdv = 2;
-			break;
-		default:
-			switch (classEnemy) {
-			case FOREIGNER:
-				classAdv = 2;
-				break;
-			case PRETENDER:
-				classAdv = 0.5;
-			}
-		}
-		break;
-	case AVENGER:
-		classMod = 1.1;
-
-		switch (classTypeEnemy) {
-		case RULER:
-			classAdv = 2;
-			break;
-		case MOON_CANCER:
-			classAdv = 0.5;
-		}
-		break;
-	case MOON_CANCER:
-		switch (classTypeEnemy) {
-		case AVENGER:
-			classAdv = 2;
-			break;
-		case RULER:
-			classAdv = 0.5;
-		}
-		break;
-	case FOREIGNER:
-		switch (classTypeEnemy) {
-		case FOREIGNER:
-			classAdv = 2;
-			break;
-		case PRETENDER:
-			classAdv = 2;
-			break;
-		case ALTER_EGO:
-			classAdv = 0.5;
-		}
-		break;
-	case PRETENDER:
-		switch (classTypeEnemy) {
-		case KNIGHT:
-			classAdv = 1.5;
-			break;
-		case CAVALRY:
-			classAdv = 0.5;
-			break;
-		case 0:
-			switch (classEnemy) {
-			case ALTER_EGO:
-				classAdv = 2;
-				break;
-			case FOREIGNER:
-				classAdv = 0.5;
-			}
-		}
-		break;
-	default:
-		printf("class not specified, defaults to no class advantage!\n");
-	}
-
-	if (classEnemy == BERSERKER) {
-		classAdv = 2;
-	} else if (classEnemy == ALTER_EGO) {
-
-	}
-
-	float attributeMod = 1;
-
-	/* checkattribute */
-	switch (attribute) {
-	case MAN:
-		switch (attributeEnemy) {
-		case SKY:
-			attributeMod = 1.1;
-			break;
-		case EARTH:
-			attributeMod = 0.9;
-		}
-		break;
-	case SKY:
-		switch (attributeEnemy) {
-		case MAN:
-			attributeMod = 0.9;
-			break;
-		case EARTH:
-			attributeMod = 1.1;
-		}
-		break;
-	case EARTH:
-		switch (attributeEnemy) {
-		case MAN:
-			attributeMod = 1.1;
-			break;
-		case SKY:
-			attributeMod = 0.9;
-		}
-		break;
-	case STAR:
-
-		if (BEAST) {
-			attributeMod = 1.1;
-		}
-		break;
-	case BEAST:
-
-		if (STAR) {
-			attributeMod = 1.1;
-		}
-		break;
-	default:
-		printf("attribute not specified!\n");
-	}
+	/* setlocale(LC_NUMERIC, ""); */
 
 	float total = 1;
-
-	float npMod = 1;
+	float classMod = 1;
+	float classAdv = 1;
 	float cardMod = 1;
+	float attributeMod = 1;
+	float npMod = 1;
 
-	/* checkcardtype */
-	switch (cardType) {
-	case ARTS:
-		if (artsMod) {
-			artsMod = 1.0 + (float)artsMod * 0.01;
-			total = total * artsMod;
-		}
+	geClassMod(class, classEnemy, classTypeEnemy, &classMod, &classAdv);
 
-		switch (npType) {
-		case AOE:
-			if (npStrengthening) {
-				npMod = whichNpMod(np, 5, 7.5, 8.25, 8.625, 9);
+	getAttributeMod(attribute, attributeEnemy, &attributeMod);
 
-			} else {
-				npMod = whichNpMod(np, 4.5, 6, 6.75, 7.125, 7.5);
-			}
-
-			break;
-		case ST:
-			if (npStrengthening) {
-				npMod = whichNpMod(np, 12, 15, 16.5, 17.25, 18);
-
-			} else {
-				npMod = whichNpMod(np, 9, 12, 13.5, 14.25, 15);
-			}
-		}
-		break;
-	case BUSTER:
-		if (busterMod) {
-			busterMod = 1.0 + (float)busterMod * 0.01;
-			total = total * busterMod;
-		}
-		cardMod = 1.5;
-
-		switch (npType) {
-		case AOE:
-			if (npStrengthening) {
-				npMod = whichNpMod(np, 4, 5, 5.5, 5.75, 6);
-
-			} else {
-				npMod = whichNpMod(np, 3, 4, 4.5, 4.75, 5);
-			}
-			break;
-		case ST:
-			if (npStrengthening) {
-				npMod = whichNpMod(np, 8, 10, 11, 11.5, 12);
-
-			} else {
-				npMod = whichNpMod(np, 6, 8, 9, 9.5, 10);
-			}
-			break;
-		}
-		break;
-
-	case QUICK:
-		if (quickMod) {
-			quickMod = 1.0 * (float)quickMod * 0.01;
-			total = total * quickMod;
-		}
-		cardMod = 0.8;
-
-		switch (npType) {
-		case AOE:
-			if (npStrengthening) {
-				npMod = whichNpMod(np, 8, 10, 11, 11.5, 12);
-
-			} else {
-				npMod = whichNpMod(np, 6, 8, 9, 9.5, 10);
-			}
-			break;
-		case ST:
-			if (npStrengthening) {
-				npMod = whichNpMod(np, 16, 20, 22, 23, 24);
-
-			} else {
-				npMod = whichNpMod(np, 12, 16, 18, 19, 20);
-			}
-		}
-
-	default:
-		printf("card type not specified!\n");
-	}
+	getNpMod(&total, cardType, &cardMod, artsMod, busterMod, quickMod, np, npStrengthening, npType, &npMod);
 
 	if (defenseDown > 100) {
 		defenseDown = 100;
@@ -870,170 +992,51 @@ int main(int argc, char *argv[])
 		defenseUp = defenseUp - 100;
 	}
 
-	setlocale(LC_NUMERIC, "");
-
 	if ((attackUp + defenseDown - attackDown - defenseUp)) {
-		total = total *	(1.0 + ((float)(attackUp + defenseDown - attackDown - defenseUp)) * 0.01);
-	}
-	total = total * BASE_MULTIPLIER;
-	total = total * classAdv * classMod * attributeMod * ((float)attackStat) * cardMod;
-
-		/* printf("classAdv is %f\n", classAdv); */
-		/* printf("classMod is %f\n", classMod); */
-		/* printf("attributeMod is %f\n", attributeMod); */
-		/* printf("attackStat is %i\n", attackStat); */
-
-		/* printf("total is %f\n", total); */
-
-	/* total = total * BASE_MULTIPLIER * (1.0 + ((float)(attackUp + defenseDown
-	 * - attackDown - defenseUp)) * 0.01) * classAdv * classMod * attributeMod *
-	 * ((float)attackStat) * cardMod; */
-
-	/* float totalCard = total * (1.0 + ((float)(criticalDamage + powerMod)) *
-	 * 0.01); */
-
-	float totalCard = 1;
-	if (powerMod) {
-		totalCard = 1.0 + (float)powerMod * 0.01;
-	}
-	totalCard = totalCard * total;
-
-	if (criticalDamage) {
-		criticalDamage = 1.0 + (float)criticalDamage * 0.01;
+		total = total *	(1.0 + (float)(attackUp + defenseDown - attackDown - defenseUp) * 0.01);
 	}
 
-	totalCard = totalCard * criticalDamage;
-	printf("%'g\n", totalCard);
+	total = total * BASE_MULTIPLIER * classAdv * classMod * attributeMod * ((float)attackStat) * cardMod;
 
-	float cardFirst = 1;
-	float cardSecond = 1;
-	float cardThird = 1;
-
-	/* checkchain */
-	if (!noChain) {
-		if (npAt == 1) {
-			switch (cardType) {
-				case BUSTER:
-					busterFirst = 1;
-					break;
-				case ARTS:
-					artsFirst = 1;
-					break;
-				case QUICK:
-					quickFirst = 1;
-			}
-		}
-
-		if (busterFirst) {
-
-			if (npAt != 1) {
-				cardFirst = 1.5;
-			}
-
-			if (busterSecond) {
-				cardSecond = 1.8;
-			}
-
-			if (busterThird == 3) {
-				cardThird = 2.1;
-			}
-		} else if (quickFirst) {
-
-			if (!npAt) {
-				cardFirst = 0.8;
-			}
-			if (quickSecond) {
-				cardSecond = 0.96;
-			}
-			if (quickThird) {
-				cardThird = 1.12;
-			}
-		} else if (artsFirst) {
-
-			if (npAt != 1) {
-				cardFirst = 1;
-			}
-			if (artsSecond) {
-				cardSecond = 1.2;
-			}
-			if (artsThird) {
-				cardThird = 1.12;
-			}
-		}
-
-		if (critAll) {
-			totalCard = totalCard * criticalDamage;
-			printf("critAll\n");
-
-		} else {
-			if (critFirst) {
-				cardFirst = cardFirst * criticalDamage;
-			}
-			if (critSecond) {
-				cardSecond = cardSecond * criticalDamage;
-			}
-			if (critThird) {
-				cardThird = cardThird * criticalDamage;
-			}
-		}
-
-		if (npAt != 1) {
-			cardFirst = cardFirst * totalCard;
-			printf("%f 1\n", cardFirst);
-
-		} else if (npAt != 2) {
-			cardSecond = cardSecond * totalCard;
-			printf("%f 2\n", cardSecond);
-
-		} else if (npAt != 3) {
-			cardThird = cardThird * totalCard;
-			printf("%f 3\n", cardThird);
-		}
-	} else {
-		printf("noChain is true outside\n");
-	}
-
-	/* printf("%s\n", "attackStat"); */
-	/* printf("%d\n", attackStat); */
-	/* printf("%s\n", "busterMod"); */
-	/* printf("%d\n", busterMod); */
-	/* printf("%s\n", "powerMod"); */
-	/* printf("%d\n", powerMod); */
-	/* printf("%s\n", "npUp"); */
-	/* printf("%d\n", npUp); */
-	/* printstr("npMod"); */
-	/* printf("%f\n",npMod); */
-	/* printstr("classAdv"); */
-	/* printf("%f\n",attributeMod); */
-	/* printstr("atrributeMod"); */
-	/* printf("%f\n",classAdv); */
-	/* printstr("classMod"); */
-	/* printf("%f\n",classMod); */
-	/* printstr("npMod"); */
-	/* printf("%f\n",npMod); */
-	/* printstr("total"); */
-	/* printf("%f\n",total); */
+	getCardDamage(noChain, total, powerMod, npAt, criticalDamage, critFirst, critSecond, critThird, cardType, busterFirst, busterSecond, busterThird, artsFirst, artsSecond, artsThird, quickFirst, quickSecond, quickThird);
 
 	float totalNp = 1;
 	if ((npUp + powerMod)) {
 		totalNp = 1.0 + (float)(npUp + powerMod) * 0.01;
-		/* printf("%s\n","totalNp"); */
-		/* printf("%'g\n",totalNp); */
 	}
 	totalNp = totalNp * superEffective * npMod * total;
 	printf("%'g\n", totalNp);
 
-	/* printf("%s\n","totalNp"); */
+	if (verbose) {
+		printf("attackStat\n");
+		printf("%d\n", attackStat);
 
-	/* totalNp = total * (1.0 + ((float)(npUp + powerMod)) * 0.01) *
-	 * (float)superEffective * (float)npMod; */
-	/* printf("%s\n","totalNp"); */
+		printf("busterMod\n");
+		printf("%d\n", busterMod);
 
-	/* printf("%'g\n", totalCard); */
-	/* printf("%'g\n", totalNp); */
+		printf("powerMod\n");
+		printf("%d\n", powerMod);
 
-	/* printf("%'f\n", totalCard); */
-	/* printf("%'f\n", totalNp); */
+		printf("npUp\n");
+		printf("%d\n", npUp);
 
+		printf("npMod\n");
+		printf("%f\n",npMod);
+
+		printf("classAdv\n");
+		printf("%f\n",attributeMod);
+
+		printf("atrributeMod\n");
+		printf("%f\n",classAdv);
+
+		printf("classMod\n");
+		printf("%f\n",classMod);
+
+		printf("npMod\n");
+		printf("%f\n",npMod);
+
+		printf("total\n");
+		printf("%f\n",total);
+	}
 	return 0;
 }

@@ -51,6 +51,239 @@ inline void printfl(float var)
 	printf("%f\n", var);
 }
 
+float getNpMod(int class, int classEnemy)
+{
+	switch (class) {
+	case SABER:
+		switch (classEnemy) {
+		case LANCER:
+			classAdv = 2;
+			break;
+		case ARCHER:
+			classAdv = 0.5;
+			break;
+		case RULER:
+			classAdv = 0.5;
+		}
+		break;
+	case ARCHER:
+		classMod = 0.95;
+
+		switch (classEnemy) {
+		case SABER:
+			classAdv = 2;
+			break;
+		case LANCER:
+			classAdv = 0.5;
+			break;
+		case RULER:
+			classAdv = 0.5;
+		}
+		break;
+	case LANCER:
+		classMod = 1.05;
+
+		switch (classEnemy) {
+		case ARCHER:
+			classAdv = 2;
+			break;
+		case SABER:
+			classAdv = 0.5;
+			break;
+		case RULER:
+			classAdv = 0.5;
+		}
+		break;
+	case ASSASSIN:
+		classMod = 0.9;
+
+		switch (classEnemy) {
+		case RIDER:
+			classAdv = 2;
+			break;
+		case CASTER:
+			classAdv = 0.5;
+			break;
+		case RULER:
+			classAdv = 0.5;
+		}
+		break;
+	case CASTER:
+		classMod = 0.9;
+
+		switch (classEnemy) {
+		case ASSASSIN:
+			classAdv = 2;
+			break;
+		case RIDER:
+			classAdv = 0.5;
+			break;
+		case RULER:
+			classAdv = 0.5;
+		}
+		break;
+	case RIDER:
+		switch (classEnemy) {
+		case CASTER:
+			classAdv = 2;
+			break;
+		case ASSASSIN:
+			classAdv = 0.5;
+			break;
+		case RULER:
+			classAdv = 0.5;
+		}
+		break;
+	case BERSERKER:
+		classMod = 1.1;
+
+		switch (classEnemy) {
+		case FOREIGNER:
+			classAdv = 2;
+			break;
+		default:
+			classAdv = 1.5;
+		}
+		break;
+	case RULER:
+		classMod = 1.1;
+
+		switch (classEnemy) {
+		case MOON_CANCER:
+			classAdv = 2;
+			break;
+		case AVENGER:
+			classAdv = 0.5;
+		}
+		break;
+	case ALTER_EGO:
+		classMod = 1.0;
+
+		switch (classTypeEnemy) {
+		case KNIGHT:
+			classAdv = 0.5;
+			break;
+		case CAVALRY:
+			classAdv = 2;
+			break;
+		default:
+			switch (classEnemy) {
+			case FOREIGNER:
+				classAdv = 2;
+				break;
+			case PRETENDER:
+				classAdv = 0.5;
+			}
+		}
+		break;
+	case AVENGER:
+		classMod = 1.1;
+
+		switch (classTypeEnemy) {
+		case RULER:
+			classAdv = 2;
+			break;
+		case MOON_CANCER:
+			classAdv = 0.5;
+		}
+		break;
+	case MOON_CANCER:
+		switch (classTypeEnemy) {
+		case AVENGER:
+			classAdv = 2;
+			break;
+		case RULER:
+			classAdv = 0.5;
+		}
+		break;
+	case FOREIGNER:
+		switch (classTypeEnemy) {
+		case FOREIGNER:
+			classAdv = 2;
+			break;
+		case PRETENDER:
+			classAdv = 2;
+			break;
+		case ALTER_EGO:
+			classAdv = 0.5;
+		}
+		break;
+	case PRETENDER:
+		switch (classTypeEnemy) {
+		case KNIGHT:
+			classAdv = 1.5;
+			break;
+		case CAVALRY:
+			classAdv = 0.5;
+			break;
+		case 0:
+			switch (classEnemy) {
+			case ALTER_EGO:
+				classAdv = 2;
+				break;
+			case FOREIGNER:
+				classAdv = 0.5;
+			}
+		}
+		break;
+	default:
+		printf("%s\n", "class not specified, defaults to no class advantage!");
+	}
+
+	if (classEnemy == BERSERKER) {
+		classAdv = 2;
+	} else if (classEnemy == ALTER_EGO) {
+
+	}
+
+	float attributeMod = 1;
+
+	/* checkattribute */
+	switch (attribute) {
+	case MAN:
+		switch (attributeEnemy) {
+		case SKY:
+			attributeMod = 1.1;
+			break;
+		case EARTH:
+			attributeMod = 0.9;
+		}
+		break;
+	case SKY:
+		switch (attributeEnemy) {
+		case MAN:
+			attributeMod = 0.9;
+			break;
+		case EARTH:
+			attributeMod = 1.1;
+		}
+		break;
+	case EARTH:
+		switch (attributeEnemy) {
+		case MAN:
+			attributeMod = 1.1;
+			break;
+		case SKY:
+			attributeMod = 0.9;
+		}
+		break;
+	case STAR:
+
+		if (BEAST) {
+			attributeMod = 1.1;
+		}
+		break;
+	case BEAST:
+
+		if (STAR) {
+			attributeMod = 1.1;
+		}
+		break;
+	default:
+		printf("%s\n", "attribute not specified!");
+	}
+}
+
 float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault)
 {
 	switch (np) {
