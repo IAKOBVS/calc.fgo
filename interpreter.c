@@ -109,7 +109,7 @@ int getBuff(char *argv[], int currArg, int argvLen)
 int getNum(char *argv[], int currArg, int argvLen, int startAt)
 {
 	setvbuf(stdout, NULL, _IONBF, 0); 
-	char numInString[argvLen];
+	char numInString[argvLen-startAt];
 	int j = 0;
 	for (int i = startAt; i<argvLen; ++i) {
 		numInString[j] = argv[currArg][i];
