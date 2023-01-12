@@ -106,7 +106,7 @@ int getBuff(char *argv[], int currArg, int argvLen)
 	return (strtol(numInString, NULL, 10));
 }
 
-int getNum(char *argv[], int currArg, int argvLen, int startAt)
+int getBuffVar(char *argv[], int currArg, int argvLen, int startAt)
 {
 	/* setvbuf(stdout, NULL, _IONBF, 0); */ 
 	char numInString[argvLen-startAt];
@@ -758,7 +758,7 @@ int main(int argc, char *argv[])
 			superEffectiveModifier = getBuff(argv, currArgv, argvLen) / 100.0;
 
 		} else if (startsWith(3, "atk", argv, currArgv, argvLen)) {
-			servantAtk = getNum(argv, currArgv, argvLen, 3);
+			servantAtk = getBuffVar(argv, currArgv, argvLen, 3);
 
 		} else if (startsWith(2, "np", argv, currArgv, argvLen)) {
 			np = getBuff(argv, currArgv, argvLen);
@@ -1179,7 +1179,7 @@ int main(int argc, char *argv[])
 /* 			*superEffectiveModifier = getBuff(argv, currArgv, argvLen) / 100.0; */
 
 /* 		} else if (startsWith(3, "*atk", argv, currArgv, argvLen)) { */
-/* 			*servantAtk = getNum(argv, currArgv, argvLen, 3) + 1000; */
+/* 			*servantAtk = getBuffVar(argv, currArgv, argvLen, 3) + 1000; */
 
 /* 		} else if (startsWith(2, "*np", argv, currArgv, argvLen)) { */
 /* 			*np = getBuff(argv, currArgv, argvLen); */
