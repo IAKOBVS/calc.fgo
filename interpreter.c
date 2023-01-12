@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <locale.h>
 
 #define BASE_MULTIPLIER 0.23
@@ -93,11 +94,10 @@ int startsWith(int substrLen, char substr[], char *argv[], int currArgv, int arg
 
 int getBuff(char *argv[], int currArg, int argvLen)
 {
-	setvbuf(stdout, NULL, _IONBF, 0); 
-	printf("%d\n", argvLen);
+	/* setvbuf(stdout, NULL, _IONBF, 0); */ 
 	char numInString[argvLen-2];
 	int j = 0;
-	for (int i = 2; i<argvLen; ++i) {
+	for (int i = 2; i<=argvLen; ++i) {
 		numInString[j] = argv[currArg][i];
 		j++;
 		puts(numInString);
@@ -108,13 +108,15 @@ int getBuff(char *argv[], int currArg, int argvLen)
 
 int getNum(char *argv[], int currArg, int argvLen, int startAt)
 {
-	setvbuf(stdout, NULL, _IONBF, 0); 
+	/* setvbuf(stdout, NULL, _IONBF, 0); */ 
 	char numInString[argvLen-startAt];
 	int j = 0;
-	for (int i = startAt; i<argvLen; ++i) {
+	for (int i = startAt; i<=argvLen; ++i) {
 		numInString[j] = argv[currArg][i];
 		j++;
+		puts(numInString);
 	}
+	puts(numInString);
 	return (strtol(numInString, NULL, 10));
 }
 
@@ -702,7 +704,8 @@ int main(int argc, char *argv[])
 
 	for (int currArgv=1; currArgv<argc; ++currArgv) {
 
-		int argvLen = countTilNull(argv, currArgv);
+		/* int argvLen = countTilNull(argv, currArgv); */
+		int argvLen = strlen(argv[currArgv]);
 
 		if (startsWith(2, "au", argv, currArgv, argvLen)) {
 			atkMod = atkMod + getBuff(argv, currArgv, argvLen);
