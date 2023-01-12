@@ -65,14 +65,6 @@ inline int intToFloat(float var)
 	return var;
 }
 
-float returnFl(float var)
-{
-	if (!var) {
-		return 1;
-	}
-	return var;
-}
-
 int countTilNull(char *argv[], int currArgv)
 {
 	int i = 0;
@@ -122,7 +114,7 @@ int getNum(char *argv[], int currArg, int argvLen, int startAt)
 	return (strtol(numInString, NULL, 10));
 }
 
-float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault)
+float whichNpDamageModifier(int np, float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault)
 {
 	switch (np) {
 	case 1:
@@ -138,23 +130,19 @@ float whichNpMod(int np, float caseOne, float caseTwo, float caseThree, float ca
 	}
 }
 
-void getCardDamage(int noChain, int total, int powerMod, int npAt, int critDamageMod, int critFirst, int critSecond, int critThird, int cardType, int busterFirst, int busterSecond, int busterThird, int artsFirst, int artsSecond, int artsThird, int quickFirst, int quickSecond, int quickThird, int servantAtk)
+void getCardDmg(int noChain, int total, int powerMod, int npAt, int critDamageMod, int critFirst, int critSecond, int critThird, int cardType, int busterFirst, int busterSecond, int busterThird, int artsFirst, int artsSecond, int artsThird, int quickFirst, int quickSecond, int quickThird, int servantAtk)
 {
 	if (noChain) {
 		printf("no card chain\n");
 	}
 
+	float floatCrit;
+
 	float cardFirst = 1;
 	float cardSecond = 1;
-	float cardThird = 1;
+	float cardThird= 1;
 
-	float totalCard = 1;
-
-	float tmpCrit;
-
-	totalCard = totalCard * total;
-
-	tmpCrit = 2.0 + (float)critDamageMod + (float)powerMod * 0.01;
+	floatCrit = 1.0 + (((float)critDamageMod + (float)powerMod) * 0.01);
 
 	switch (npAt) {
 	case 1:
@@ -230,125 +218,131 @@ void getCardDamage(int noChain, int total, int powerMod, int npAt, int critDamag
 	}
 
 	if (critFirst) {
-		cardFirst = cardFirst * tmpCrit;
+		cardFirst = cardFirst * floatCrit;
+	} else {
+		cardFirst = cardFirst * (1.0 + ((float)powerMod * 0.01));
 	}
 	if (critSecond) {
-		cardSecond = cardSecond * tmpCrit;
+		cardSecond = cardSecond * floatCrit;
+	} else {
+		cardSecond = cardSecond * (1.0 + ((float)powerMod * 0.01));
 	}
 	if (critThird) {
-		cardThird = cardThird * tmpCrit;
+		cardThird = cardThird * floatCrit;
+	} else {
+		cardThird = cardThird * (1.0 + ((float)powerMod * 0.01));
 	}
-	cardFirst = cardFirst * totalCard;
-	cardSecond = cardSecond * totalCard;
-	cardThird = cardThird * totalCard;
 
-	if (busterFirst && npAt != 1) {
+	cardFirst = cardFirst * (float)total;
+	cardSecond = cardSecond * (float)total;
+	cardThird = cardThird * (float)total;
 
-		float busterChainMod = BUSTER_CHAIN_MOD * servantAtk;
+	if (busterFirst && busterSecond && busterThird) {
+		float busterChainMod = 0.2 * (float)servantAtk;
 
-		cardFirst = cardFirst + busterChainMod;
-		printf("%'g -- 1\n", cardFirst);
-
-		if (busterSecond && npAt != 2) {
+		if (npAt != 1) {
+			cardFirst = cardFirst + busterChainMod;
+		}
+		if (npAt != 2) {
 			cardSecond = cardSecond + busterChainMod;
 		}
-		if (busterThird && npAt != 3) {
+		if (npAt != 3) {
 			cardThird = cardThird + busterChainMod;
 		}
-		printf("%'g -- 2\n", cardSecond);
-		printf("%'g -- 3\n", cardThird);
-
-	} else {
-		printf("%'g -- 1\n", cardFirst);
-		printf("%'g -- 2\n", cardSecond);
-		printf("%'g -- 3\n", cardThird);
 	}
+
+	printf("%'g -- 1\n", cardFirst);
+	printf("%'g -- 2\n", cardSecond);
+	printf("%'g -- 3\n", cardThird);
 }
 
-void getNpMod(float *total, int cardType, float *cardMod, float artsMod, float busterMod, float quickMod, int np, int npStrengthening, int npType, float *npDamageMultiplier)
+void getNpDamage(int cardType, int np, int npStrengthening, int npType, float *npDamageMultiplier, float *superEffectiveModifier, int total, int npDamageMod, int powerMod)
 {
+	float totalNp = 1;
+
+	float whichCardMod = 1;
+
 	switch (cardType) {
 	case ARTS:
-		if (artsMod) {
-			artsMod = 1.0 + (float)artsMod * 0.01;
-			*total = *total * artsMod;
-		}
+		whichCardMod = 1;
+		break;
+	case BUSTER:
+		whichCardMod = 1.5;
+		break;
+	case QUICK:
+		whichCardMod = 0.8;
+	}
 
+	switch (cardType) {
+	case ARTS:
 		switch (npType) {
 		case AOE:
 			if (npStrengthening) {
-				*npDamageMultiplier = whichNpMod(np, 5, 7.5, 8.25, 8.625, 9);
+				*npDamageMultiplier = whichNpDamageModifier(np, 5, 7.5, 8.25, 8.625, 9);
 
 			} else {
-				*npDamageMultiplier = whichNpMod(np, 4.5, 6, 6.75, 7.125, 7.5);
+				*npDamageMultiplier = whichNpDamageModifier(np, 4.5, 6, 6.75, 7.125, 7.5);
 			}
 
 			break;
 		case ST:
 			if (npStrengthening) {
-				*npDamageMultiplier = whichNpMod(np, 12, 15, 16.5, 17.25, 18);
+				*npDamageMultiplier = whichNpDamageModifier(np, 12, 15, 16.5, 17.25, 18);
 
 			} else {
-				*npDamageMultiplier = whichNpMod(np, 9, 12, 13.5, 14.25, 15);
+				*npDamageMultiplier = whichNpDamageModifier(np, 9, 12, 13.5, 14.25, 15);
 			}
 		}
 		break;
 	case BUSTER:
-		if (busterMod) {
-			busterMod = 1.0 + (float)busterMod * 0.01;
-			*total = *total * busterMod;
-		}
-		*cardMod = 1.5;
-
 		switch (npType) {
 		case AOE:
 			if (npStrengthening) {
-				*npDamageMultiplier = whichNpMod(np, 4, 5, 5.5, 5.75, 6);
+				*npDamageMultiplier = whichNpDamageModifier(np, 4, 5, 5.5, 5.75, 6);
 
 			} else {
-				*npDamageMultiplier = whichNpMod(np, 3, 4, 4.5, 4.75, 5);
+				*npDamageMultiplier = whichNpDamageModifier(np, 3, 4, 4.5, 4.75, 5);
 			}
 			break;
 		case ST:
 			if (npStrengthening) {
-				*npDamageMultiplier = whichNpMod(np, 8, 10, 11, 11.5, 12);
+				*npDamageMultiplier = whichNpDamageModifier(np, 8, 10, 11, 11.5, 12);
 
 			} else {
-				*npDamageMultiplier = whichNpMod(np, 6, 8, 9, 9.5, 10);
+				*npDamageMultiplier = whichNpDamageModifier(np, 6, 8, 9, 9.5, 10);
 			}
 			break;
 		}
 		break;
 	case QUICK:
-		if (quickMod) {
-			quickMod = 1.0 * (float)quickMod * 0.01;
-			*total = *total * quickMod;
-		}
-		*cardMod = 0.8;
-
 		switch (npType) {
 		case AOE:
 			if (npStrengthening) {
-				*npDamageMultiplier = whichNpMod(np, 8, 10, 11, 11.5, 12);
+				*npDamageMultiplier = whichNpDamageModifier(np, 8, 10, 11, 11.5, 12);
 
 			} else {
-				*npDamageMultiplier = whichNpMod(np, 6, 8, 9, 9.5, 10);
+				*npDamageMultiplier = whichNpDamageModifier(np, 6, 8, 9, 9.5, 10);
 			}
 			break;
 		case ST:
 			if (npStrengthening) {
-				*npDamageMultiplier = whichNpMod(np, 16, 20, 22, 23, 24);
+				*npDamageMultiplier = whichNpDamageModifier(np, 16, 20, 22, 23, 24);
 
 			} else {
-				*npDamageMultiplier = whichNpMod(np, 12, 16, 18, 19, 20);
+				*npDamageMultiplier = whichNpDamageModifier(np, 12, 16, 18, 19, 20);
 			}
 		}
 	default:
 		printf("card type not specified!\n");
 	}
+	totalNp = total
+	* *superEffectiveModifier * *npDamageMultiplier * whichCardMod
+	* (1.0 + (float)(npDamageMod + powerMod) * 0.01);
+
+	printf("%'g\n%'g ~ %'g\n", totalNp, (totalNp*0.9), (totalNp*1.1));
 }
 
-void geClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, float *classAtkBonus)
+void getClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, float *classAtkBonus)
 {
 	switch (class) {
 	case SABER:
@@ -529,8 +523,6 @@ void geClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod, 
 
 	if (classEnemy == BERSERKER) {
 		*classAtkBonus = 2;
-	} else if (classEnemy == ALTER_EGO) {
-
 	}
 }
 
@@ -719,7 +711,7 @@ int main(int argc, char *argv[])
 			superEffectiveModifier = getBuff(argv, currArgv, argvLen) / 100.0;
 
 		} else if (startsWith(3, "atk", argv, currArgv, argvLen)) {
-			servantAtk = getNum(argv, currArgv, argvLen, 3);
+			servantAtk = getNum(argv, currArgv, argvLen, 3) + 1000;
 
 		} else if (startsWith(2, "np", argv, currArgv, argvLen)) {
 			np = getBuff(argv, currArgv, argvLen);
@@ -936,60 +928,60 @@ int main(int argc, char *argv[])
 					continue;
 				}
 			}
-			/* if (noChain) { */
-			/* 	/1* checkfirstcard *1/ */
-			/* 	if (argv[currArgv][0] == 'a'){ */
-			/* 		artsFirst = 1; */
-			/* 		noChain = 0; */
+			if (noChain) {
+				/* checkfirstcard */
+				if (argv[currArgv][0] == 'a'){
+					artsFirst = 1;
+					noChain = 0;
 
-			/* 	} else if (argv[currArgv][0] == 'b'){ */
-			/* 		busterFirst = 1; */
-			/* 		noChain = 0; */
+				} else if (argv[currArgv][0] == 'b'){
+					busterFirst = 1;
+					noChain = 0;
 
-			/* 	} else if (argv[currArgv][0] == 'q'){ */
-			/* 		quickFirst = 1; */
-			/* 		noChain = 0; */
+				} else if (argv[currArgv][0] == 'q'){
+					quickFirst = 1;
+					noChain = 0;
 
-			/* 	} else if (argv[currArgv][0] == 'n') { */
-			/* 		npAt = 1; */
-			/* 		noChain = 0; */
+				} else if (argv[currArgv][0] == 'n') {
+					npAt = 1;
+					noChain = 0;
 
-			/* 	} else { */
-			/* 		continue; */
-			/* 	} */
-			/* 	/1* checksecondcard *1/ */
-			/* 	if (argv[currArgv][1] == 'a'){ */
-			/* 		artsSecond = 1; */
+				} else {
+					continue;
+				}
+				/* checksecondcard */
+				if (argv[currArgv][1] == 'a'){
+					artsSecond = 1;
 
-			/* 	} else if (argv[currArgv][1] == 'b'){ */
-			/* 		busterSecond = 1; */
+				} else if (argv[currArgv][1] == 'b'){
+					busterSecond = 1;
 
-			/* 	} else if (argv[currArgv][1] == 'q'){ */
-			/* 		quickSecond = 1; */
+				} else if (argv[currArgv][1] == 'q'){
+					quickSecond = 1;
 
-			/* 	} else if (argv[currArgv][1] == 'n') { */
-			/* 		npAt = 2; */
+				} else if (argv[currArgv][1] == 'n') {
+					npAt = 2;
 
-			/* 	} else { */
-			/* 		continue; */
-			/* 	} */
-			/* 	/1* checkthirdcard *1/ */
-			/* 	if (argv[currArgv][2] == 'a'){ */
-			/* 		artsThird = 1; */
+				} else {
+					continue;
+				}
+				/* checkthirdcard */
+				if (argv[currArgv][2] == 'a'){
+					artsThird = 1;
 
-			/* 	} else if (argv[currArgv][2] == 'b'){ */
-			/* 		busterThird = 1; */
+				} else if (argv[currArgv][2] == 'b'){
+					busterThird = 1;
 
-			/* 	} else if (argv[currArgv][2] == 'q'){ */
-			/* 		quickThird = 1; */
+				} else if (argv[currArgv][2] == 'q'){
+					quickThird = 1;
 
-			/* 	} else if (argv[currArgv][2] == 'n') { */
-			/* 		npAt = 3; */
+				} else if (argv[currArgv][2] == 'n') {
+					npAt = 3;
 
-			/* 	} else { */
-			/* 		continue; */
-			/* 	} */
-			/* } */
+				} else {
+					continue;
+				}
+			}
 		}
 	}
 	setlocale(LC_NUMERIC, "");
@@ -1004,6 +996,10 @@ int main(int argc, char *argv[])
 	float attributeModifier = 1;
 	float npDamageMultiplier = 1;
 
+	float cardFirst = 1;
+	float cardSecond = 1;
+	float cardThird = 1;
+
 	if (defModDown > 100) {
 		defModDown = 100;
 		printf("def down exceeds 100, defaults to 100!\n");
@@ -1013,27 +1009,36 @@ int main(int argc, char *argv[])
 		defMod = defMod - 100;
 	}
 
-	geClassMod(class, classEnemy, classTypeEnemy, &classMod, &classAtkBonus);
+	getClassMod(class, classEnemy, classTypeEnemy, &classMod, &classAtkBonus);
 
 	getAttributeMod(attribute, attributeEnemy, &attributeModifier);
 
-	float tempAtt = 1 + (float)atkMod * 0.01;
-
-	total = total * tempAtt;
-
 	total = total
+		* (1 + (float)(atkMod + defModDown - defMod - atkModDown) * 0.01)
 		* BASE_MULTIPLIER * classAtkBonus * classMod * attributeModifier
-		* returnFl(((float)servantAtk + 1000.0 + (float)goldFou));
+		* ((float)servantAtk + (float)goldFou);
 
-	/* getCardDamage(noChain, total, powerMod, npAt, critDamageMod, critFirst, critSecond, critThird, cardType, busterFirst, busterSecond, busterThird, artsFirst, artsSecond, artsThird, quickFirst, quickSecond, quickThird, servantAtk); */
+	getCardDmg(noChain, total, powerMod, npAt, critDamageMod, critFirst, critSecond, critThird, cardType, busterFirst, busterSecond, busterThird, artsFirst, artsSecond, artsThird, quickFirst, quickSecond, quickThird, servantAtk);
 
-	getNpMod(&total, cardType, &cardMod, artsMod, busterMod, quickMod, np, npStrengthening, npType, &npDamageMultiplier);
+	getNpDamage(cardType, np, npStrengthening, npType, &npDamageMultiplier, &superEffectiveModifier, total, npDamageMod, powerMod);
 
-	totalNp = total
-		* superEffectiveModifier * npDamageMultiplier * cardMod
-		* (1.0 + (float)(npDamageMod + powerMod) * 0.01);
+	/* float busterChainMod = (float)servantAtk * 0.2; */
 
-	printf("%'g\n%'g ~ %'g\n", totalNp, (totalNp*0.9), (totalNp*1.1));
+	/* printf("busterChainMod is %'g\n", busterChainMod); */
+
+	/* cardFirst = cardFirst + busterChainMod; */
+	/* cardSecond = cardSecond + busterChainMod; */
+	/* cardThird = cardThird + busterChainMod; */
+
+	/* printf("cardFirst is %'g\n", cardFirst); */
+	/* printf("cardSecond is %'g\n", cardSecond); */
+	/* printf("cardThird is %'g\n", cardThird); */
+
+	/* totalNp = total */
+	/* 	* superEffectiveModifier * npDamageMultiplier * whichCardMod */
+	/* 	* (1.0 + (float)(npDamageMod + powerMod) * 0.01); */
+
+	/* printf("%'g\n%'g ~ %'g\n", totalNp, (totalNp*0.9), (totalNp*1.1)); */
 
 	if (verbose) {
 		printf("\nservantAtk\n");
@@ -1065,3 +1070,18 @@ int main(int argc, char *argv[])
 		}
 	return 0;
 }
+/* [servantAtk 
+ * npDamageMultiplier 
+ * (firstCardBonus + (cardDamageValue * (1 + cardMod))) 
+ * classAtkBonus 
+ * triangleModifier 
+ * attributeModifier 
+ * randomModifier 
+ * 0.23 
+ * (1 + atkMod - defMod) 
+ * criticalModifier 
+ * extraCardModifier 
+ * (1 - specialDefMod) 
+ * {1 + powerMod + selfDamageMod + (critDamageMod * isCrit) + (npDamageMod * isNP)} 
+ * {1 + ((superEffectiveModifier - 1) * isSuperEffective)}] 
+   + dmgPlusAdd + selfDmgCutAdd + (servantAtk * busterChainMod) */
