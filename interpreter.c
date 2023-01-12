@@ -3,7 +3,6 @@
 #include <locale.h>
 
 #define BASE_MULTIPLIER 0.23
-#define MAX_ATK_LENGTH 5
 
 #define SABER 1
 #define ARCHER 2
@@ -238,7 +237,7 @@ void getCardDmg(int noChain, int total, int powerMod, int npAt, int critDamageMo
 	cardThird = cardThird * (float)total;
 
 	if (busterFirst && busterSecond && busterThird) {
-		float busterChainMod = 0.2 * (float)servantAtk;
+		float busterChainMod = BUSTER_CHAIN_MOD * (float)servantAtk;
 
 		if (npAt != 1) {
 			cardFirst = cardFirst + busterChainMod;
@@ -572,6 +571,7 @@ void getAttributeMod(int attribute, int attributeEnemy, float *attributeModifier
 		printf("attribute not specified!\n");
 	}
 }
+
 int main(int argc, char *argv[])
 {
 	if (!argv[1]) {
@@ -654,7 +654,7 @@ int main(int argc, char *argv[])
 	int critThird = 0;
 
 	int verbose = 0;
-	int goldFou = 0;
+	int fou = 1000;
 
 	for (int currArgv=1; currArgv<argc; ++currArgv) {
 
@@ -711,7 +711,7 @@ int main(int argc, char *argv[])
 			superEffectiveModifier = getBuff(argv, currArgv, argvLen) / 100.0;
 
 		} else if (startsWith(3, "atk", argv, currArgv, argvLen)) {
-			servantAtk = getNum(argv, currArgv, argvLen, 3) + 1000;
+			servantAtk = getNum(argv, currArgv, argvLen, 3);
 
 		} else if (startsWith(2, "np", argv, currArgv, argvLen)) {
 			np = getBuff(argv, currArgv, argvLen);
@@ -743,6 +743,12 @@ int main(int argc, char *argv[])
 		} else if (startsWith(2, "ca", argv, currArgv, argvLen)) {
 			artsMod = artsMod + 50;
 			atkMod = atkMod + 20;
+
+		} else if (startsWith(2, "gf", argv, currArgv, argvLen)) {
+			fou = getBuff(argv, currArgv, argvLen);
+			if (fou > 2000) {
+				fou = 2000;
+			}
 
 		} else if (startsWith(2, "-v", argv, currArgv, argvLen)) {
 			verbose = 1;
@@ -987,18 +993,10 @@ int main(int argc, char *argv[])
 	setlocale(LC_NUMERIC, "");
 
 	float total = 1;
-	float totalNp = 1;
-
 	float classAtkBonus = 1;
 	float classMod = 1;
-	float cardMod = 1;
-
 	float attributeModifier = 1;
 	float npDamageMultiplier = 1;
-
-	float cardFirst = 1;
-	float cardSecond = 1;
-	float cardThird = 1;
 
 	if (defModDown > 100) {
 		defModDown = 100;
@@ -1016,29 +1014,11 @@ int main(int argc, char *argv[])
 	total = total
 		* (1 + (float)(atkMod + defModDown - defMod - atkModDown) * 0.01)
 		* BASE_MULTIPLIER * classAtkBonus * classMod * attributeModifier
-		* ((float)servantAtk + (float)goldFou);
+		* ((float)servantAtk + (float)fou);
 
 	getCardDmg(noChain, total, powerMod, npAt, critDamageMod, critFirst, critSecond, critThird, cardType, busterFirst, busterSecond, busterThird, artsFirst, artsSecond, artsThird, quickFirst, quickSecond, quickThird, servantAtk);
 
 	getNpDamage(cardType, np, npStrengthening, npType, &npDamageMultiplier, &superEffectiveModifier, total, npDamageMod, powerMod);
-
-	/* float busterChainMod = (float)servantAtk * 0.2; */
-
-	/* printf("busterChainMod is %'g\n", busterChainMod); */
-
-	/* cardFirst = cardFirst + busterChainMod; */
-	/* cardSecond = cardSecond + busterChainMod; */
-	/* cardThird = cardThird + busterChainMod; */
-
-	/* printf("cardFirst is %'g\n", cardFirst); */
-	/* printf("cardSecond is %'g\n", cardSecond); */
-	/* printf("cardThird is %'g\n", cardThird); */
-
-	/* totalNp = total */
-	/* 	* superEffectiveModifier * npDamageMultiplier * whichCardMod */
-	/* 	* (1.0 + (float)(npDamageMod + powerMod) * 0.01); */
-
-	/* printf("%'g\n%'g ~ %'g\n", totalNp, (totalNp*0.9), (totalNp*1.1)); */
 
 	if (verbose) {
 		printf("\nservantAtk\n");
@@ -1085,3 +1065,337 @@ int main(int argc, char *argv[])
  * {1 + powerMod + selfDamageMod + (critDamageMod * isCrit) + (npDamageMod * isNP)} 
  * {1 + ((superEffectiveModifier - 1) * isSuperEffective)}] 
    + dmgPlusAdd + selfDmgCutAdd + (servantAtk * busterChainMod) */
+
+/* void parseArgs(char *argv[], int argc, int *atkMod, int *atkModDown, int *defModDown, int *defMod, int *defenseIgnore, int *busterMod, int *quickMod, int *artsMod, int *powerMod, int *critDamageMod, int *critFirst, int *critSecond, int *critThird, float *superEffectiveModifier, int *servantAtk, int *npStrengthening, int *npDamageMod, int *np, int *class, int *classEnemy, int *classTypeEnemy, int *cardType, int *npType, int *verbose, int *attribute, int *attributeEnemy, int *noChain, int *busterFirst, int *busterSecond, int *busterThird, int *artsFirst, int *artsSecond, int *artsThird, int *quickFirst, int *quickSecond, int *quickThird, int *npAt) */
+/* { */
+/* 	for (int currArgv=1; currArgv<argc; ++currArgv) { */
+
+/* 		int argvLen = countTilNull(argv, currArgv); */
+
+/* 		if (startsWith(2, "au", argv, currArgv, argvLen)) { */
+/* 			*atkMod = *atkMod + getBuff(argv, currArgv, argvLen); */
+
+/* 		} else if (startsWith(2, "ad", argv, currArgv, argvLen)) { */
+/* 			*atkModDown = *atkModDown - getBuff(argv, currArgv, argvLen); */
+
+/* 		} else if (startsWith(2, "dd", argv, currArgv, argvLen)) { */
+/* 			*defModDown = *defModDown + getBuff(argv, currArgv, argvLen); */
+
+/* 		} else if (startsWith(2, "du", argv, currArgv, argvLen)) { */
+/* 			*defMod = *defMod + getBuff(argv, currArgv, argvLen); */
+
+/* 		} else if (startsWith(2, "di", argv, currArgv, argvLen)) { */
+/* 			*defenseIgnore = 1; */
+
+/* 		} else if (startsWith(2, "bm", argv, currArgv, argvLen)) { */
+/* 			*busterMod = *busterMod + getBuff(argv, currArgv, argvLen); */
+
+/* 		} else if (startsWith(2, "qm", argv, currArgv, argvLen)) { */
+/* 			*quickMod = *quickMod + getBuff(argv, currArgv, argvLen); */
+
+/* 		} else if (startsWith(2, "am", argv, currArgv, argvLen)) { */
+/* 			*artsMod = *artsMod + getBuff(argv, currArgv, argvLen); */
+
+/* 		} else if (startsWith(2, "pm", argv, currArgv, argvLen)) { */
+/* 			*powerMod = *powerMod + getBuff(argv, currArgv, argvLen); */
+
+/* 		} else if (startsWith(2, "nu", argv, currArgv, argvLen)) { */
+/* 			*npDamageMod = *npDamageMod + getBuff(argv, currArgv, argvLen); */
+
+/* 		} else if (startsWith(2, "cd", argv, currArgv, argvLen)) { */
+/* 			*critDamageMod = *critDamageMod + getBuff(argv, currArgv, argvLen); */
+
+/* 		} else if (startsWith(4, "*crit", argv, currArgv, argvLen)) { */
+/* 			*critFirst = 1; */
+/* 			*critSecond = 1; */
+/* 			*critThird = 1; */
+
+/* 		} else if (startsWith(3, "cr1", argv, currArgv, argvLen)) { */
+/* 			*critFirst = 1; */
+
+/* 		} else if (startsWith(3, "cr2", argv, currArgv, argvLen)) { */
+/* 			*critSecond = 1; */
+
+/* 		} else if (startsWith(3, "cr3", argv, currArgv, argvLen)) { */
+/* 			*critThird = 1; */
+
+/* 		} else if (startsWith(2, "se", argv, currArgv, argvLen)) { */
+/* 			*superEffectiveModifier = getBuff(argv, currArgv, argvLen) / 100.0; */
+
+/* 		} else if (startsWith(3, "*atk", argv, currArgv, argvLen)) { */
+/* 			*servantAtk = getNum(argv, currArgv, argvLen, 3) + 1000; */
+
+/* 		} else if (startsWith(2, "*np", argv, currArgv, argvLen)) { */
+/* 			*np = getBuff(argv, currArgv, argvLen); */
+
+/* 		} else if (startsWith(2, "sr", argv, currArgv, argvLen)) { */
+/* 			*npStrengthening = 1; */
+
+/* 		} else if (startsWith(2, "vi", argv, currArgv, argvLen)) { */
+/* 			*busterMod = *busterMod + 50; */
+/* 			if (*cardType == BUSTER) { */
+/* 				*critDamageMod = *critDamageMod + 50; */
+/* 			} */
+
+/* 		} else if (startsWith(2, "ss", argv, currArgv, argvLen)) { */
+/* 			*atkMod = *atkMod + 20; */
+/* 			*busterMod = *busterMod + 15; */
+/* 			*quickMod = *quickMod + 65; */
+/* 			if (*cardType == BUSTER) { */
+/* 				*critDamageMod = *critDamageMod + 100; */
+/* 			} */
+
+/* 		} else if (startsWith(2, "sk", argv, currArgv, argvLen)) { */
+/* 			*atkMod = *atkMod + 30; */
+/* 			*quickMod = *quickMod + 50; */
+/* 			if (*cardType == QUICK) { */
+/* 				*critDamageMod = *critDamageMod + *critDamageMod + 100; */
+/* 			} */
+
+/* 		} else if (startsWith(2, "ca", argv, currArgv, argvLen)) { */
+/* 			*artsMod = *artsMod + 50; */
+/* 			*atkMod = *atkMod + 20; */
+
+/* 		} else if (startsWith(2, "-v", argv, currArgv, argvLen)) { */
+/* 			*verbose = 1; */
+
+/* 		} else { */
+/* 			if (!*npType) { */
+/* 				if (startsWith(2, "st", argv, currArgv, argvLen)) { */
+/* 					*npType = ST; */
+/* 					continue; */
+
+/* 				} else if (startsWith(2, "ao", argv, currArgv, argvLen)) { */
+/* 					*npType = AOE; */
+/* 					continue; */
+/* 				} */
+/* 			} */
+/* 			if (!*cardType) { */
+/* 				if (startsWith(2, "aa", argv, currArgv, argvLen)) { */
+/* 					*cardType = ARTS; */
+/* 					continue; */
+
+/* 				} else if (startsWith(2, "bb", argv, currArgv, argvLen)) { */
+/* 					*cardType = BUSTER; */
+/* 					continue; */
+
+/* 				} else if (startsWith(2, "qq", argv, currArgv, argvLen)) { */
+/* 					*cardType = QUICK; */
+/* 					continue; */
+/* 				} */
+/* 			} */
+/* 			if (!*class) { */
+/* 				if (startsWith(3, "sab", argv, currArgv, argvLen)) { */
+/* 					*class = SABER; */
+/* 					/1* *classType = KNIGHT; *1/ */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "arc", argv, currArgv, argvLen)) { */
+/* 					*class = ARCHER; */
+/* 					/1* *classType = KNIGHT; *1/ */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "lan", argv, currArgv, argvLen)) { */
+/* 					*class = LANCER; */
+/* 					/1* *classType = KNIGHT; *1/ */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "rid", argv, currArgv, argvLen)) { */
+/* 					*class = RIDER; */
+/* 					/1* *classType = CAVALRY; *1/ */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "ass", argv, currArgv, argvLen)) { */
+/* 					*class = ASSASSIN; */
+/* 					/1* *classType = CAVALRY; *1/ */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "cas", argv, currArgv, argvLen)) { */
+/* 					*class = CASTER; */
+/* 					/1* *classType = CAVALRY; *1/ */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "zer", argv, currArgv, argvLen)) { */
+/* 					*class = BERSERKER; */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "ave", argv, currArgv, argvLen)) { */
+/* 					*class = AVENGER; */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "alt", argv, currArgv, argvLen)) { */
+/* 					*class = ALTER_EGO; */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "moo", argv, currArgv, argvLen)) { */
+/* 					*class = MOON_CANCER; */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "for", argv, currArgv, argvLen)) { */
+/* 					*class = FOREIGNER; */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "pre", argv, currArgv, argvLen)) { */
+/* 					*class = PRETENDER; */
+/* 					continue; */
+/* 				} */
+/* 			} */
+/* 			if (!*classEnemy) { */
+/* 				if (startsWith(4, "esab", argv, currArgv, argvLen)) { */
+/* 					*classEnemy = SABER; */
+/* 					*classTypeEnemy = KNIGHT; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "earc", argv, currArgv, argvLen)) { */
+/* 					*classEnemy = ARCHER; */
+/* 					*classTypeEnemy = KNIGHT; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "elan", argv, currArgv, argvLen)) { */
+/* 					*classEnemy = LANCER; */
+/* 					*classTypeEnemy = KNIGHT; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "erid", argv, currArgv, argvLen)) { */
+/* 					*classEnemy = RIDER; */
+/* 					*classTypeEnemy = CAVALRY; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "eass", argv, currArgv, argvLen)) { */
+/* 					*classEnemy = ASSASSIN; */
+/* 					*classTypeEnemy = CAVALRY; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "ecas", argv, currArgv, argvLen)) { */
+/* 					*classEnemy = CASTER; */
+/* 					*classTypeEnemy = CAVALRY; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "ezer", argv, currArgv, argvLen)) { */
+/* 					*classEnemy = BERSERKER; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "erul", argv, currArgv, argvLen)) { */
+/* 					*classEnemy = RULER; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "eave", argv, currArgv, argvLen)) { */
+/* 					*classEnemy = AVENGER; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "emoo", argv, currArgv, argvLen)) { */
+/* 					*classEnemy = MOON_CANCER; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "efor", argv, currArgv, argvLen)) { */
+/* 					*classEnemy = FOREIGNER; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "epre", argv, currArgv, argvLen)) { */
+/* 					*classEnemy = PRETENDER; */
+/* 					continue; */
+/* 				} */
+/* 			} */
+/* 			if (!*attribute) { */
+/* 				if (startsWith(3, "man", argv, currArgv, argvLen)) { */
+/* 					*attribute = MAN; */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "sky", argv, currArgv, argvLen)) { */
+/* 					*attribute = SKY; */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "ear", argv, currArgv, argvLen)) { */
+/* 					*attribute = EARTH; */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "sta", argv, currArgv, argvLen)) { */
+/* 					*attribute = STAR; */
+/* 					continue; */
+
+/* 				} else if (startsWith(3, "bea", argv, currArgv, argvLen)) { */
+/* 					*attribute = BEAST; */
+/* 					continue; */
+/* 				} */
+/* 			} */
+/* 			if (!*attributeEnemy) { */
+/* 				if (startsWith(4, "eman", argv, currArgv, argvLen)) { */
+/* 					*attributeEnemy = MAN; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "esky", argv, currArgv, argvLen)) { */
+/* 					*attributeEnemy = SKY; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "eear", argv, currArgv, argvLen)) { */
+/* 					*attributeEnemy = EARTH; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "esta", argv, currArgv, argvLen)) { */
+/* 					*attributeEnemy = STAR; */
+/* 					continue; */
+
+/* 				} else if (startsWith(4, "ebea", argv, currArgv, argvLen)) { */
+/* 					*attributeEnemy = BEAST; */
+/* 					continue; */
+/* 				} */
+/* 			} */
+/* 			if (*noChain) { */
+/* 				/1* checkfirst*card *1/ */
+/* 				if (argv[currArgv][0] == 'a'){ */
+/* 					*artsFirst = 1; */
+/* 					*noChain = 0; */
+
+/* 				} else if (argv[currArgv][0] == 'b'){ */
+/* 					*busterFirst = 1; */
+/* 					*noChain = 0; */
+
+/* 				} else if (argv[currArgv][0] == 'q'){ */
+/* 					*quickFirst = 1; */
+/* 					*noChain = 0; */
+
+/* 				} else if (argv[currArgv][0] == 'n') { */
+/* 					*npAt = 1; */
+/* 					*noChain = 0; */
+
+/* 				} else { */
+/* 					continue; */
+/* 				} */
+/* 				/1* checksecond*card *1/ */
+/* 				if (argv[currArgv][1] == 'a'){ */
+/* 					*artsSecond = 1; */
+
+/* 				} else if (argv[currArgv][1] == 'b'){ */
+/* 					*busterSecond = 1; */
+
+/* 				} else if (argv[currArgv][1] == 'q'){ */
+/* 					*quickSecond = 1; */
+
+/* 				} else if (argv[currArgv][1] == 'n') { */
+/* 					*npAt = 2; */
+
+/* 				} else { */
+/* 					continue; */
+/* 				} */
+/* 				/1* checkthird*card *1/ */
+/* 				if (argv[currArgv][2] == 'a'){ */
+/* 					*artsThird = 1; */
+
+/* 				} else if (argv[currArgv][2] == 'b'){ */
+/* 					*busterThird = 1; */
+
+/* 				} else if (argv[currArgv][2] == 'q'){ */
+/* 					*quickThird = 1; */
+
+/* 				} else if (argv[currArgv][2] == 'n') { */
+/* 					*npAt = 3; */
+
+/* 				} else { */
+/* 					continue; */
+/* 				} */
+/* 			} */
+/* 		} */
+/* 	} */
+/* } */
+
+/* parseArgs(argv, argc, &atkMod, &atkModDown, &defModDown, &defMod, &defenseIgnore, &busterMod, &quickMod, &artsMod, &powerMod, &critDamageMod, &critFirst, &critSecond, &critThird, &superEffectiveModifier, &servantAtk, &npStrengthening, &npDamageMod, &np, &class, &classEnemy, &classTypeEnemy, &cardType, &npType, &verbose, &attribute, &attributeEnemy, &noChain, &busterFirst, &busterSecond, &busterThird, &artsFirst, &artsSecond, &artsThird, &quickFirst, &quickSecond, &quickThird, &npAt); */
