@@ -102,7 +102,7 @@ int getBuff(char *argv[], int currArg, int argvLen)
 		j++;
 		puts(numInString);
 	}
-	puts(numInString);
+	/* puts(numInString); */
 	return (strtol(numInString, NULL, 10));
 }
 
@@ -116,7 +116,7 @@ int getBuffVar(char *argv[], int currArg, int argvLen, int startAt)
 		j++;
 		puts(numInString);
 	}
-	puts(numInString);
+	/* puts(numInString); */
 	return (strtol(numInString, NULL, 10));
 }
 

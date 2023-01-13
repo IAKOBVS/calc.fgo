@@ -4,16 +4,16 @@ grepName=$(echo "$1" | sed 's/-/\ /g')
 namesNum=$(echo "$grepName" | wc -w)
 case $namesNum in
 	'1')
-		whichGrep(){ grep -i -F -m 1 "$1" "$RAM_LIST_SERVANTS";};;
+		whichGrep(){ rg -i -F -m 1 "$1" "$RAM_LIST_SERVANTS";};;
 	'2')
 		grepFirst=$(echo "$grepName" | cut -d' ' -f1)
 		grepSecond=$(echo "$grepName" | cut -d' ' -f2)
-		whichGrep(){ grep -i -F "$grepFirst" "$RAM_LIST_SERVANTS" | grep -i -F -m 1 "$grepSecond";};;
+		whichGrep(){ rg -i -F "$grepFirst" "$RAM_LIST_SERVANTS" | rg -i -F -m 1 "$grepSecond";};;
 	'3')
 		grepFirst=$(echo "$grepName" | cut -d' ' -f1)
 		grepSecond=$(echo "$grepName" | cut -d' ' -f2)
 		grepThird=$(echo "$grepName" | cut -d' ' -f3)
-		whichGrep(){ grep -i -F "$grepFirst" "$RAM_LIST_SERVANTS" | grep -i -F "$grepSecond" | grep -i -F -m 1 "$grepThird";};;
+		whichGrep(){ rg -i -F "$grepFirst" "$RAM_LIST_SERVANTS" | rg -i -F "$grepSecond" | rg -i -F -m 1 "$grepThird";};;
 esac
 servantInfo=$(whichGrep "$@")
 otherCalc=$(echo "$@" | cut -d' ' -f2-)
