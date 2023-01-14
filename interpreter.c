@@ -153,7 +153,7 @@ void getCardDmg(int noChain, int total, int powerMod, int npAt, int critDamageMo
 	if (powerMod)
 		powerPercent = 1.0 + ((float)powerMod * 0.01);
 
-	floatCrit = 1.0 + (((float)critDamageMod + (float)powerMod) * 0.01);
+	floatCrit = 2.0 + (((float)critDamageMod + (float)powerMod) * 0.01);
 
 	switch (npAt) {
 	case 1:
