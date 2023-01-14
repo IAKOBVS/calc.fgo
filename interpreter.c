@@ -68,9 +68,8 @@ inline int intToFloat(float var)
 int countTilNull(char *argv[], int currArgv)
 {
 	int i = 0;
-	while (argv[currArgv][i] != '\0') {
-		++i;
-	}
+	while (argv[currArgv][i] != '\0') ++i;
+
 	return i;
 }
 
@@ -81,18 +80,16 @@ int startsWith(int substrLen, char substr[], char *argv[], int currArgv, int arg
 
 	int substrEnd = substrLen - 1;
 
-	for (int i = 0; i<argvLen; ++i) {
-		if (argv[currArgv][i] == substr[i]) {
+	for (int i = 0; i<argvLen; ++i)
+		if (argv[currArgv][i] == substr[i])
 			if (i == substrEnd)
 				return 1;
-		}
-	}
+
 	return 0;
 }
 
 int getBuff(char *argv[], int currArg, int argvLen)
 {
-	/* setvbuf(stdout, NULL, _IONBF, 0); */ 
 	char numInString[argvLen-2];
 	int j = 0;
 	for (int i = 2; i<=argvLen; ++i, ++j)
@@ -103,7 +100,6 @@ int getBuff(char *argv[], int currArg, int argvLen)
 
 int getBuffVar(char *argv[], int currArg, int argvLen, int startAt)
 {
-	/* setvbuf(stdout, NULL, _IONBF, 0); */ 
 	char numInString[argvLen-startAt];
 	int j = 0;
 	for (int i = startAt; i<=argvLen; ++i, ++j)
@@ -210,6 +206,7 @@ void getCardDmg(int noChain, int total, int powerMod, int npAt, int critDamageMo
 
 		cardFirst = cardFirst + 1.5;
 		cardFirst = cardFirst * busterPercent;
+
 	} else if (quickFirst) {
 		cardFirst = cardFirst + 0.8;
 		cardFirst = cardFirst * quickPercent;
@@ -269,20 +266,16 @@ void getCardDmg(int noChain, int total, int powerMod, int npAt, int critDamageMo
 
 		if (npAt != 1)
 			cardFirst = cardFirst + busterChainMod;
-
 		if (npAt != 2)
 			cardSecond = cardSecond + busterChainMod;
-
 		if (npAt != 3)
 			cardThird = cardThird + busterChainMod;
 	}
 
 	if (cardFirst > 0)
 		printf("%'g -- 1\n", cardFirst);
-
 	if (cardSecond > 0)
 		printf("%'g -- 2\n", cardSecond);
-
 	if (cardThird > 0)
 		printf("%'g -- 3\n", cardThird);
 }
@@ -290,7 +283,6 @@ void getCardDmg(int noChain, int total, int powerMod, int npAt, int critDamageMo
 void getNpDamage(int cardType, int np, int npStrengthening, int npType, float *npDamageMultiplier, float *superEffectiveModifier, int total, int npDamageMod, int powerMod)
 {
 	float totalNp = 1;
-
 	float whichCardMod = 1;
 
 	switch (cardType) {
@@ -536,9 +528,8 @@ void getClassMod(int class, int classEnemy, int classTypeEnemy, float *classMod,
 		printf("class not specified, defaults to no class advantage!\n");
 	}
 
-	if (classEnemy == BERSERKER) {
+	if (classEnemy == BERSERKER)
 		*classAtkBonus = 2;
-	}
 }
 
 void getAttributeMod(int attribute, int attributeEnemy, float *attributeModifier)
@@ -674,7 +665,6 @@ int main(int argc, char *argv[])
 
 	for (int currArgv=1; currArgv<argc; ++currArgv) {
 
-		/* int argvLen = countTilNull(argv, currArgv); */
 		int argvLen = strlen(argv[currArgv]);
 
 		if (startsWith(2, "au", argv, currArgv, argvLen)) {
