@@ -1130,6 +1130,3 @@ int main(int argc, char *argv[])
  * {1 + powerMod + selfDamageMod + (critDamageMod * isCrit) + (npDamageMod * isNP)} 
  * {1 + ((superEffectiveModifier - 1) * isSuperEffective)}] 
    + dmgPlusAdd + selfDmgCutAdd + (servantAtk * busterChainMod) */
-
-
-/* parseArgv(argv, argc, &atkMod, &atkModDown, &defModDown, &defMod, &defenseIgnore, &busterMod, &quickMod, &artsMod, &powerMod, &critDamageMod, &critFirst, &critSecond, &critThird, &superEffectiveModifier, &servantAtk, &npStrengthening, &npDamageMod, &np, &class, &classEnemy, &classTypeEnemy, &cardType, &npType, &verbose, &attribute, &attributeEnemy, &noChain, &busterFirst, &busterSecond, &busterThird, &artsFirst, &artsSecond, &artsThird, &quickFirst, &quickSecond, &quickThird, &npAt); */
