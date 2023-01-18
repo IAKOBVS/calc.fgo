@@ -147,7 +147,7 @@ int critThird;
 int verbose;
 int fou;
 
-void parseArgs(int argc, char *argv[])
+void parseArgv(int argc, char *argv[])
 {
 	for (int currArgv=1; currArgv<argc; ++currArgv) {
 
@@ -950,32 +950,82 @@ void getAttributeMod(float *attributeModifier)
 	}
 }
 
+void printVerbose(float attributeModifier, float npDamageMultiplier, float classAtkBonus, float classMod)
+{
+	printf("\nservantAtk:\n");
+	printf("%d\n", servantAtk);
+
+	printf("classAtkBonus:\n");
+	printf("%f\n",attributeModifier);
+
+	printf("\nAtk up:\n");
+	printf("%d\n", atkMod);
+
+	printf("busterMod:\n");
+	printf("%d\n", busterMod);
+
+	printf("artsMod:\n");
+	printf("%d\n", busterMod);
+
+	printf("quickMod:\n");
+	printf("%d\n", busterMod);
+
+	printf("powerMod:\n");
+	printf("%d\n", powerMod);
+
+	printf("npDamageMod:\n");
+	printf("%d\n", npDamageMod);
+
+	printf("npDamageMultiplier:\n");
+	printf("%f\n",npDamageMultiplier);
+
+	printf("atrributeMod:\n");
+	printf("%f\n",classAtkBonus);
+
+	printf("classMod:\n");
+	printf("%f\n",classMod);
+
+	printf("npDamageMultiplier:\n");
+	printf("%f\n",npDamageMultiplier);
+}
+
+void printHelp(void)
+{
+	printf("Usage: calc arguments\n\n"
+	"arguments:\n"
+	"bb = buster servant\n"
+	"aa = arts servant\n"
+	"qq = quick servant\n"
+	"\n"
+	"st = single target np\n"
+	"aoe = aoe np\n"
+	"\n"
+	"atk = attack stat\n"
+	"au = attack up\n"
+	"ad = attack down\n"
+	"\n"
+	"du = defense up\n"
+	"dd = defense down\n"
+	"di = defense ignore\n"
+	"\n"
+	"artsMod = arts up\n"
+	"bm = buster up\n"
+	"qm = quick up\n"
+	"\n"
+	"se = super effective; e.g., gilgamesh, se150\n"
+	"sr = np strengthening\n"
+	"nu = np damage up\n"
+	"pm = powermod; e.g., arjuna alter, pm50\n"
+	"cd = critical damage\n");
+	exit(0);
+}
+
 int main(int argc, char *argv[])
 {
 	if (!argv[1]) {
-		printf("Usage: calc arguments\n\n");
-		printf("arguments:\n");
-		printf("bb = buster servant\n");
-		printf("aa = arts servant\n");
-		printf("qq = quick servant\n\n");
-		printf("st = single target np\n");
-		printf("aoe = aoe np\n\n");
-		printf("atk = attack stat\n");
-		printf("au = attack up\n");
-		printf("ad = attack down\n\n");
-		printf("du = defense up\n");
-		printf("dd = defense down\n");
-		printf("di = defense ignore\n\n");
-		printf("artsMod = arts up\n");
-		printf("bm = buster up\n");
-		printf("qm = quick up\n\n");
-		printf("se = super effective; e.g., gilgamesh, se150\n");
-		printf("sr = np strengthening\n");
-		printf("nu = np damage up\n");
-		printf("pm = powermod; e.g., arjuna alter, pm50\n");
-		printf("cd = critical damage\n");
-		exit(0);
+		printHelp();
 	}
+
 	servantAtk = 1;
 	class = 0;
 	classEnemy = 0;
@@ -1032,13 +1082,13 @@ int main(int argc, char *argv[])
 	verbose = 0;
 	fou = 1000;
 
-	parseArgs(argc, argv);
-
 	setlocale(LC_NUMERIC, "");
 
+	parseArgv(argc, argv);
+
 	float total = 1;
-	float classAtkBonus = 1;
 	float classMod = 1;
+	float classAtkBonus = 1;
 	float attributeModifier = 1;
 	float npDamageMultiplier = 1;
 
@@ -1046,12 +1096,10 @@ int main(int argc, char *argv[])
 		defModDown = 100;
 		printf("def down exceeds 100, defaults to 100!\n");
 	}
-
 	if (defenseIgnore)
 		defMod = defMod - 100;
 
 	getClassMod(&classMod, &classAtkBonus);
-
 	getAttributeMod(&attributeModifier);
 
 	total = total
@@ -1060,46 +1108,10 @@ int main(int argc, char *argv[])
 		* ((float)(servantAtk + fou));
 
 	getCardDmg(total);
-
 	getNpDamage(&npDamageMultiplier, &superEffectiveModifier, total);
 
-	if (verbose) {
-		printf("\nservantAtk:\n");
-		printf("%d\n", servantAtk);
-
-		printf("classAtkBonus:\n");
-		printf("%f\n",attributeModifier);
-
-		printf("\nAtk up:\n");
-		printf("%d\n", atkMod);
-
-		printf("busterMod:\n");
-		printf("%d\n", busterMod);
-
-		printf("artsMod:\n");
-		printf("%d\n", busterMod);
-
-		printf("quickMod:\n");
-		printf("%d\n", busterMod);
-
-		printf("powerMod:\n");
-		printf("%d\n", powerMod);
-
-		printf("npDamageMod:\n");
-		printf("%d\n", npDamageMod);
-
-		printf("npDamageMultiplier:\n");
-		printf("%f\n",npDamageMultiplier);
-
-		printf("atrributeMod:\n");
-		printf("%f\n",classAtkBonus);
-
-		printf("classMod:\n");
-		printf("%f\n",classMod);
-
-		printf("npDamageMultiplier:\n");
-		printf("%f\n",npDamageMultiplier);
-		}
+	if (verbose)
+		printVerbose(attributeModifier, npDamageMultiplier, classAtkBonus, classMod);
 	return 0;
 }
 
@@ -1120,4 +1132,4 @@ int main(int argc, char *argv[])
    + dmgPlusAdd + selfDmgCutAdd + (servantAtk * busterChainMod) */
 
 
-/* parseArgs(argv, argc, &atkMod, &atkModDown, &defModDown, &defMod, &defenseIgnore, &busterMod, &quickMod, &artsMod, &powerMod, &critDamageMod, &critFirst, &critSecond, &critThird, &superEffectiveModifier, &servantAtk, &npStrengthening, &npDamageMod, &np, &class, &classEnemy, &classTypeEnemy, &cardType, &npType, &verbose, &attribute, &attributeEnemy, &noChain, &busterFirst, &busterSecond, &busterThird, &artsFirst, &artsSecond, &artsThird, &quickFirst, &quickSecond, &quickThird, &npAt); */
+/* parseArgv(argv, argc, &atkMod, &atkModDown, &defModDown, &defMod, &defenseIgnore, &busterMod, &quickMod, &artsMod, &powerMod, &critDamageMod, &critFirst, &critSecond, &critThird, &superEffectiveModifier, &servantAtk, &npStrengthening, &npDamageMod, &np, &class, &classEnemy, &classTypeEnemy, &cardType, &npType, &verbose, &attribute, &attributeEnemy, &noChain, &busterFirst, &busterSecond, &busterThird, &artsFirst, &artsSecond, &artsThird, &quickFirst, &quickSecond, &quickThird, &npAt); */
