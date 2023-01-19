@@ -39,6 +39,45 @@
 
 #define BUSTER_CHAIN_MOD 0.2
 
+int servantAtk = 1;
+int noChain = 1;
+int np = 5;
+int fou = 1000;
+float superEffectiveModifier = 1;
+int class;
+int classEnemy;
+int classTypeEnemy;
+int cardType;
+int attribute;
+int attributeEnemy;
+int npType;
+int npStrengthening;
+int atkMod;
+int atkModDown;
+int defMod;
+int defModDown;
+int defenseIgnore;
+int artsMod;
+int busterMod;
+int quickMod;
+int powerMod;
+int npDamageMod;
+int critDamageMod;
+int busterFirst;
+int busterSecond;
+int busterThird;
+int artsFirst;
+int artsSecond;
+int artsThird;
+int quickFirst;
+int quickSecond;
+int quickThird;
+int npAt;
+int critFirst;
+int critSecond;
+int critThird;
+int verbose;
+
 inline void printdbl(double var)
 {
 	printf("%f\n", var);
@@ -91,72 +130,33 @@ int getNum(char *argv, int argvLen)
 	return strtol(strWithNum, NULL, 10);
 }
 
-int servantAtk = 1;
-int noChain = 1;
-int np = 5;
-int fou = 1000;
-float superEffectiveModifier = 1;
-int class;
-int classEnemy;
-int classTypeEnemy;
-int cardType;
-int attribute;
-int attributeEnemy;
-int npType;
-int npStrengthening;
-int atkMod;
-int atkModDown;
-int defMod;
-int defModDown;
-int defenseIgnore;
-int artsMod;
-int busterMod;
-int quickMod;
-int powerMod;
-int npDamageMod;
-int critDamageMod;
-int busterFirst;
-int busterSecond;
-int busterThird;
-int artsFirst;
-int artsSecond;
-int artsThird;
-int quickFirst;
-int quickSecond;
-int quickThird;
-int npAt;
-int critFirst;
-int critSecond;
-int critThird;
-int verbose;
-
 void parseArgv(int argc, char *argv[])
 {
 	for (int currArgv=1; currArgv<argc; ++currArgv) {
 		setvbuf(stdout, NULL, _IONBF, 0); 
 		int argvLen = strlen(argv[currArgv]);
 		if (subInStr("au", argv[currArgv])) {
-			atkMod = atkMod + getNum(argv[currArgv], argvLen);
+			atkMod += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("ad", argv[currArgv])) {
-			atkModDown = atkModDown + getNum(argv[currArgv], argvLen);
+			atkModDown += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("dd", argv[currArgv])) {
-			defModDown = defModDown + getNum(argv[currArgv], argvLen);
+			defModDown += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("du", argv[currArgv])) {
-			defMod = defMod + getNum(argv[currArgv], argvLen);
+			defMod += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("di", argv[currArgv])) {
 			defenseIgnore = 1;
 		} else if (subInStr("bm", argv[currArgv])) {
-			busterMod = busterMod + getNum(argv[currArgv], argvLen);
+			busterMod += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("qm", argv[currArgv])) {
-			quickMod = quickMod + getNum(argv[currArgv], argvLen);
+			quickMod += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("am", argv[currArgv])) {
-			artsMod = artsMod + getNum(argv[currArgv], argvLen);
+			artsMod += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("pm", argv[currArgv])) {
-			powerMod = powerMod + getNum(argv[currArgv], argvLen);
+			powerMod += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("nu", argv[currArgv])) {
-			npDamageMod = npDamageMod + getNum(argv[currArgv], argvLen);
+			npDamageMod += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("cd", argv[currArgv])) {
-			critDamageMod = critDamageMod + getNum(argv[currArgv], argvLen);
+			critDamageMod += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("crit", argv[currArgv])) {
 			critFirst = 1;
 			critSecond = 1;
@@ -176,23 +176,23 @@ void parseArgv(int argc, char *argv[])
 		} else if (subInStr("sr", argv[currArgv])) {
 			npStrengthening = 1;
 		} else if (subInStr("vi", argv[currArgv])) {
-			busterMod = busterMod + 50;
+			busterMod += 50;
 			if (cardType == BUSTER)
-				critDamageMod = critDamageMod + 50;
+				critDamageMod += 50;
 		} else if (subInStr("ss", argv[currArgv])) {
-			atkMod = atkMod + 20;
-			busterMod = busterMod + 15;
-			quickMod = quickMod + 65;
+			atkMod += 20;
+			busterMod += 15;
+			quickMod += 65;
 			if (cardType == BUSTER)
-				critDamageMod = critDamageMod + 100;
+				critDamageMod += 100;
 		} else if (subInStr("sk", argv[currArgv])) {
-			atkMod = atkMod + 30;
-			quickMod = quickMod + 50;
+			atkMod += 30;
+			quickMod += 50;
 			if (cardType == QUICK)
-				critDamageMod = critDamageMod + critDamageMod + 100;
+				critDamageMod += 100;
 		} else if (subInStr("ca", argv[currArgv])) {
-			artsMod = artsMod + 50;
-			atkMod = atkMod + 20;
+			artsMod += 50;
+			atkMod += 20;
 		} else if (subInStr("gf", argv[currArgv])) {
 			fou = getNum(argv[currArgv], argvLen);
 			if (fou > 2000)
@@ -471,63 +471,63 @@ void getCardDmg(float total)
 	}
 	if (busterFirst) {
 		if (!cardFirst)
-			cardFirst = cardFirst + 0.5;
+			cardFirst += 0.5;
 		if (!cardSecond)
-			cardSecond = cardSecond + 0.5;
+			cardSecond += 0.5;
 		if (!cardThird)
-			cardThird = cardThird + 0.5;
-		cardFirst = cardFirst + 1.5;
-		cardFirst = cardFirst * busterPercent;
+			cardThird += 0.5;
+		cardFirst += 1.5;
+		cardFirst *= busterPercent;
 	} else if (quickFirst) {
-		cardFirst = cardFirst + 0.8;
-		cardFirst = cardFirst * quickPercent;
+		cardFirst += 0.8;
+		cardFirst *= quickPercent;
 	} else if (artsFirst) {
-		cardFirst = cardFirst + 1.0;
-		cardFirst = cardFirst * artsPercent;
+		cardFirst += 1.0;
+		cardFirst *= artsPercent;
 	}
 	if (busterSecond) {
-		cardSecond = cardSecond + 1.8;
-		cardSecond = cardSecond * busterPercent;
+		cardSecond += 1.8;
+		cardSecond *= busterPercent;
 	} else if (quickSecond) {
-		cardSecond = cardSecond + 0.96;
-		cardSecond = cardSecond * quickPercent;
+		cardSecond += 0.96;
+		cardSecond *= quickPercent;
 	} else if (artsSecond) {
-		cardSecond = cardSecond + 1.2;
-		cardSecond = cardSecond * artsPercent;
+		cardSecond += 1.2;
+		cardSecond *= artsPercent;
 	}
 	if (busterThird) {
-		cardThird = cardThird + 2.1;
-		cardThird = cardThird * busterPercent;
+		cardThird += 2.1;
+		cardThird *= busterPercent;
 	} else if (quickThird) {
-		cardThird = cardThird + 1.12;
-		cardThird = cardThird * quickPercent;
+		cardThird += 1.12;
+		cardThird *= quickPercent;
 	} else if (artsThird) {
-		cardThird = cardThird + 1.4;
-		cardThird = cardThird * artsPercent;
+		cardThird += 1.4;
+		cardThird *= artsPercent;
 	}
 	if (critFirst)
-		cardFirst = cardFirst * floatCrit;
+		cardFirst *= floatCrit;
 	else
-		cardFirst = cardFirst * powerPercent;
+		cardFirst *= powerPercent;
 	if (critSecond)
-		cardSecond = cardSecond * floatCrit;
+		cardSecond *= floatCrit;
 	else
-		cardSecond = cardSecond * powerPercent;
+		cardSecond *= powerPercent;
 	if (critThird)
-		cardThird = cardThird * floatCrit;
+		cardThird *= floatCrit;
 	else
-		cardThird = cardThird * powerPercent;
-	cardFirst = cardFirst * (float)total;
-	cardSecond = cardSecond * (float)total;
-	cardThird = cardThird * (float)total;
+		cardThird *= powerPercent;
+	cardFirst *= (float)total;
+	cardSecond *= (float)total;
+	cardThird *= (float)total;
 	if (busterFirst && busterSecond && busterThird) {
 		float busterChainMod = BUSTER_CHAIN_MOD * (float)servantAtk;
 		if (npAt != 1)
-			cardFirst = cardFirst + busterChainMod;
+			cardFirst += busterChainMod;
 		if (npAt != 2)
-			cardSecond = cardSecond + busterChainMod;
+			cardSecond += busterChainMod;
 		if (npAt != 3)
-			cardThird = cardThird + busterChainMod;
+			cardThird += busterChainMod;
 	}
 	if (cardFirst > 0)
 		printf("%'g -- 1\n", cardFirst);
@@ -592,11 +592,11 @@ void getNpDamage(float *npDamageMultiplier, float *superEffectiveModifier, float
 		printf("card type not specified!\n");
 	}
 	float npPercent;
-	npPercent = 1.0 + ((float)(npDamageMod + powerMod) * 0.01);
+	npPercent = 1.0 + (float)npDamageMod * 0.01;
 	totalNp = total
 	* *superEffectiveModifier * *npDamageMultiplier * whichCardMod
 	* npPercent;
-	printf("%'g\n%'g ~ %'g\n", totalNp, (totalNp*0.9), (totalNp*1.1));
+	printf("%'g\n%'g ~ %'g\n", totalNp, (totalNp * 0.9), (totalNp * 1.1));
 }
 void getClassMod(float *classMod, float *classAtkBonus)
 {
@@ -890,7 +890,7 @@ int main(int argc, char *argv[])
 		printf("def down exceeds 100, defaults to 100!\n");
 	}
 	if (defenseIgnore)
-		defMod = defMod - 100;
+		defMod -= 100;
 	getClassMod(&classMod, &classAtkBonus);
 	getAttributeMod(&attributeModifier);
 	total = total
