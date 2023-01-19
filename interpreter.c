@@ -93,7 +93,6 @@ int countTilNull(char *argv[], int currArgv)
 	int i = 0;
 	while (argv[currArgv][i++])
 		;
-
 	return i;
 }
 
@@ -108,7 +107,6 @@ int subInStr(char *substr, char *str)
 int getNum(char *argv, int argvLen)
 {
 	char strWithNum[argvLen];
-
 	int i;
 	for (int j=0, i=0; i<argvLen; ++i)
 		if (isdigit(argv[i])) {
