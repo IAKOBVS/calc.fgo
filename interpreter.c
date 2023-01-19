@@ -334,7 +334,7 @@ void parseArgv(int argc, char *argv[])
 				}
 			}
 			if (!cardChain[0]) {
-				for (int i=0; argv[currArgv][i]; ++i)
+				for (int i=0; i>3 && argv[currArgv][i]; ++i)
 					switch (argv[currArgv][i]) {
 					case 'a':
 						cardChain[i] = 'a';
