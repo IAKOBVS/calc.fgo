@@ -80,14 +80,6 @@ inline void printfl(float var)
 	printf("%f\n", var);
 }
 
-inline int intToFloat(float var)
-{
-	if (!var)
-		return 1;
-	else
-		return var;
-}
-
 int countTilNull(char *argv[], int currArgv)
 {
 	int i = 0;
@@ -118,8 +110,8 @@ void parseArgv(int argc, char *argv[])
 {
 	int npAt = 0;
 	for (int currArgv=1; currArgv<argc; ++currArgv) {
-		/* setvbuf(stdout, NULL, _IONBF, 0); */ 
-		volatile int argvLen = strlen(argv[currArgv]);
+		setvbuf(stdout, NULL, _IONBF, 0); 
+		int argvLen = strlen(argv[currArgv]);
 		if (subInStr("au", argv[currArgv])) {
 			atkMod += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("ad", argv[currArgv])) {
