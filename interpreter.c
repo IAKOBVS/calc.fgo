@@ -4,8 +4,6 @@
 #include <locale.h>
 #include <ctype.h>
 
-#define BASE_MULTIPLIER 0.23
-
 #define SABER 1
 #define ARCHER 2
 #define LANCER 3
@@ -38,6 +36,7 @@
 #define AOE 2
 
 #define BUSTER_CHAIN_MOD 0.2
+#define BASE_MULTIPLIER 0.23
 
 int servantAtk = 1;
 int noChain = 1;
