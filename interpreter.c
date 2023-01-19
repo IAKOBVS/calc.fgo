@@ -109,9 +109,8 @@ int getNum(char *argv, int argvLen)
 	char strWithNum[argvLen];
 	int i;
 	for (int j=0, i=0; i<argvLen; ++i)
-		if (isdigit(argv[i])) {
+		if (isdigit(argv[i]))
 			strWithNum[j++] = argv[i];
-		}
 	return strtol(strWithNum, NULL, 10);
 }
 
