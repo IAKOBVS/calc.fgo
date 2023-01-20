@@ -92,8 +92,7 @@ int subInStr(char *substr, char *str)
 int getNum(char *argv, int argvLen)
 {
 	char strWithNum[argvLen];
-	int i;
-	for (int j=0, i=0; i<argvLen; ++i)
+	for (int i=0, j=0; i<argvLen; ++i)
 		if (isdigit(argv[i]))
 			strWithNum[j++] = argv[i];
 	return strtol(strWithNum, NULL, 10);
@@ -778,7 +777,7 @@ void printHelp(void)
 int main(int argc, char *argv[])
 {
 	if (!argv[1])
-		printHelp();
+		printHelp(), exit(0);
 	setlocale(LC_NUMERIC, "");
 	parseArgv(argc, argv);
 	float total = 1;
@@ -786,10 +785,8 @@ int main(int argc, char *argv[])
 	float classAtkBonus = 1;
 	float attributeModifier = 1;
 	float npDamageMultiplier = 1;
-	if (defModDown > 100) {
-		defModDown = 100;
-		printf("def down exceeds 100, defaults to 100!\n");
-	}
+	if (defModDown > 100)
+		defModDown = 100, printf("def down exceeds 100, defaults to 100!\n");
 	if (defenseIgnore)
 		defMod -= 100;
 	getClassMod(&classMod, &classAtkBonus);
