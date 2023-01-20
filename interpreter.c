@@ -38,11 +38,13 @@
 #define BUSTER_CHAIN_MOD 0.2
 #define BASE_MULTIPLIER 0.23
 
+int npAt;
+float superEffectiveModifier = 1;
+char cardChain[3];
+int critAt[3];
 int servantAtk = 1;
 int np = 5;
 int fou = 1000;
-float superEffectiveModifier = 1;
-char cardChain[3];
 int class;
 int classEnemy;
 int classTypeEnemy;
@@ -62,7 +64,6 @@ int quickMod;
 int powerMod;
 int npDamageMod;
 int critDamageMod;
-int critAt[3];
 int verbose;
 
 inline void printdbl(double var)
@@ -78,14 +79,6 @@ inline void printint(int var)
 inline void printfl(float var)
 {
 	printf("%f\n", var);
-}
-
-int countTilNull(char *argv[], int currArgv)
-{
-	int i = 0;
-	while (argv[currArgv][i++])
-		;
-	return i;
 }
 
 int subInStr(char *substr, char *str)
@@ -108,7 +101,6 @@ int getNum(char *argv, int argvLen)
 
 void parseArgv(int argc, char *argv[])
 {
-	int npAt = 0;
 	for (int currArgv=1; currArgv<argc; ++currArgv) {
 		setvbuf(stdout, NULL, _IONBF, 0); 
 		int argvLen = strlen(argv[currArgv]);
@@ -324,7 +316,7 @@ void parseArgv(int argc, char *argv[])
 					continue;
 				}
 			}
-			if (!cardChain[0]) {
+			if (!cardChain[0])
 				for (int i=0; i>3 && argv[currArgv][i]; ++i)
 					switch (argv[currArgv][i]) {
 					case 'a':
@@ -340,21 +332,7 @@ void parseArgv(int argc, char *argv[])
 						cardChain[i] = 'n';
 						npAt = ++i;
 					}
-			}
 		}
-	}
-	switch (cardType) {
-	case ARTS:
-		cardChain[npAt-1] = 'a';
-		break;
-	case BUSTER:
-		cardChain[npAt-1] = 'b';
-		break;
-	case QUICK:
-		cardChain[npAt-1] = 'q';
-		break;
-	default:
-		return;
 	}
 }
 
@@ -446,11 +424,11 @@ void getCardDmg(float total)
 	cardAt[2] *= (float)total;
 	if (cardChain[0] == 'b' && cardChain[1] == 'b' && cardChain[2] == 'b') {
 		float busterChainMod = BUSTER_CHAIN_MOD * (float)servantAtk;
-		if (cardChain[0] != 'n')
+		if (npAt != 1)
 			cardAt[0] += busterChainMod;
-		if (cardChain[1] != 'n')
+		if (npAt != 2)
 			cardAt[1] += busterChainMod;
-		if (cardChain[2] != 'n')
+		if (npAt != 3)
 			cardAt[2] += busterChainMod;
 	}
 	if (cardAt[0] > 0)
@@ -462,6 +440,17 @@ void getCardDmg(float total)
 }
 void getNpDamage(float *npDamageMultiplier, float *superEffectiveModifier, float total)
 {
+	switch (cardType) {
+	case ARTS:
+		cardChain[npAt-1] = 'a';
+		break;
+	case BUSTER:
+		cardChain[npAt-1] = 'b';
+		break;
+	case QUICK:
+		cardChain[npAt-1] = 'q';
+		break;
+	}
 	float totalNp = 1;
 	float whichCardMod = 1;
 	switch (cardType) {
