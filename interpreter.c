@@ -38,10 +38,14 @@
 #define BUSTER_CHAIN_MOD 0.2
 #define BASE_MULTIPLIER 0.23
 
+#define FIRST 1
+#define SECOND 0b10
+#define THIRD 0b100
+
 int npAt;
 float superEffectiveModifier = 1;
 char cardChain[3];
-int critAt[3];
+int critAt;
 int servantAtk = 1;
 int np = 5;
 int fou = 1000;
@@ -126,15 +130,13 @@ void parseArgv(int argc, char *argv[])
 		} else if (subInStr("cd", argv[currArgv])) {
 			critDamageMod += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("crit", argv[currArgv])) {
-			critAt[0] = 1;
-			critAt[1] = 1;
-			critAt[2] = 1;
+			critAt = FIRST | SECOND | THIRD;
 		} else if (subInStr("cr1", argv[currArgv])) {
-			critAt[0] = 1;
+			critAt = FIRST;
 		} else if (subInStr("cr2", argv[currArgv])) {
-			critAt[1] = 1;
+			critAt = SECOND;
 		} else if (subInStr("cr3", argv[currArgv])) {
-			critAt[2] = 1;
+			critAt = THIRD;
 		} else if (subInStr("se", argv[currArgv])) {
 			superEffectiveModifier = getNum(argv[currArgv], argvLen);
 		} else if (subInStr("atk", argv[currArgv])) {
@@ -406,15 +408,15 @@ void getCardDmg(float total)
 	case 'a':
 		cardAt[2] = (cardAt[2] + 1.4) * artsPercent;
 	}
-	if (critAt[0])
+	if (critAt & FIRST)
 		cardAt[0] *= floatCrit;
 	else
 		cardAt[0] *= powerPercent;
-	if (critAt[1])
+	if (critAt & SECOND)
 		cardAt[1] *= floatCrit;
 	else
 		cardAt[1] *= powerPercent;
-	if (critAt[2])
+	if (critAt & THIRD)
 		cardAt[2] *= floatCrit;
 	else
 		cardAt[2] *= powerPercent;
@@ -729,7 +731,7 @@ void getAttributeMod(float *attributeModifier)
 
 void printVerbose(float attributeModifier, float npDamageMultiplier, float classAtkBonus, float classMod)
 {
-	printf("\nservantAtk:\n%d\n", servantAtk);
+	printf("servantAtk:\n%d\n", servantAtk);
 	printf("classAtkBonus:\n%'g\n", attributeModifier);
 	printf("\nAtk up:\n%d\n", atkMod);
 	printf("busterMod:\n%d\n", busterMod);
@@ -776,7 +778,7 @@ void printHelp(void)
 
 int main(int argc, char *argv[])
 {
-	if (!argv[1])
+	if (argc == 1)
 		printHelp(), exit(0);
 	setlocale(LC_NUMERIC, "");
 	parseArgv(argc, argv);
