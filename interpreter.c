@@ -42,13 +42,17 @@
 #define SECOND 0b10
 #define THIRD 0b100
 
-int npAt;
+#define VERBOSE 1
+#define STR 0b10
+#define DEF_IGNORE 0b100
+
 float superEffectiveModifier = 1;
 char cardChain[3];
-int critAt;
 int servantAtk = 1;
 int np = 5;
 int fou = 1000;
+int critAt;
+int npAt;
 int class;
 int classEnemy;
 int classTypeEnemy;
@@ -61,7 +65,6 @@ int atkMod;
 int atkModDown;
 int defMod;
 int defModDown;
-int defenseIgnore;
 int artsMod;
 int busterMod;
 int quickMod;
@@ -69,6 +72,7 @@ int powerMod;
 int npDamageMod;
 int critDamageMod;
 int verbose;
+int enabled;
 
 inline void printdbl(double var)
 {
@@ -116,7 +120,7 @@ void parseArgv(int argc, char *argv[])
 		} else if (subInStr("du", argv[currArgv])) {
 			defMod += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("di", argv[currArgv])) {
-			defenseIgnore = 1;
+			enabled |= DEF_IGNORE;
 		} else if (subInStr("bm", argv[currArgv])) {
 			busterMod += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("qm", argv[currArgv])) {
@@ -144,7 +148,7 @@ void parseArgv(int argc, char *argv[])
 		} else if (subInStr("np", argv[currArgv])) {
 			np = getNum(argv[currArgv], argvLen);
 		} else if (subInStr("sr", argv[currArgv])) {
-			npStrengthening = 1;
+			enabled |= STR;
 		} else if (subInStr("vi", argv[currArgv])) {
 			busterMod += 50;
 			if (cardType == BUSTER)
@@ -168,7 +172,7 @@ void parseArgv(int argc, char *argv[])
 			if (fou > 2000)
 				fou = 2000;
 		} else if (subInStr("-v", argv[currArgv])) {
-			verbose = 1;
+			enabled |= VERBOSE;
 		} else {
 			if (!npType) {
 				if (subInStr("st", argv[currArgv])) {
@@ -789,7 +793,7 @@ int main(int argc, char *argv[])
 	float npDamageMultiplier = 1;
 	if (defModDown > 100)
 		defModDown = 100, printf("def down exceeds 100, defaults to 100!\n");
-	if (defenseIgnore)
+	if (enabled & DEF_IGNORE)
 		defMod -= 100;
 	getClassMod(&classMod, &classAtkBonus);
 	getAttributeMod(&attributeModifier);
@@ -799,7 +803,7 @@ int main(int argc, char *argv[])
 		* ((float)(servantAtk + fou));
 	getCardDmg(total);
 	getNpDamage(&npDamageMultiplier, &superEffectiveModifier, total);
-	if (verbose)
+	if (enabled & VERBOSE)
 		printVerbose(attributeModifier, npDamageMultiplier, classAtkBonus, classMod);
 	return 0;
 }
