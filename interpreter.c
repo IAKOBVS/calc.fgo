@@ -783,7 +783,7 @@ void printHelp(void)
 int main(int argc, char *argv[])
 {
 	if (argc == 1)
-		printHelp(), exit(0);
+		printHelp();
 	setlocale(LC_NUMERIC, "");
 	parseArgv(argc, argv);
 	float total = 1;
