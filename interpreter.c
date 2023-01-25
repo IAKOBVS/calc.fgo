@@ -109,8 +109,7 @@ int getNum(char *argv, int argvLen)
 void parseArgv(int argc, char *argv[])
 {
 	for (int currArgv=1; currArgv<argc; ++currArgv) {
-		setvbuf(stdout, NULL, _IONBF, 0); 
-		int argvLen = strlen(argv[currArgv]);
+		volatile int argvLen = strlen(argv[currArgv]);
 		if (subInStr("au", argv[currArgv])) {
 			atkMod += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("ad", argv[currArgv])) {
