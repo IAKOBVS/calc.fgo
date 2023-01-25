@@ -369,8 +369,10 @@ float getNpDamageModifier(float caseOne, float caseTwo, float caseThree, float c
 
 void getCardDmg(float total)
 {
-	if (!cardChain[0])
+	if (!cardChain[0]) {
 		printf("no card chain\n");
+		return;
+	}
 	float floatCrit;
 	float cardAt[3] = {0};
 	float busterPercent = 1;
@@ -423,20 +425,17 @@ void getCardDmg(float total)
 		cardAt[2] = (cardAt[2] + 1.4) * artsPercent;
 	}
 	if (critAt & FIRST)
-		cardAt[0] *= floatCrit;
+		cardAt[0] *= floatCrit * (float)total;
 	else
-		cardAt[0] *= powerPercent;
+		cardAt[0] *= powerPercent * (float)total;
 	if (critAt & SECOND)
-		cardAt[1] *= floatCrit;
+		cardAt[1] *= floatCrit * (float)total;
 	else
-		cardAt[1] *= powerPercent;
+		cardAt[1] *= powerPercent * (float)total;
 	if (critAt & THIRD)
-		cardAt[2] *= floatCrit;
+		cardAt[2] *= floatCrit * (float)total;
 	else
-		cardAt[2] *= powerPercent;
-	cardAt[0] *= (float)total;
-	cardAt[1] *= (float)total;
-	cardAt[2] *= (float)total;
+		cardAt[2] *= powerPercent * (float)total;
 	if (cardChain[0] == 'b' && cardChain[1] == 'b' && cardChain[2] == 'b') {
 		float busterChainMod = BUSTER_CHAIN_MOD * (float)servantAtk;
 		switch (npAt) {
@@ -788,30 +787,31 @@ void printHelp(void)
 	"nu = np damage up\n"
 	"pm = powermod; e.g., arjuna alter, pm50\n"
 	"cd = critical damage\n");
-	exit(0);
 }
 
 int main(int argc, char *argv[])
 {
-	if (argc == 1)
+	if (argc == 1) {
 		printHelp();
-	setlocale(LC_NUMERIC, "");
+		return 0;
+	}
 	parseArgv(argc, argv);
+	if (defModDown > 100)
+		defModDown = 100, printf("def down exceeds 100, defaults to 100!\n");
+	if (enabled & DEF_IGNORE)
+		defMod -= 100;
 	float total = 1;
 	float classMod = 1;
 	float classAtkBonus = 1;
 	float attributeModifier = 1;
 	float npDamageMultiplier = 1;
-	if (defModDown > 100)
-		defModDown = 100, printf("def down exceeds 100, defaults to 100!\n");
-	if (enabled & DEF_IGNORE)
-		defMod -= 100;
 	getClassMod(&classMod, &classAtkBonus);
 	getAttributeMod(&attributeModifier);
 	total = total
 		* (1 + ((float)(atkMod + defModDown - defMod - atkModDown) * 0.01))
 		* BASE_MULTIPLIER * classAtkBonus * classMod * attributeModifier
 		* ((float)(servantAtk + fou));
+	setlocale(LC_NUMERIC, "");
 	getCardDmg(total);
 	getNpDamage(&npDamageMultiplier, &superEffectiveModifier, total);
 	if (enabled & VERBOSE)
