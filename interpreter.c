@@ -109,7 +109,8 @@ int getNum(char *argv, int argvLen)
 void parseArgv(int argc, char *argv[])
 {
 	for (int currArgv=1; currArgv<argc; ++currArgv) {
-		volatile int argvLen = strlen(argv[currArgv]);
+		setvbuf(stdout, NULL, _IONBF, 0); 
+		int argvLen = strlen(argv[currArgv]);
 		if (subInStr("au", argv[currArgv])) {
 			atkMod += getNum(argv[currArgv], argvLen);
 		} else if (subInStr("ad", argv[currArgv])) {
@@ -320,8 +321,19 @@ void parseArgv(int argc, char *argv[])
 					continue;
 				}
 			}
-			if (!cardChain[0])
-				for (int i=0; i<3 && argv[currArgv][i]; ++i)
+			if (!cardChain[0] && argvLen == 3) {
+				for (int i=0; i<3; ++i) {
+					switch (argv[currArgv][i]) {
+					case 'a':
+					case 'b':
+					case 'q':
+					case 'n':
+						continue;
+						break;
+					default:
+						return;
+					}
+					i = 0;
 					switch (argv[currArgv][i]) {
 					case 'a':
 						cardChain[i] = 'a';
@@ -336,18 +348,21 @@ void parseArgv(int argc, char *argv[])
 						cardChain[i] = 'n';
 						npAt = ++i;
 					}
+				}
+			}
 		}
 	}
-	switch (cardType) {
-	case BUSTER:
-		cardChain[--npAt] = 'b';
-		break;
-	case ARTS:
-		cardChain[--npAt] = 'a';
-		break;
-	case QUICK:
-		cardChain[--npAt] = 'q';
-	}
+	if (cardChain[0])
+		switch (cardType) {
+		case BUSTER:
+			cardChain[--npAt] = 'b';
+			break;
+		case ARTS:
+			cardChain[--npAt] = 'a';
+			break;
+		case QUICK:
+			cardChain[--npAt] = 'q';
+		}
 }
 
 float getNpDamageModifier(float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault)
@@ -746,7 +761,7 @@ void printVerbose(float attributeModifier, float npDamageMultiplier, float class
 {
 	printf("servantAtk:\n%d\n", servantAtk);
 	printf("classAtkBonus:\n%'g\n", attributeModifier);
-	printf("\nAtk up:\n%d\n", atkMod);
+	printf("Atk up:\n%d\n", atkMod);
 	printf("busterMod:\n%d\n", busterMod);
 	printf("artsMod:\n%d\n", artsMod);
 	printf("quickMod:\n%d\n", quickMod);
