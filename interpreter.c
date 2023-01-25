@@ -322,18 +322,17 @@ void parseArgv(int argc, char *argv[])
 				}
 			}
 			if (!cardChain[0] && argvLen == 3) {
-				for (int i=0; i<3; ++i) {
+				for (int i=0; i<3; ++i)
 					switch (argv[currArgv][i]) {
 					case 'a':
 					case 'b':
 					case 'q':
 					case 'n':
 						continue;
-						break;
 					default:
 						return;
 					}
-					i=0;
+				for (int i=0; i<3; ++i)
 					switch (argv[currArgv][i]) {
 					case 'a':
 						cardChain[i] = 'a';
@@ -348,7 +347,6 @@ void parseArgv(int argc, char *argv[])
 						cardChain[i] = 'n';
 						npAt = ++i;
 					}
-				}
 			}
 		}
 	}
