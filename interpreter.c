@@ -51,8 +51,8 @@ char cardChain[3];
 int servantAtk = 1;
 int np = 5;
 int fou = 1000;
-int critAt;
 int npAt;
+int critAt;
 int class;
 int classEnemy;
 int classTypeEnemy;
@@ -322,7 +322,7 @@ void parseArgv(int argc, char *argv[])
 				}
 			}
 			if (!cardChain[0])
-				for (int i=0; i>3 && argv[currArgv][i]; ++i)
+				for (int i=0; i<3 && argv[currArgv][i]; ++i)
 					switch (argv[currArgv][i]) {
 					case 'a':
 						cardChain[i] = 'a';
@@ -339,9 +339,19 @@ void parseArgv(int argc, char *argv[])
 					}
 		}
 	}
+	switch (cardType) {
+	case BUSTER:
+		cardChain[--npAt] = 'b';
+		break;
+	case ARTS:
+		cardChain[--npAt] = 'a';
+		break;
+	case QUICK:
+		cardChain[--npAt] = 'q';
+	}
 }
 
-float whichNpDamageModifier(float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault)
+float getNpDamageModifier(float caseOne, float caseTwo, float caseThree, float caseFour, float caseDefault)
 {
 	switch (np) {
 	case 1:
@@ -429,12 +439,24 @@ void getCardDmg(float total)
 	cardAt[2] *= (float)total;
 	if (cardChain[0] == 'b' && cardChain[1] == 'b' && cardChain[2] == 'b') {
 		float busterChainMod = BUSTER_CHAIN_MOD * (float)servantAtk;
-		if (npAt != 1)
-			cardAt[0] += busterChainMod;
-		if (npAt != 2)
+		switch (npAt) {
+		case 1:
 			cardAt[1] += busterChainMod;
-		if (npAt != 3)
 			cardAt[2] += busterChainMod;
+			break;
+		case 2:
+			cardAt[0] += busterChainMod;
+			cardAt[2] += busterChainMod;
+			break;
+		case 3:
+			cardAt[0] += busterChainMod;
+			cardAt[1] += busterChainMod;
+			break;
+		default:
+			cardAt[0] += busterChainMod;
+			cardAt[1] += busterChainMod;
+			cardAt[2] += busterChainMod;
+		}
 	}
 	if (cardAt[0] > 0)
 		printf("%'g -- 1\n", cardAt[0]);
@@ -445,17 +467,6 @@ void getCardDmg(float total)
 }
 void getNpDamage(float *npDamageMultiplier, float *superEffectiveModifier, float total)
 {
-	switch (cardType) {
-	case ARTS:
-		cardChain[npAt-1] = 'a';
-		break;
-	case BUSTER:
-		cardChain[npAt-1] = 'b';
-		break;
-	case QUICK:
-		cardChain[npAt-1] = 'q';
-		break;
-	}
 	float totalNp = 1;
 	float whichCardMod = 1;
 	switch (cardType) {
@@ -463,15 +474,15 @@ void getNpDamage(float *npDamageMultiplier, float *superEffectiveModifier, float
 		switch (npType) {
 		case AOE:
 			if (npStrengthening)
-				*npDamageMultiplier = whichNpDamageModifier(5, 7.5, 8.25, 8.625, 9);
+				*npDamageMultiplier = getNpDamageModifier(5, 7.5, 8.25, 8.625, 9);
 			else
-				*npDamageMultiplier = whichNpDamageModifier(4.5, 6, 6.75, 7.125, 7.5);
+				*npDamageMultiplier = getNpDamageModifier(4.5, 6, 6.75, 7.125, 7.5);
 			break;
 		case ST:
 			if (npStrengthening)
-				*npDamageMultiplier = whichNpDamageModifier(12, 15, 16.5, 17.25, 18);
+				*npDamageMultiplier = getNpDamageModifier(12, 15, 16.5, 17.25, 18);
 			else
-				*npDamageMultiplier = whichNpDamageModifier(9, 12, 13.5, 14.25, 15);
+				*npDamageMultiplier = getNpDamageModifier(9, 12, 13.5, 14.25, 15);
 		}
 		break;
 	case BUSTER:
@@ -479,15 +490,15 @@ void getNpDamage(float *npDamageMultiplier, float *superEffectiveModifier, float
 		switch (npType) {
 		case AOE:
 			if (npStrengthening)
-				*npDamageMultiplier = whichNpDamageModifier(4, 5, 5.5, 5.75, 6);
+				*npDamageMultiplier = getNpDamageModifier(4, 5, 5.5, 5.75, 6);
 			else
-				*npDamageMultiplier = whichNpDamageModifier(3, 4, 4.5, 4.75, 5);
+				*npDamageMultiplier = getNpDamageModifier(3, 4, 4.5, 4.75, 5);
 			break;
 		case ST:
 			if (npStrengthening)
-				*npDamageMultiplier = whichNpDamageModifier(8, 10, 11, 11.5, 12);
+				*npDamageMultiplier = getNpDamageModifier(8, 10, 11, 11.5, 12);
 			else
-				*npDamageMultiplier = whichNpDamageModifier(6, 8, 9, 9.5, 10);
+				*npDamageMultiplier = getNpDamageModifier(6, 8, 9, 9.5, 10);
 			break;
 		}
 		break;
@@ -496,15 +507,15 @@ void getNpDamage(float *npDamageMultiplier, float *superEffectiveModifier, float
 		switch (npType) {
 		case AOE:
 			if (npStrengthening)
-				*npDamageMultiplier = whichNpDamageModifier(8, 10, 11, 11.5, 12);
+				*npDamageMultiplier = getNpDamageModifier(8, 10, 11, 11.5, 12);
 			else
-				*npDamageMultiplier = whichNpDamageModifier(6, 8, 9, 9.5, 10);
+				*npDamageMultiplier = getNpDamageModifier(6, 8, 9, 9.5, 10);
 			break;
 		case ST:
 			if (npStrengthening)
-				*npDamageMultiplier = whichNpDamageModifier(16, 20, 22, 23, 24);
+				*npDamageMultiplier = getNpDamageModifier(16, 20, 22, 23, 24);
 			else
-				*npDamageMultiplier = whichNpDamageModifier(12, 16, 18, 19, 20);
+				*npDamageMultiplier = getNpDamageModifier(12, 16, 18, 19, 20);
 		}
 	default:
 		printf("card type not specified!\n");
