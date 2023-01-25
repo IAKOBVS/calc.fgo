@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <locale.h>
 #include <ctype.h>
+#include <locale.h>
 
 #define SABER 1
 #define ARCHER 2
@@ -825,6 +825,7 @@ int main(int argc, char *argv[])
 		* (1 + ((float)(atkMod + defModDown - defMod - atkModDown) * 0.01))
 		* BASE_MULTIPLIER * classAtkBonus * classMod * attributeModifier
 		* ((float)(servantAtk + fou));
+	/* thousand separator */
 	setlocale(LC_NUMERIC, "");
 	getCardDmg(total);
 	getNpDamage(&npDamageMultiplier, &superEffectiveModifier, total);
